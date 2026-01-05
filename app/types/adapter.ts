@@ -20,11 +20,31 @@ export interface AdapterChannel {
   unit: string
   min?: number
   max?: number
+  precision?: number
   sourceNames: string[]
 }
 
-export interface AdapterDetail extends Adapter {
+export interface AdapterFileFormat {
+  type: 'csv' | 'binary'
+  extensions: string[]
+  delimiter?: string
+  endianness?: string
+  magicBytes?: number[]
+  headerRow?: number
+  dataStartRow?: number
+  timestampColumn?: string
+  timestampUnit?: string
+}
+
+export interface AdapterDetail {
   openecualliance: string
+  id: string
+  name: string
+  version: string
+  vendor: string
+  description?: string
+  website?: string
+  fileFormat: AdapterFileFormat
   channels: AdapterChannel[]
   metadata?: {
     author?: string
@@ -32,5 +52,10 @@ export interface AdapterDetail extends Adapter {
     repository?: string
     testedWith?: string[]
     knownIssues?: string[]
+    changelog?: Array<{
+      version: string
+      date: string
+      changes: string[]
+    }>
   }
 }

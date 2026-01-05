@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const navigation = [
   { label: 'Adapters', to: '/adapters' },
+  { label: 'Ecosystem', to: '/ecosystem' },
   { label: 'Spec', to: '/spec' },
   { label: 'Docs', to: '/docs' },
 ]

@@ -4,110 +4,122 @@ This file provides guidance to Claude Code when working with the OpenECU Allianc
 
 ## Project Overview
 
-OpenECU Alliance is a community-driven initiative to standardize ECU (Engine Control Unit) log data formats. This Nuxt 4 application serves as:
+This is the **OpenECU Alliance** website - a Nuxt 4 application that serves as the public face of the OpenECU Spec initiative.
 
-1. **Specification Host** - The authoritative source for the OpenECU Alliance adapter specification
-2. **Adapter Marketplace** - A registry where users can discover, browse, and download community-contributed adapters
-3. **Documentation Hub** - Guides for creating adapters, integrating with the spec, and contributing
+### Key Terminology
+
+- **OpenECU Alliance** - The open community/organization that maintains the spec and ecosystem
+- **OpenECU Spec** - The formal specification published by the Alliance for describing ECU log formats
+- **Spec-Compatible Applications** - Apps like UltraLog that implement the OpenECU Spec
+- **Adapters** - YAML files that describe ECU log formats using the spec
+
+### This Site's Purpose
+
+1. **Spec Documentation** - The authoritative source for the OpenECU Spec
+2. **Adapter Browser** - Discover and browse community-contributed adapters
+3. **Ecosystem Hub** - Showcase spec-compatible applications and tools
+4. **Contribution Portal** - Guides for creating adapters and donating projects
+
+## Architecture
+
+### Related Repositories
+
+The OpenECU Alliance spans multiple repositories:
+
+```
+../OECUASpecs/           # Single source of truth for adapter YAML files
+├── adapters/            # Adapter definitions by vendor
+│   ├── haltech/
+│   ├── link/
+│   ├── aim/
+│   └── ...
+├── schema/              # JSON Schema for validation
+└── SPECIFICATION.md     # Formal spec document
+
+../OpenECUAlliance/      # This repo - the website
+├── app/                 # Nuxt application
+├── server/              # Server API (loads adapters from OECUASpecs)
+└── ...
+```
+
+The website loads adapters directly from `../OECUASpecs/adapters/` via server API routes.
 
 ## Tech Stack
 
 - **Framework**: Nuxt 4
 - **Runtime**: Bun
-- **Styling**: TBD (likely Tailwind CSS + shadcn-vue)
-- **Database**: TBD (likely Supabase or similar for adapter registry)
+- **UI**: Nuxt UI v4 + Tailwind CSS
+- **Icons**: Heroicons, Simple Icons (via @nuxt/icon)
+- **Data**: Server API reads YAML from OECUASpecs repo
 
 ## Repository Structure
 
 ```
 OpenECUAlliance/
-├── app/                    # Nuxt application
-│   ├── components/         # Vue components
-│   ├── pages/              # Route pages
-│   ├── layouts/            # Page layouts
-│   └── app.vue             # Root component
-├── spec/                   # OpenECU Alliance Specification
-│   ├── README.md           # Spec overview
-│   ├── SPECIFICATION.md    # Formal specification document
-│   ├── schema/             # JSON Schema for validation
-│   │   └── adapter.schema.json
-│   └── examples/           # Example adapter files
-│       └── haltech-nsp.adapter.yaml
-├── public/                 # Static assets
-├── nuxt.config.ts          # Nuxt configuration
+├── app/
+│   ├── components/
+│   │   ├── AppHeader.vue       # Navigation with dark mode toggle
+│   │   ├── AppFooter.vue       # Footer links
+│   │   └── AdapterCard.vue     # Adapter listing card
+│   ├── composables/
+│   │   └── useAdapters.ts      # Adapter data composable
+│   ├── pages/
+│   │   ├── index.vue           # Landing page
+│   │   ├── adapters/
+│   │   │   ├── index.vue       # Adapter marketplace
+│   │   │   └── [vendor]/
+│   │   │       └── [id].vue    # Adapter detail
+│   │   ├── ecosystem.vue       # Spec-compatible apps
+│   │   ├── spec.vue            # Specification docs
+│   │   ├── docs.vue            # Documentation
+│   │   └── contribute.vue      # Contribution guide
+│   ├── types/
+│   │   └── adapter.ts          # TypeScript interfaces
+│   └── app.vue                 # Root component
+├── server/
+│   └── api/
+│       ├── adapters.get.ts     # List all adapters
+│       └── adapters/
+│           └── [vendor]/
+│               └── [id].get.ts # Get adapter detail
+├── nuxt.config.ts
 └── package.json
 ```
 
-## Site Structure (Planned)
+## Key Pages
 
-### Pages
+### `/` - Landing Page
+- Hero section introducing OpenECU Spec
+- "What is OpenECU Alliance?" explainer (Alliance vs Spec vs Ecosystem)
+- Spec-compatible applications showcase
+- Supported vendors with ready/planned status
+- Developer sections for using and contributing
 
-- `/` - Landing page explaining OpenECU Alliance mission
-- `/spec` - Interactive specification documentation
-- `/adapters` - Marketplace/registry of available adapters
-- `/adapters/[vendor]` - Adapters filtered by vendor
-- `/adapters/[vendor]/[id]` - Individual adapter detail page
-- `/docs` - Documentation for creating adapters
-- `/docs/getting-started` - Quick start guide
-- `/docs/creating-adapters` - How to create an adapter
-- `/docs/integrating` - How applications can integrate the spec
-- `/contribute` - How to contribute adapters to the registry
+### `/adapters` - Adapter Marketplace
+- Grid of adapter cards with search/filter
+- Filter by vendor, category, file format
+- Links to individual adapter detail pages
 
-### Features to Build
+### `/adapters/[vendor]/[id]` - Adapter Detail
+- Full channel listing grouped by category
+- File format details
+- Source name mappings (popover)
+- Metadata and known issues
 
-1. **Spec Viewer**
-   - Render SPECIFICATION.md as interactive documentation
-   - Syntax highlighting for YAML examples
-   - JSON Schema explorer
+### `/ecosystem` - Ecosystem Page
+- Spec-compatible applications
+- Libraries and SDKs
+- Project donation information
 
-2. **Adapter Registry**
-   - Browse adapters by vendor, category, popularity
-   - Search functionality
-   - Adapter detail pages with:
-     - Channel list
-     - Download/copy YAML
-     - Version history
-     - Compatibility info
+## API Routes
 
-3. **Adapter Submission**
-   - GitHub-based submission (PRs to adapter repo)
-   - Or direct submission with validation
-   - JSON Schema validation before acceptance
+### `GET /api/adapters`
+Returns list of all adapters with summary info (id, name, version, vendor, channelCount, etc.)
 
-4. **Validation Tool**
-   - Paste/upload adapter YAML
-   - Validate against JSON Schema
-   - Show errors and suggestions
+### `GET /api/adapters/[vendor]/[id]`
+Returns full adapter detail including all channels and metadata.
 
-## Key Concepts
-
-### Adapters
-
-An adapter is a YAML file that describes how to parse ECU log files and map vendor-specific channel names to canonical identifiers. See `spec/SPECIFICATION.md` for the full format.
-
-### Canonical Channel IDs
-
-Standardized identifiers (snake_case) that all adapters map to:
-- `rpm` - Engine RPM
-- `coolant_temp` - Coolant temperature
-- `afr` - Air-fuel ratio
-- `tps` - Throttle position
-- etc.
-
-### Vendors
-
-ECU manufacturers whose log formats can have adapters:
-- Haltech
-- Link
-- AiM
-- ECUMaster
-- MoTeC
-- AEM
-- Holley
-- FuelTech
-- MegaSquirt
-- Speeduino
-- rusEFI
+Both routes read YAML files directly from `../OECUASpecs/adapters/`.
 
 ## Build Commands
 
@@ -127,33 +139,50 @@ bun preview
 
 ## Design Guidelines
 
-- Clean, professional aesthetic suitable for automotive/motorsport audience
-- Dark mode support (many users in garage/shop environments)
+- Clean, professional aesthetic for automotive/motorsport audience
+- Dark mode support (default for many users)
 - Mobile-responsive for pit lane/trackside access
-- Fast - minimal JavaScript, leverage Nuxt SSR/SSG
+- Fast - leverage Nuxt SSR, minimal client JS
+- Consistent use of Nuxt UI components
+- Icons from Heroicons for UI, Simple Icons for brands
 
-## Integration Points
+## Canonical Channel IDs
 
-### UltraLog
+Adapters map vendor-specific names to canonical IDs:
 
-The primary consumer of OpenECU Alliance adapters. UltraLog can:
-- Ship with built-in adapters (compiled at build time)
-- Load community adapters at runtime from `~/.ultralog/adapters/`
-- Link to marketplace for discovering new adapters
+| ID | Description | Category |
+|----|-------------|----------|
+| `rpm` | Engine RPM | engine |
+| `tps` | Throttle Position | engine |
+| `map` | Manifold Pressure | pressure |
+| `afr` | Air-Fuel Ratio | fuel |
+| `lambda` | Lambda Value | fuel |
+| `coolant_temp` | Coolant Temperature | temperature |
+| `iat` | Intake Air Temp | temperature |
+| `ignition_advance` | Ignition Timing | ignition |
+| `g_lateral` | Lateral G-Force | acceleration |
+| `gps_latitude` | GPS Latitude | position |
 
-### Other Tools
+See `../OECUASpecs/SPECIFICATION.md` for complete reference.
 
-Any ECU analysis tool can adopt the spec:
-- Dyno software
-- Tuning suites
-- Data overlay tools
-- Telemetry systems
+## Supported Vendors
+
+Ready adapters exist for:
+- Haltech (CSV)
+- ECUMaster (CSV)
+- RomRaider/Subaru (CSV)
+- Speeduino (MLG binary)
+- rusEFI (MLG binary)
+- AiM (XRK/DRK binary)
+- Link (LLG binary)
+
+Planned: MoTeC, AEM, Holley, FuelTech
 
 ## Future Considerations
 
-- **API**: REST/GraphQL API for programmatic adapter discovery
-- **CLI Tool**: `openecualliance validate adapter.yaml`
+- **Spec Page**: Interactive specification viewer with examples
+- **Docs**: Complete documentation for spec implementers
+- **Validation Tool**: Paste YAML, validate against schema
 - **GitHub App**: Auto-validate adapter PRs
-- **Versioning**: Track adapter versions, show changelogs
-- **Analytics**: Popular adapters, download counts
-- **Comments/Ratings**: Community feedback on adapters
+- **API Keys**: For third-party adapter discovery
+- **Analytics**: Download counts, popular adapters
