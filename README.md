@@ -1,75 +1,109 @@
-# Nuxt Minimal Starter
+# OpenECU Alliance
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The official website for the **OpenECU Spec** - an open specification for standardizing ECU log data formats across the automotive tuning community.
 
-## Setup
+## What is the OpenECU Alliance?
 
-Make sure to install dependencies:
+The OpenECU Alliance is an open community that publishes and maintains:
+
+- **The OpenECU Spec** - A YAML-based specification for describing ECU log file formats and channel mappings
+- **Adapter Library** - Community-contributed adapters that map vendor-specific channels to canonical IDs
+- **Ecosystem** - Spec-compatible applications and tools that work with any ECU system
+
+## This Repository
+
+This is the Nuxt 4 website that serves as the public face of the OpenECU Alliance. It provides:
+
+- **Adapter Browser** - Search and explore adapters for different ECU systems
+- **Specification Documentation** - Reference for the OpenECU Spec format
+- **Ecosystem Showcase** - Spec-compatible applications like [UltraLog](https://ultralog.app)
+- **Contribution Guide** - How to create and submit new adapters
+
+## Related Repositories
+
+| Repository                                                            | Description                                                |
+| --------------------------------------------------------------------- | ---------------------------------------------------------- |
+| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)            | Adapter YAML files, JSON Schema, and formal specification  |
+| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance)  | This website                                               |
+
+## Supported ECU Systems
+
+Adapters are available for:
+
+- Haltech (CSV)
+- Link ECU (LLG binary)
+- AiM (XRK/DRK binary)
+- ECUMaster (CSV)
+- Speeduino (MLG binary)
+- rusEFI (MLG binary)
+- RomRaider/Subaru (CSV)
+
+**Planned:** MoTeC, AEM, Holley, FuelTech
+
+## Development
+
+### Prerequisites
+
+- [Bun](https://bun.sh) runtime
+- Node.js 18+
+- The [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs) repository cloned as a sibling directory (`../OECUASpecs/`)
+
+### Setup
 
 ```bash
-# npm
-npm install
+# Clone both repositories
+git clone https://github.com/ClassicMiniDIY/OpenECUAlliance.git
+git clone https://github.com/ClassicMiniDIY/OECUASpecs.git
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
+# Install dependencies
+cd OpenECUAlliance
 bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+### Development Server
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+bun dev
 ```
 
-## Production
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Build the application for production:
+### Build
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
+# Production build
 bun run build
+
+# Preview production build
+bun preview
 ```
 
-Locally preview production build:
+## Tech Stack
 
-```bash
-# npm
-npm run preview
+- **Framework:** [Nuxt 4](https://nuxt.com)
+- **Runtime:** [Bun](https://bun.sh)
+- **UI:** [Nuxt UI v4](https://ui.nuxt.com) + Tailwind CSS
+- **Icons:** Heroicons, Simple Icons
 
-# pnpm
-pnpm preview
+## Contributing
 
-# yarn
-yarn preview
+We welcome contributions! Here's how you can help:
 
-# bun
-bun run preview
-```
+### Contributing Adapters
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+1. Fork the [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs) repository
+2. Create a YAML adapter following the specification
+3. Submit a pull request
+
+See the [Contribution Guide](https://openecualliance.org/contribute) for detailed instructions.
+
+### Contributing to the Website
+
+1. Fork this repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+[MIT License](LICENSE)

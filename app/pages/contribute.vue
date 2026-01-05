@@ -124,7 +124,7 @@ channels:
       <!-- CTA -->
       <div class="flex flex-col sm:flex-row gap-4">
         <UButton
-          to="https://github.com/openecualliance/adapters"
+          to="https://github.com/ClassicMiniDIY/OECUASpecs"
           target="_blank"
           icon="i-simple-icons-github"
           size="lg"

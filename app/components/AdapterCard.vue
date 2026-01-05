@@ -5,22 +5,9 @@ const props = defineProps<{
   adapter: Adapter
 }>()
 
-// Map vendors to icons
-const vendorIcons: Record<string, string> = {
-  haltech: 'i-heroicons-cpu-chip',
-  link: 'i-heroicons-link',
-  aim: 'i-heroicons-chart-bar',
-  ecumaster: 'i-heroicons-cog-6-tooth',
-  motec: 'i-heroicons-adjustments-horizontal',
-  aem: 'i-heroicons-bolt',
-  holley: 'i-heroicons-fire',
-  fueltech: 'i-heroicons-beaker',
-  megasquirt: 'i-heroicons-square-3-stack-3d',
-  speeduino: 'i-heroicons-rocket-launch',
-  rusefi: 'i-heroicons-wrench-screwdriver',
-}
+const { getVendorIcon } = useVendorIcons()
 
-const icon = computed(() => vendorIcons[props.adapter.vendor] || 'i-heroicons-document')
+const icon = computed(() => getVendorIcon(props.adapter.vendor))
 </script>
 
 <template>

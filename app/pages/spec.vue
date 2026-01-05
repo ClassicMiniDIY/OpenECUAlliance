@@ -30,7 +30,7 @@ useSeoMeta({
           <ul>
             <li>
               <a
-                href="https://github.com/openecualliance/openecualliance/blob/main/spec/SPECIFICATION.md"
+                href="https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/SPECIFICATION.md"
                 target="_blank"
               >
                 SPECIFICATION.md
@@ -39,7 +39,7 @@ useSeoMeta({
             </li>
             <li>
               <a
-                href="https://github.com/openecualliance/openecualliance/blob/main/spec/schema/adapter.schema.json"
+                href="https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/adapter.schema.json"
                 target="_blank"
               >
                 adapter.schema.json

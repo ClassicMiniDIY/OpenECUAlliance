@@ -118,12 +118,12 @@ const references = [
       <section>
         <h2 class="text-xl font-semibold mb-4">Resources</h2>
         <div class="grid sm:grid-cols-2 gap-4">
-          <UCard to="https://github.com/openecualliance" target="_blank">
+          <UCard to="https://github.com/ClassicMiniDIY/OECUASpecs" target="_blank">
             <div class="flex items-center gap-3">
               <UIcon name="i-simple-icons-github" class="size-6" />
               <div>
                 <h3 class="font-semibold">GitHub Repository</h3>
-                <p class="text-sm text-muted">Source code and adapter registry</p>
+                <p class="text-sm text-muted">Specification and adapter registry</p>
               </div>
             </div>
           </UCard>

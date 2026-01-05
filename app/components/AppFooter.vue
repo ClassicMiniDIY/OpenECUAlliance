@@ -11,7 +11,7 @@ const links = [
   {
     label: 'Community',
     children: [
-      { label: 'GitHub', to: 'https://github.com/openecualliance', target: '_blank' },
+      { label: 'GitHub', to: 'https://github.com/ClassicMiniDIY/OpenECUAlliance', target: '_blank' },
       { label: 'Contribute', to: '/contribute' },
       { label: 'Discord', to: '#', target: '_blank' },
     ],

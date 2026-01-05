@@ -7,6 +7,8 @@ const id = route.params.id as string
 
 const { data: adapter, status } = await useFetch<AdapterDetail>(`/api/adapters/${vendor}/${id}`)
 
+const { getVendorIcon } = useVendorIcons()
+
 // Group channels by category
 const channelsByCategory = computed(() => {
   if (!adapter.value?.channels) return {}
@@ -27,23 +29,7 @@ useSeoMeta({
   description: () => adapter.value?.description || 'OpenECU Spec adapter',
 })
 
-// Vendor icons
-const vendorIcons: Record<string, string> = {
-  haltech: 'i-heroicons-cpu-chip',
-  link: 'i-heroicons-link',
-  aim: 'i-heroicons-chart-bar',
-  ecumaster: 'i-heroicons-cog-6-tooth',
-  motec: 'i-heroicons-adjustments-horizontal',
-  aem: 'i-heroicons-bolt',
-  holley: 'i-heroicons-fire',
-  fueltech: 'i-heroicons-beaker',
-  megasquirt: 'i-heroicons-square-3-stack-3d',
-  speeduino: 'i-heroicons-rocket-launch',
-  rusefi: 'i-heroicons-wrench-screwdriver',
-  romraider: 'i-heroicons-document-chart-bar',
-}
-
-const icon = computed(() => vendorIcons[vendor] || 'i-heroicons-document')
+const icon = computed(() => getVendorIcon(vendor))
 </script>
 
 <template>
@@ -157,14 +143,14 @@ const icon = computed(() => vendorIcons[vendor] || 'i-heroicons-document')
 
           <div class="space-y-6">
             <div v-for="category in categories" :key="category">
-              <h3 class="text-sm font-semibold text-muted uppercase tracking-wider mb-3 capitalize">
+              <h3 class="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
                 {{ category }}
               </h3>
               <div class="grid gap-2">
                 <UCard
                   v-for="channel in channelsByCategory[category]"
                   :key="channel.id"
-                  class="!p-3"
+                  class="p-3!"
                 >
                   <div class="flex items-start justify-between gap-4">
                     <div class="flex-1 min-w-0">

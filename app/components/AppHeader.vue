@@ -38,7 +38,7 @@ function toggleColorMode() {
 
       <UTooltip text="GitHub">
         <UButton
-          to="https://github.com/openecualliance"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance"
           target="_blank"
           icon="i-simple-icons-github"
           color="neutral"
