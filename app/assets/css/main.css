@@ -5,18 +5,3 @@
   --ui-radius: 0.5rem;
   --ui-container: 80rem;
 }
-
-/* Custom theme colors - automotive/motorsport inspired */
-@theme {
-  --color-racing-50: oklch(0.97 0.01 250);
-  --color-racing-100: oklch(0.93 0.02 250);
-  --color-racing-200: oklch(0.87 0.04 250);
-  --color-racing-300: oklch(0.78 0.06 250);
-  --color-racing-400: oklch(0.66 0.10 250);
-  --color-racing-500: oklch(0.55 0.14 250);
-  --color-racing-600: oklch(0.47 0.16 250);
-  --color-racing-700: oklch(0.40 0.14 250);
-  --color-racing-800: oklch(0.34 0.12 250);
-  --color-racing-900: oklch(0.28 0.10 250);
-  --color-racing-950: oklch(0.20 0.08 250);
-}

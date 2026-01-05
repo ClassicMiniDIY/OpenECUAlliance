@@ -1,55 +1,63 @@
 <script setup lang="ts">
+const NuxtLink = resolveComponent("NuxtLink");
+
 useSeoMeta({
-  title: 'OpenECU Alliance - The OpenECU Spec',
-  description: 'An open specification for standardizing ECU log data. Build spec-compatible applications that work with any ECU system.',
-})
+  title: "OpenECU Alliance - The OpenECU Spec",
+  description:
+    "An open specification for standardizing ECU log data. Build spec-compatible applications that work with any ECU system.",
+});
 
 const features = [
   {
-    icon: 'i-heroicons-document-text',
-    title: 'The OpenECU Spec',
-    description: 'A standardized YAML format for describing ECU log file formats and channel mappings.',
+    icon: "i-heroicons-document-text",
+    title: "The OpenECU Spec",
+    description:
+      "A standardized YAML format for describing ECU log file formats and channel mappings.",
   },
   {
-    icon: 'i-heroicons-puzzle-piece',
-    title: 'Adapter Library',
-    description: 'Pre-built adapters for popular ECU systems that map vendor channels to standard IDs.',
+    icon: "i-heroicons-puzzle-piece",
+    title: "Adapter Library",
+    description:
+      "Pre-built adapters for popular ECU systems that map vendor channels to standard IDs.",
   },
   {
-    icon: 'i-heroicons-code-bracket',
-    title: 'Language Agnostic',
-    description: 'YAML-based specs parseable by any language. Build applications in Rust, Python, TypeScript, or anything.',
+    icon: "i-heroicons-code-bracket",
+    title: "Language Agnostic",
+    description:
+      "YAML-based specs parseable by any language. Build applications in Rust, Python, TypeScript, or anything.",
   },
   {
-    icon: 'i-heroicons-users',
-    title: 'Community Driven',
-    description: 'Open contribution model - anyone can create adapters or donate compatible projects.',
+    icon: "i-heroicons-users",
+    title: "Community Driven",
+    description:
+      "Open contribution model - anyone can create adapters or donate compatible projects.",
   },
-]
+];
 
 const compatibleApps = [
   {
-    name: 'UltraLog',
-    description: 'High-performance ECU log viewer with multi-format support and computed channels.',
-    url: 'https://ultralog.app',
-    icon: 'i-heroicons-chart-bar',
-    status: 'available',
+    name: "UltraLog",
+    description:
+      "High-performance ECU log viewer with multi-format support and computed channels.",
+    url: "https://ultralog.app",
+    icon: "i-heroicons-chart-bar",
+    status: "available",
   },
-]
+];
 
 const vendors = [
-  { name: 'Haltech', status: 'ready' },
-  { name: 'Link', status: 'ready' },
-  { name: 'AiM', status: 'ready' },
-  { name: 'ECUMaster', status: 'ready' },
-  { name: 'Speeduino', status: 'ready' },
-  { name: 'rusEFI', status: 'ready' },
-  { name: 'RomRaider', status: 'ready' },
-  { name: 'MoTeC', status: 'planned' },
-  { name: 'AEM', status: 'planned' },
-  { name: 'Holley', status: 'planned' },
-  { name: 'FuelTech', status: 'planned' },
-]
+  { name: "Haltech", status: "ready" },
+  { name: "Link", status: "ready" },
+  { name: "AiM", status: "ready" },
+  { name: "ECUMaster", status: "ready" },
+  { name: "Speeduino", status: "ready" },
+  { name: "rusEFI", status: "ready" },
+  { name: "RomRaider", status: "ready" },
+  { name: "MoTeC", status: "planned" },
+  { name: "AEM", status: "planned" },
+  { name: "Holley", status: "planned" },
+  { name: "FuelTech", status: "planned" },
+];
 </script>
 
 <template>
@@ -61,7 +69,9 @@ const vendors = [
           <UBadge color="primary" variant="subtle" class="mb-4">
             Open Source Specification
           </UBadge>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+          <h1
+            class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
+          >
             The
             <span class="text-primary">OpenECU Spec</span>
           </h1>
@@ -69,13 +79,12 @@ const vendors = [
             An open specification for standardizing ECU log data formats.
           </p>
           <p class="text-base text-muted mb-8 max-w-2xl mx-auto">
-            Build spec-compatible applications that work with <strong>any</strong> ECU system.
-            One specification, every manufacturer, any analysis tool.
+            Build spec-compatible applications that work with
+            <strong>any</strong> ECU system. One specification, every
+            manufacturer, any analysis tool.
           </p>
           <div class="flex flex-wrap justify-center gap-4">
-            <UButton to="/adapters" size="lg">
-              Browse Adapters
-            </UButton>
+            <UButton to="/adapters" size="lg"> Browse Adapters </UButton>
             <UButton to="/spec" size="lg" color="neutral" variant="outline">
               Read the Spec
             </UButton>
@@ -98,11 +107,15 @@ const vendors = [
             <UCard>
               <div class="text-center">
                 <div class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex">
-                  <UIcon name="i-heroicons-building-office-2" class="size-6 text-primary" />
+                  <UIcon
+                    name="i-heroicons-building-office-2"
+                    class="size-6 text-primary"
+                  />
                 </div>
                 <h3 class="font-semibold mb-2">The Alliance</h3>
                 <p class="text-sm text-muted">
-                  An open community that publishes and maintains the OpenECU Spec, adapter definitions, and compatible tools.
+                  An open community that publishes and maintains the OpenECU
+                  Spec, adapter definitions, and compatible tools.
                 </p>
               </div>
             </UCard>
@@ -110,11 +123,15 @@ const vendors = [
             <UCard>
               <div class="text-center">
                 <div class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex">
-                  <UIcon name="i-heroicons-document-text" class="size-6 text-primary" />
+                  <UIcon
+                    name="i-heroicons-document-text"
+                    class="size-6 text-primary"
+                  />
                 </div>
                 <h3 class="font-semibold mb-2">The Spec</h3>
                 <p class="text-sm text-muted">
-                  A YAML-based specification that defines how to describe ECU log formats and map channels to standard identifiers.
+                  A YAML-based specification that defines how to describe ECU
+                  log formats and map channels to standard identifiers.
                 </p>
               </div>
             </UCard>
@@ -126,7 +143,8 @@ const vendors = [
                 </div>
                 <h3 class="font-semibold mb-2">The Ecosystem</h3>
                 <p class="text-sm text-muted">
-                  Spec-compatible applications, adapters, and tools that work together seamlessly.
+                  Spec-compatible applications, adapters, and tools that work
+                  together seamlessly.
                 </p>
               </div>
             </UCard>
@@ -143,13 +161,17 @@ const vendors = [
             Why Use the OpenECU Spec?
           </h2>
           <p class="text-muted max-w-2xl mx-auto">
-            Every ECU uses different channel names for the same data.
-            The spec creates a universal standard that benefits everyone.
+            Every ECU uses different channel names for the same data. The spec
+            creates a universal standard that benefits everyone.
           </p>
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <UCard v-for="feature in features" :key="feature.title" class="text-center">
+          <UCard
+            v-for="feature in features"
+            :key="feature.title"
+            class="text-center"
+          >
             <div class="flex flex-col items-center">
               <div class="bg-primary/10 p-3 rounded-xl mb-4">
                 <UIcon :name="feature.icon" class="size-6 text-primary" />
@@ -170,7 +192,8 @@ const vendors = [
             Spec-Compatible Applications
           </h2>
           <p class="text-muted max-w-2xl mx-auto">
-            Applications built with OpenECU Spec support can read logs from any ECU with an adapter.
+            Applications built with OpenECU Spec support can read logs from any
+            ECU with an adapter.
           </p>
         </div>
 
@@ -178,9 +201,10 @@ const vendors = [
           <UCard
             v-for="app in compatibleApps"
             :key="app.name"
+            :as="NuxtLink"
             :to="app.url"
             target="_blank"
-            class="hover:ring-2 hover:ring-primary/50 transition-all"
+            class="hover:ring-2 hover:ring-primary/50 transition-all cursor-pointer"
           >
             <div class="flex items-center gap-4">
               <div class="bg-primary/10 p-3 rounded-xl shrink-0">
@@ -195,7 +219,10 @@ const vendors = [
                 </div>
                 <p class="text-sm text-muted">{{ app.description }}</p>
               </div>
-              <UIcon name="i-heroicons-arrow-top-right-on-square" class="size-4 text-muted" />
+              <UIcon
+                name="i-heroicons-arrow-top-right-on-square"
+                class="size-4 text-muted"
+              />
             </div>
           </UCard>
 
@@ -244,11 +271,10 @@ const vendors = [
       <UContainer>
         <div class="max-w-4xl mx-auto">
           <div class="text-center mb-12">
-            <h2 class="text-2xl sm:text-3xl font-bold mb-4">
-              For Developers
-            </h2>
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4">For Developers</h2>
             <p class="text-muted max-w-2xl mx-auto">
-              The OpenECU Spec makes it easy to add ECU log support to your application.
+              The OpenECU Spec makes it easy to add ECU log support to your
+              application.
             </p>
           </div>
 
@@ -257,19 +283,31 @@ const vendors = [
               <h3 class="font-semibold mb-3">Use the Spec</h3>
               <ul class="space-y-2 text-sm text-muted">
                 <li class="flex items-start gap-2">
-                  <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
+                  <UIcon
+                    name="i-heroicons-check"
+                    class="size-4 text-success shrink-0 mt-0.5"
+                  />
                   <span>Parse any ECU log format with a single codebase</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
+                  <UIcon
+                    name="i-heroicons-check"
+                    class="size-4 text-success shrink-0 mt-0.5"
+                  />
                   <span>Use canonical channel IDs across all ECU systems</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
+                  <UIcon
+                    name="i-heroicons-check"
+                    class="size-4 text-success shrink-0 mt-0.5"
+                  />
                   <span>Leverage community-maintained adapters</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
+                  <UIcon
+                    name="i-heroicons-check"
+                    class="size-4 text-success shrink-0 mt-0.5"
+                  />
                   <span>Add new ECU support without code changes</span>
                 </li>
               </ul>
@@ -284,19 +322,31 @@ const vendors = [
               <h3 class="font-semibold mb-3">Contribute to the Alliance</h3>
               <ul class="space-y-2 text-sm text-muted">
                 <li class="flex items-start gap-2">
-                  <UIcon name="i-heroicons-plus" class="size-4 text-primary shrink-0 mt-0.5" />
+                  <UIcon
+                    name="i-heroicons-plus"
+                    class="size-4 text-primary shrink-0 mt-0.5"
+                  />
                   <span>Create adapters for new ECU systems</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <UIcon name="i-heroicons-plus" class="size-4 text-primary shrink-0 mt-0.5" />
+                  <UIcon
+                    name="i-heroicons-plus"
+                    class="size-4 text-primary shrink-0 mt-0.5"
+                  />
                   <span>Improve existing channel mappings</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <UIcon name="i-heroicons-plus" class="size-4 text-primary shrink-0 mt-0.5" />
+                  <UIcon
+                    name="i-heroicons-plus"
+                    class="size-4 text-primary shrink-0 mt-0.5"
+                  />
                   <span>Donate ECU-related projects for maintenance</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <UIcon name="i-heroicons-plus" class="size-4 text-primary shrink-0 mt-0.5" />
+                  <UIcon
+                    name="i-heroicons-plus"
+                    class="size-4 text-primary shrink-0 mt-0.5"
+                  />
                   <span>Build spec-compatible tools and libraries</span>
                 </li>
               </ul>
@@ -316,16 +366,13 @@ const vendors = [
       <UContainer>
         <UCard class="text-center">
           <div class="py-8 px-4">
-            <h2 class="text-2xl font-bold mb-4">
-              Ready to get started?
-            </h2>
+            <h2 class="text-2xl font-bold mb-4">Ready to get started?</h2>
             <p class="text-muted mb-6 max-w-xl mx-auto">
-              Browse the adapter library, read the specification, or start building a spec-compatible application.
+              Browse the adapter library, read the specification, or start
+              building a spec-compatible application.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
-              <UButton to="/adapters">
-                Browse Adapters
-              </UButton>
+              <UButton to="/adapters"> Browse Adapters </UButton>
               <UButton to="/spec" color="neutral" variant="soft">
                 Read the Spec
               </UButton>

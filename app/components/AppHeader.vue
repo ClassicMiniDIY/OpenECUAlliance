@@ -1,15 +1,15 @@
 <script setup lang="ts">
 const navigation = [
-  { label: 'Adapters', to: '/adapters' },
-  { label: 'Ecosystem', to: '/ecosystem' },
-  { label: 'Spec', to: '/spec' },
-  { label: 'Docs', to: '/docs' },
-]
+  { label: "Adapters", to: "/adapters" },
+  { label: "Ecosystem", to: "/ecosystem" },
+  { label: "Spec", to: "/spec" },
+  { label: "Docs", to: "/docs" },
+];
 
-const colorMode = useColorMode()
+const colorMode = useColorMode();
 
 function toggleColorMode() {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
 }
 </script>
 
@@ -29,7 +29,9 @@ function toggleColorMode() {
     <template #right>
       <UTooltip text="Toggle color mode">
         <UButton
-          :icon="colorMode.value === 'dark' ? 'i-heroicons-moon' : 'i-heroicons-sun'"
+          :icon="
+            colorMode.value === 'dark' ? 'i-heroicons-moon' : 'i-heroicons-sun'
+          "
           color="neutral"
           variant="ghost"
           @click="toggleColorMode"
@@ -48,7 +50,11 @@ function toggleColorMode() {
     </template>
 
     <template #body>
-      <UNavigationMenu :items="navigation" orientation="vertical" class="md:hidden" />
+      <UNavigationMenu
+        :items="navigation"
+        orientation="vertical"
+        class="md:hidden"
+      />
     </template>
   </UHeader>
 </template>

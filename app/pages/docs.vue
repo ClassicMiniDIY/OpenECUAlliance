@@ -1,72 +1,73 @@
 <script setup lang="ts">
+const NuxtLink = resolveComponent("NuxtLink");
+
 useSeoMeta({
-  title: 'Documentation - OpenECU Alliance',
-  description: 'Learn how to create adapters and integrate with OpenECU Alliance.',
-})
+  title: "Documentation - OpenECU Alliance",
+  description:
+    "Learn how to create adapters and integrate with OpenECU Alliance.",
+});
 
 const guides = [
   {
-    icon: 'i-heroicons-rocket-launch',
-    title: 'Getting Started',
-    description: 'Introduction to OpenECU Alliance and the adapter ecosystem.',
-    to: '/docs/getting-started',
-    status: 'coming-soon',
+    icon: "i-heroicons-rocket-launch",
+    title: "Getting Started",
+    description: "Introduction to OpenECU Alliance and the adapter ecosystem.",
+    to: "/docs/getting-started",
+    status: "coming-soon",
   },
   {
-    icon: 'i-heroicons-document-plus',
-    title: 'Creating Adapters',
-    description: 'Step-by-step guide to creating your own adapter.',
-    to: '/docs/creating-adapters',
-    status: 'coming-soon',
+    icon: "i-heroicons-document-plus",
+    title: "Creating Adapters",
+    description: "Step-by-step guide to creating your own adapter.",
+    to: "/docs/creating-adapters",
+    status: "coming-soon",
   },
   {
-    icon: 'i-heroicons-code-bracket-square',
-    title: 'Integrating the Spec',
-    description: 'How applications can consume OpenECU Alliance adapters.',
-    to: '/docs/integrating',
-    status: 'coming-soon',
+    icon: "i-heroicons-code-bracket-square",
+    title: "Integrating the Spec",
+    description: "How applications can consume OpenECU Alliance adapters.",
+    to: "/docs/integrating",
+    status: "coming-soon",
   },
   {
-    icon: 'i-heroicons-check-circle',
-    title: 'Validation',
-    description: 'Validating adapters against the JSON Schema.',
-    to: '/docs/validation',
-    status: 'coming-soon',
+    icon: "i-heroicons-check-circle",
+    title: "Validation",
+    description: "Validating adapters against the JSON Schema.",
+    to: "/docs/validation",
+    status: "coming-soon",
   },
-]
+];
 
 const references = [
   {
-    icon: 'i-heroicons-queue-list',
-    title: 'Channel Reference',
-    description: 'Complete list of canonical channel IDs and their meanings.',
-    to: '/docs/channels',
-    status: 'coming-soon',
+    icon: "i-heroicons-queue-list",
+    title: "Channel Reference",
+    description: "Complete list of canonical channel IDs and their meanings.",
+    to: "/docs/channels",
+    status: "coming-soon",
   },
   {
-    icon: 'i-heroicons-scale',
-    title: 'Unit Reference',
-    description: 'Standard units and conversion formulas.',
-    to: '/docs/units',
-    status: 'coming-soon',
+    icon: "i-heroicons-scale",
+    title: "Unit Reference",
+    description: "Standard units and conversion formulas.",
+    to: "/docs/units",
+    status: "coming-soon",
   },
   {
-    icon: 'i-heroicons-tag',
-    title: 'Category Reference',
-    description: 'Channel categories and their use cases.',
-    to: '/docs/categories',
-    status: 'coming-soon',
+    icon: "i-heroicons-tag",
+    title: "Category Reference",
+    description: "Channel categories and their use cases.",
+    to: "/docs/categories",
+    status: "coming-soon",
   },
-]
+];
 </script>
 
 <template>
   <div class="py-8 px-4">
     <UContainer>
       <div class="mb-8">
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2">
-          Documentation
-        </h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Documentation</h1>
         <p class="text-lg text-muted">
           Learn how to create adapters and integrate with OpenECU Alliance.
         </p>
@@ -84,7 +85,12 @@ const references = [
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
                   <h3 class="font-semibold">{{ guide.title }}</h3>
-                  <UBadge v-if="guide.status === 'coming-soon'" color="neutral" variant="subtle" size="xs">
+                  <UBadge
+                    v-if="guide.status === 'coming-soon'"
+                    color="neutral"
+                    variant="subtle"
+                    size="xs"
+                  >
                     Coming Soon
                   </UBadge>
                 </div>
@@ -106,7 +112,13 @@ const references = [
               </div>
               <h3 class="font-semibold mb-1">{{ ref.title }}</h3>
               <p class="text-sm text-muted">{{ ref.description }}</p>
-              <UBadge v-if="ref.status === 'coming-soon'" color="neutral" variant="subtle" size="xs" class="mt-2">
+              <UBadge
+                v-if="ref.status === 'coming-soon'"
+                color="neutral"
+                variant="subtle"
+                size="xs"
+                class="mt-2"
+              >
                 Coming Soon
               </UBadge>
             </div>
@@ -118,19 +130,29 @@ const references = [
       <section>
         <h2 class="text-xl font-semibold mb-4">Resources</h2>
         <div class="grid sm:grid-cols-2 gap-4">
-          <UCard to="https://github.com/ClassicMiniDIY/OECUASpecs" target="_blank">
+          <UCard
+            :as="NuxtLink"
+            to="https://github.com/ClassicMiniDIY/OECUASpecs"
+            target="_blank"
+            class="cursor-pointer"
+          >
             <div class="flex items-center gap-3">
               <UIcon name="i-simple-icons-github" class="size-6" />
               <div>
                 <h3 class="font-semibold">GitHub Repository</h3>
-                <p class="text-sm text-muted">Specification and adapter registry</p>
+                <p class="text-sm text-muted">
+                  Specification and adapter registry
+                </p>
               </div>
             </div>
           </UCard>
 
-          <UCard to="/spec">
+          <UCard :as="NuxtLink" to="/spec" class="cursor-pointer">
             <div class="flex items-center gap-3">
-              <UIcon name="i-heroicons-document-text" class="size-6 text-primary" />
+              <UIcon
+                name="i-heroicons-document-text"
+                class="size-6 text-primary"
+              />
               <div>
                 <h3 class="font-semibold">Specification</h3>
                 <p class="text-sm text-muted">Formal specification document</p>

@@ -1,0 +1,34 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(cargo build:*)",
+      "Bash(cargo test:*)",
+      "Bash(cargo fmt:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(cargo install:*)",
+      "Bash(cargo tarpaulin:*)",
+      "Bash(RUSTDOCFLAGS=\"-D warnings\" cargo doc:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(git config:*)",
+      "Bash(/Users/colegentry/Development/UltraLog/.githooks/pre-commit)",
+      "Bash(./scripts/bump-version.sh:*)",
+      "Bash(mkdir:*)",
+      "Bash(xxd:*)",
+      "Bash(cat:*)",
+      "Bash(cargo run:*)",
+      "Bash(cargo doc:*)",
+      "Bash(cargo check:*)",
+      "Bash(while read line)",
+      "Bash(do echo \"=== $line ===\")",
+      "Bash(done)"
+    ]
+  }
+}

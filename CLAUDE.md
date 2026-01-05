@@ -58,11 +58,13 @@ OpenECUAlliance/
 │   └── types/
 │       └── adapter.ts                # TypeScript interfaces for adapters
 ├── server/
-│   └── api/
-│       ├── adapters.get.ts           # GET /api/adapters - list all adapters
-│       └── adapters/
-│           └── [vendor]/
-│               └── [id].get.ts       # GET /api/adapters/:vendor/:id - adapter detail
+│   ├── api/
+│   │   ├── adapters.get.ts           # GET /api/adapters - list all adapters
+│   │   └── adapters/
+│   │       └── [vendor]/
+│   │           └── [id].get.ts       # GET /api/adapters/:vendor/:id - adapter detail
+│   └── utils/
+│       └── github.ts                 # GitHub API utilities for fetching adapters
 ├── public/
 │   ├── favicon.ico
 │   └── robots.txt
@@ -75,24 +77,17 @@ OpenECUAlliance/
 
 The OpenECU Alliance spans multiple repositories:
 
-```
-../OECUASpecs/               # Single source of truth for adapter YAML files
-├── adapters/                # Adapter definitions by vendor
-│   ├── haltech/
-│   ├── link/
-│   ├── aim/
-│   └── ...
-├── schema/                  # JSON Schema for validation
-└── SPECIFICATION.md         # Formal spec document
+| Repository                                                           | Description                                               |
+| -------------------------------------------------------------------- | --------------------------------------------------------- |
+| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification |
+| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website                                              |
 
-../OpenECUAlliance/          # This repo - the website
-```
-
-The website loads adapters directly from `../OECUASpecs/adapters/` via server API routes.
+The website fetches adapters directly from the OECUASpecs GitHub repository via the GitHub API (with 5-minute caching).
 
 ## Key Pages
 
 ### `/` - Landing Page
+
 - Hero section introducing OpenECU Spec
 - "What is OpenECU Alliance?" explainer (Alliance vs Spec vs Ecosystem)
 - Feature highlights (Spec, Adapters, Language Agnostic, Community)
@@ -147,6 +142,7 @@ The website loads adapters directly from `../OECUASpecs/adapters/` via server AP
 ## API Routes
 
 ### `GET /api/adapters`
+
 Returns list of all adapters with summary info:
 
 - `id`, `name`, `version`, `vendor`
@@ -154,13 +150,14 @@ Returns list of all adapters with summary info:
 - `channelCount`, `categories`, `fileFormat`, `extensions`
 
 ### `GET /api/adapters/[vendor]/[id]`
+
 Returns full adapter detail including:
 
 - Complete metadata
 - File format details
 - All channels with sourceNames
 
-Both routes read YAML files directly from `../OECUASpecs/adapters/`.
+Both routes fetch YAML files from the OECUASpecs GitHub repository and cache responses for 5 minutes.
 
 ## Build Commands
 
@@ -196,7 +193,8 @@ bun preview
 
 ### Server API
 
-- Uses Node.js `fs/promises` for file operations
+- Fetches adapter data from GitHub via `server/utils/github.ts`
+- Uses `defineCachedEventHandler` for 5-minute response caching
 - YAML parsing via `yaml` package
 - Transforms snake_case YAML to camelCase responses
 
@@ -210,24 +208,25 @@ bun preview
 
 Adapters map vendor-specific names to canonical IDs:
 
-| ID | Description | Category |
-|----|-------------|----------|
-| `rpm` | Engine RPM | engine |
-| `tps` | Throttle Position | engine |
-| `map` | Manifold Pressure | pressure |
-| `afr` | Air-Fuel Ratio | fuel |
-| `lambda` | Lambda Value | fuel |
-| `coolant_temp` | Coolant Temperature | temperature |
-| `iat` | Intake Air Temp | temperature |
-| `ignition_advance` | Ignition Timing | ignition |
-| `g_lateral` | Lateral G-Force | acceleration |
-| `gps_latitude` | GPS Latitude | position |
+| ID                 | Description         | Category     |
+| ------------------ | ------------------- | ------------ |
+| `rpm`              | Engine RPM          | engine       |
+| `tps`              | Throttle Position   | engine       |
+| `map`              | Manifold Pressure   | pressure     |
+| `afr`              | Air-Fuel Ratio      | fuel         |
+| `lambda`           | Lambda Value        | fuel         |
+| `coolant_temp`     | Coolant Temperature | temperature  |
+| `iat`              | Intake Air Temp     | temperature  |
+| `ignition_advance` | Ignition Timing     | ignition     |
+| `g_lateral`        | Lateral G-Force     | acceleration |
+| `gps_latitude`     | GPS Latitude        | position     |
 
 See `../OECUASpecs/SPECIFICATION.md` for complete reference.
 
 ## Supported Vendors
 
 Ready adapters exist for:
+
 - Haltech (CSV)
 - ECUMaster (CSV)
 - RomRaider/Subaru (CSV)

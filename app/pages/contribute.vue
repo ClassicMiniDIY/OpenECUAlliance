@@ -1,46 +1,47 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Contribute - OpenECU Alliance',
-  description: 'Learn how to contribute adapters to the OpenECU Alliance.',
-})
+  title: "Contribute - OpenECU Alliance",
+  description: "Learn how to contribute adapters to the OpenECU Alliance.",
+});
 
 const steps = [
   {
     number: 1,
-    title: 'Read the Spec',
-    description: 'Familiarize yourself with the adapter specification format and requirements.',
-    icon: 'i-heroicons-document-text',
+    title: "Read the Spec",
+    description:
+      "Familiarize yourself with the adapter specification format and requirements.",
+    icon: "i-heroicons-document-text",
   },
   {
     number: 2,
-    title: 'Create Your Adapter',
-    description: 'Write a YAML adapter file for your ECU system following the spec.',
-    icon: 'i-heroicons-code-bracket',
+    title: "Create Your Adapter",
+    description:
+      "Write a YAML adapter file for your ECU system following the spec.",
+    icon: "i-heroicons-code-bracket",
   },
   {
     number: 3,
-    title: 'Validate',
-    description: 'Ensure your adapter passes JSON Schema validation.',
-    icon: 'i-heroicons-check-circle',
+    title: "Validate",
+    description: "Ensure your adapter passes JSON Schema validation.",
+    icon: "i-heroicons-check-circle",
   },
   {
     number: 4,
-    title: 'Submit PR',
-    description: 'Open a pull request to add your adapter to the registry.',
-    icon: 'i-heroicons-arrow-up-tray',
+    title: "Submit PR",
+    description: "Open a pull request to add your adapter to the registry.",
+    icon: "i-heroicons-arrow-up-tray",
   },
-]
+];
 </script>
 
 <template>
   <div class="py-8 px-4">
     <UContainer class="max-w-4xl">
       <div class="mb-8">
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2">
-          Contribute
-        </h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Contribute</h1>
         <p class="text-lg text-muted">
-          Help grow the OpenECU Alliance by contributing adapters for ECU systems.
+          Help grow the OpenECU Alliance by contributing adapters for ECU
+          systems.
         </p>
       </div>
 
@@ -51,10 +52,13 @@ const steps = [
         </template>
         <div class="text-muted space-y-3">
           <p>
-            Your adapter helps the entire automotive tuning community. When you contribute an adapter:
+            Your adapter helps the entire automotive tuning community. When you
+            contribute an adapter:
           </p>
           <ul class="list-disc list-inside space-y-1">
-            <li>Users of your ECU system can use any OpenECU-compatible tool</li>
+            <li>
+              Users of your ECU system can use any OpenECU-compatible tool
+            </li>
             <li>You standardize channel names across the ecosystem</li>
             <li>Other developers can build on your work</li>
             <li>You're credited as the adapter author</li>
@@ -68,7 +72,9 @@ const steps = [
         <div class="space-y-4">
           <UCard v-for="step in steps" :key="step.number">
             <div class="flex items-start gap-4">
-              <div class="flex items-center justify-center size-10 bg-primary text-primary-foreground rounded-full font-bold shrink-0">
+              <div
+                class="flex items-center justify-center size-10 bg-primary text-primary-foreground rounded-full font-bold shrink-0"
+              >
                 {{ step.number }}
               </div>
               <div class="flex-1">
@@ -87,7 +93,9 @@ const steps = [
       <section class="mb-12">
         <h2 class="text-xl font-semibold mb-4">Adapter Example</h2>
         <UCard>
-          <pre class="text-sm overflow-x-auto"><code class="language-yaml">openecualliance: "1.0"
+          <pre
+            class="text-sm overflow-x-auto"
+          ><code class="language-yaml">openecualliance: "1.0"
 id: my-ecu-csv
 name: "My ECU CSV Export"
 version: "1.0.0"

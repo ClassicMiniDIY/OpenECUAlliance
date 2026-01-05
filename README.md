@@ -21,10 +21,10 @@ This is the Nuxt 4 website that serves as the public face of the OpenECU Allianc
 
 ## Related Repositories
 
-| Repository                                                            | Description                                                |
-| --------------------------------------------------------------------- | ---------------------------------------------------------- |
-| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)            | Adapter YAML files, JSON Schema, and formal specification  |
-| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance)  | This website                                               |
+| Repository                                                           | Description                                               |
+| -------------------------------------------------------------------- | --------------------------------------------------------- |
+| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification |
+| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website                                              |
 
 ## Supported ECU Systems
 
@@ -46,19 +46,19 @@ Adapters are available for:
 
 - [Bun](https://bun.sh) runtime
 - Node.js 18+
-- The [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs) repository cloned as a sibling directory (`../OECUASpecs/`)
 
 ### Setup
 
 ```bash
-# Clone both repositories
+# Clone the repository
 git clone https://github.com/ClassicMiniDIY/OpenECUAlliance.git
-git clone https://github.com/ClassicMiniDIY/OECUASpecs.git
+cd OpenECUAlliance
 
 # Install dependencies
-cd OpenECUAlliance
 bun install
 ```
+
+> **Note:** Adapter data is fetched directly from the [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs) GitHub repository at runtime.
 
 ### Development Server
 

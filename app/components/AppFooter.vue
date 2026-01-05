@@ -1,28 +1,32 @@
 <script setup lang="ts">
 const links = [
   {
-    label: 'Resources',
+    label: "Resources",
     children: [
-      { label: 'Specification', to: '/spec' },
-      { label: 'Documentation', to: '/docs' },
-      { label: 'JSON Schema', to: '/spec/schema' },
+      { label: "Specification", to: "/spec" },
+      { label: "Documentation", to: "/docs" },
+      { label: "JSON Schema", to: "/spec/schema" },
     ],
   },
   {
-    label: 'Community',
+    label: "Community",
     children: [
-      { label: 'GitHub', to: 'https://github.com/ClassicMiniDIY/OpenECUAlliance', target: '_blank' },
-      { label: 'Contribute', to: '/contribute' },
-      { label: 'Discord', to: '#', target: '_blank' },
+      {
+        label: "GitHub",
+        to: "https://github.com/ClassicMiniDIY/OpenECUAlliance",
+        target: "_blank",
+      },
+      { label: "Contribute", to: "/contribute" },
+      { label: "Discord", to: "#", target: "_blank" },
     ],
   },
   {
-    label: 'Ecosystem',
+    label: "Ecosystem",
     children: [
-      { label: 'UltraLog', to: 'https://ultralog.app', target: '_blank' },
+      { label: "UltraLog", to: "https://ultralog.app", target: "_blank" },
     ],
   },
-]
+];
 </script>
 
 <template>

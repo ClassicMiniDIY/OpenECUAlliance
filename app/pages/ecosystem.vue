@@ -1,43 +1,53 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Ecosystem - OpenECU Alliance',
-  description: 'Discover spec-compatible applications, libraries, and tools built on the OpenECU Spec.',
-})
+  title: "Ecosystem - OpenECU Alliance",
+  description:
+    "Discover spec-compatible applications, libraries, and tools built on the OpenECU Spec.",
+});
 
 const compatibleApps = [
   {
-    name: 'UltraLog',
-    description: 'High-performance ECU log viewer written in Rust. Features multi-format support, computed channels, scatter plots, and PDF/PNG export.',
-    url: 'https://ultralog.app',
-    icon: 'i-heroicons-chart-bar',
-    status: 'available' as const,
-    features: ['Multi-file tabs', 'Computed channels', 'Scatter plots', 'Export to PNG/PDF'],
+    name: "UltraLog",
+    description:
+      "High-performance ECU log viewer written in Rust. Features multi-format support, computed channels, scatter plots, and PDF/PNG export.",
+    url: "https://ultralog.app",
+    icon: "i-heroicons-chart-bar",
+    status: "available" as const,
+    features: [
+      "Multi-file tabs",
+      "Computed channels",
+      "Scatter plots",
+      "Export to PNG/PDF",
+    ],
   },
-]
+];
 
 const libraries = [
   {
-    name: 'openecuspec (planned)',
-    description: 'Reference implementation library for parsing OpenECU Spec adapters.',
-    languages: ['Rust', 'TypeScript'],
-    status: 'planned' as const,
+    name: "openecuspec (planned)",
+    description:
+      "Reference implementation library for parsing OpenECU Spec adapters.",
+    languages: ["Rust", "TypeScript"],
+    status: "planned" as const,
   },
-]
+];
 
 const donateProjects = [
   {
-    title: 'ECU Calibration Tools',
-    description: 'Tuning and calibration software that could benefit from standardized channel names.',
+    title: "ECU Calibration Tools",
+    description:
+      "Tuning and calibration software that could benefit from standardized channel names.",
   },
   {
-    title: 'Data Analysis Libraries',
-    description: 'Libraries for analyzing ECU log data across different formats.',
+    title: "Data Analysis Libraries",
+    description:
+      "Libraries for analyzing ECU log data across different formats.",
   },
   {
-    title: 'Hardware Integration',
-    description: 'CAN bus readers, data loggers, or other hardware projects.',
+    title: "Hardware Integration",
+    description: "CAN bus readers, data loggers, or other hardware projects.",
   },
-]
+];
 </script>
 
 <template>
@@ -52,35 +62,46 @@ const donateProjects = [
           Spec-Compatible Applications
         </h1>
         <p class="text-lg text-muted">
-          Discover applications, libraries, and tools built with OpenECU Spec support.
-          When you use spec-compatible software, you get automatic support for any ECU with an adapter.
+          Discover applications, libraries, and tools built with OpenECU Spec
+          support. When you use spec-compatible software, you get automatic
+          support for any ECU with an adapter.
         </p>
       </div>
 
       <!-- How it Works -->
       <section class="mb-16">
         <div class="max-w-4xl mx-auto">
-          <h2 class="text-xl font-semibold mb-6 text-center">How the Ecosystem Works</h2>
+          <h2 class="text-xl font-semibold mb-6 text-center">
+            How the Ecosystem Works
+          </h2>
           <div class="grid md:grid-cols-3 gap-4">
             <UCard>
               <div class="text-center">
                 <div class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex">
-                  <UIcon name="i-heroicons-document-text" class="size-6 text-primary" />
+                  <UIcon
+                    name="i-heroicons-document-text"
+                    class="size-6 text-primary"
+                  />
                 </div>
                 <h3 class="font-semibold mb-2">1. The Spec</h3>
                 <p class="text-sm text-muted">
-                  OpenECU Spec defines a standard way to describe ECU log formats and channel mappings.
+                  OpenECU Spec defines a standard way to describe ECU log
+                  formats and channel mappings.
                 </p>
               </div>
             </UCard>
             <UCard>
               <div class="text-center">
                 <div class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex">
-                  <UIcon name="i-heroicons-puzzle-piece" class="size-6 text-primary" />
+                  <UIcon
+                    name="i-heroicons-puzzle-piece"
+                    class="size-6 text-primary"
+                  />
                 </div>
                 <h3 class="font-semibold mb-2">2. Adapters</h3>
                 <p class="text-sm text-muted">
-                  Community creates YAML adapters that map vendor-specific channels to canonical IDs.
+                  Community creates YAML adapters that map vendor-specific
+                  channels to canonical IDs.
                 </p>
               </div>
             </UCard>
@@ -91,7 +112,8 @@ const donateProjects = [
                 </div>
                 <h3 class="font-semibold mb-2">3. Applications</h3>
                 <p class="text-sm text-muted">
-                  Spec-compatible apps use adapters to support any ECU without custom code.
+                  Spec-compatible apps use adapters to support any ECU without
+                  custom code.
                 </p>
               </div>
             </UCard>
@@ -120,7 +142,9 @@ const donateProjects = [
                     variant="subtle"
                     size="xs"
                   >
-                    {{ app.status === 'available' ? 'Available' : 'Coming Soon' }}
+                    {{
+                      app.status === "available" ? "Available" : "Coming Soon"
+                    }}
                   </UBadge>
                 </div>
                 <p class="text-muted mb-4">{{ app.description }}</p>
@@ -135,13 +159,12 @@ const donateProjects = [
                     {{ feature }}
                   </UBadge>
                 </div>
-                <UButton
-                  :to="app.url"
-                  target="_blank"
-                  size="sm"
-                >
+                <UButton :to="app.url" target="_blank" size="sm">
                   Visit Website
-                  <UIcon name="i-heroicons-arrow-top-right-on-square" class="size-4 ml-1" />
+                  <UIcon
+                    name="i-heroicons-arrow-top-right-on-square"
+                    class="size-4 ml-1"
+                  />
                 </UButton>
               </div>
             </div>
@@ -193,8 +216,9 @@ const donateProjects = [
           <div class="text-center mb-8">
             <h2 class="text-xl font-semibold mb-4">Donate Your Project</h2>
             <p class="text-muted">
-              Have an ECU-related project you'd like maintained long-term?
-              The OpenECU Alliance can adopt compatible projects and provide ongoing maintenance.
+              Have an ECU-related project you'd like maintained long-term? The
+              OpenECU Alliance can adopt compatible projects and provide ongoing
+              maintenance.
             </p>
           </div>
           <div class="grid sm:grid-cols-3 gap-4">
@@ -219,13 +243,12 @@ const donateProjects = [
               Building Something Spec-Compatible?
             </h2>
             <p class="text-muted mb-6 max-w-xl mx-auto">
-              We'd love to feature your project! Whether it's a library, tool, or full application,
-              if it uses OpenECU Spec adapters, let us know.
+              We'd love to feature your project! Whether it's a library, tool,
+              or full application, if it uses OpenECU Spec adapters, let us
+              know.
             </p>
             <div class="flex justify-center gap-4">
-              <UButton to="/contribute">
-                Get Listed
-              </UButton>
+              <UButton to="/contribute"> Get Listed </UButton>
               <UButton to="/docs" variant="soft" color="neutral">
                 Read the Docs
               </UButton>
