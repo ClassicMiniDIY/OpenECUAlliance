@@ -1,172 +1,174 @@
 <script setup lang="ts">
-const NuxtLink = resolveComponent("NuxtLink");
-const input = useTemplateRef("input");
+  const NuxtLink = resolveComponent('NuxtLink');
+  const input = useTemplateRef('input');
 
-useSeoMeta({
-  title: "OpenECU Alliance - The OpenECU Spec",
-  description:
-    "An open specification for standardizing ECU log data. Build spec-compatible applications that work with any ECU system.",
-});
-
-// ARIA live region announcement for search results
-const searchAnnouncement = computed(() => {
-  if (loading.value) return "Loading adapters...";
-  if (hasActiveFilters.value) {
-    return `Showing ${filteredAdapters.value.length} of ${adapters.value.length} adapters`;
-  }
-  return `${adapters.value.length} adapters available`;
-});
-
-// Sort order label for accessibility
-const sortOrderLabel = computed(() =>
-  sortOrder.value === "asc" ? "Sort ascending" : "Sort descending",
-);
-
-// Adapter search functionality
-const { adapters, vendors, filterAdapters, loading } = useAdapters();
-
-const search = ref("");
-const selectedVendor = ref<string>();
-const selectedFormat = ref<string>();
-const sortBy = ref<"name" | "channels" | "vendor">("vendor");
-const sortOrder = ref<"asc" | "desc">("asc");
-
-const filteredAdapters = computed(() => {
-  let result = filterAdapters({
-    search: search.value,
-    vendor: selectedVendor.value,
-    fileFormat: selectedFormat.value,
+  useSeoMeta({
+    title: 'OpenECU Alliance - The OpenECU Spec',
+    description:
+      'An open specification for standardizing ECU log data. Build spec-compatible applications that work with any ECU system.',
   });
 
-  result = [...result].sort((a, b) => {
-    let cmp = 0;
-    switch (sortBy.value) {
-      case "name":
-        cmp = a.name.localeCompare(b.name);
-        break;
-      case "channels":
-        cmp = a.channelCount - b.channelCount;
-        break;
-      case "vendor":
-      default:
-        cmp = a.vendor.localeCompare(b.vendor) || a.name.localeCompare(b.name);
-        break;
+  // ARIA live region announcement for search results
+  const searchAnnouncement = computed(() => {
+    if (loading.value) return 'Loading adapters...';
+    if (hasActiveFilters.value) {
+      return `Showing ${filteredAdapters.value.length} of ${adapters.value.length} adapters`;
     }
-    return sortOrder.value === "desc" ? -cmp : cmp;
+    return `${adapters.value.length} adapters available`;
   });
 
-  return result;
-});
+  // Sort order label for accessibility
+  const sortOrderLabel = computed(() =>
+    sortOrder.value === 'asc' ? 'Sort ascending' : 'Sort descending'
+  );
 
-const vendorButtons = computed(() =>
-  vendors.value.map((v) => ({
-    label: v.charAt(0).toUpperCase() + v.slice(1),
-    key: v,
-    active: selectedVendor.value === v,
-    click: () => {
-      selectedVendor.value = selectedVendor.value === v ? undefined : v;
+  // Adapter search functionality
+  const { adapters, vendors, filterAdapters, loading } = useAdapters();
+
+  const search = ref('');
+  const selectedVendor = ref<string>();
+  const selectedFormat = ref<string>();
+  const sortBy = ref<'name' | 'channels' | 'vendor'>('vendor');
+  const sortOrder = ref<'asc' | 'desc'>('asc');
+
+  const filteredAdapters = computed(() => {
+    let result = filterAdapters({
+      search: search.value,
+      vendor: selectedVendor.value,
+      fileFormat: selectedFormat.value,
+    });
+
+    result = [...result].sort((a, b) => {
+      let cmp = 0;
+      switch (sortBy.value) {
+        case 'name':
+          cmp = a.name.localeCompare(b.name);
+          break;
+        case 'channels':
+          cmp = a.channelCount - b.channelCount;
+          break;
+        case 'vendor':
+        default:
+          cmp =
+            a.vendor.localeCompare(b.vendor) || a.name.localeCompare(b.name);
+          break;
+      }
+      return sortOrder.value === 'desc' ? -cmp : cmp;
+    });
+
+    return result;
+  });
+
+  const vendorButtons = computed(() =>
+    vendors.value.map((v) => ({
+      label: v.charAt(0).toUpperCase() + v.slice(1),
+      key: v,
+      active: selectedVendor.value === v,
+      click: () => {
+        selectedVendor.value = selectedVendor.value === v ? undefined : v;
+      },
+    }))
+  );
+
+  const sortOptions = [
+    { label: 'Vendor', value: 'vendor' },
+    { label: 'Name', value: 'name' },
+    { label: 'Channels', value: 'channels' },
+  ];
+
+  const formatButtons = computed(() => [
+    {
+      label: 'All',
+      key: undefined,
+      active: !selectedFormat.value,
+      click: () => {
+        selectedFormat.value = undefined;
+      },
     },
-  })),
-);
-
-const sortOptions = [
-  { label: "Vendor", value: "vendor" },
-  { label: "Name", value: "name" },
-  { label: "Channels", value: "channels" },
-];
-
-const formatButtons = computed(() => [
-  {
-    label: "All",
-    key: undefined,
-    active: !selectedFormat.value,
-    click: () => {
-      selectedFormat.value = undefined;
+    {
+      label: 'CSV',
+      key: 'csv',
+      active: selectedFormat.value === 'csv',
+      click: () => {
+        selectedFormat.value =
+          selectedFormat.value === 'csv' ? undefined : 'csv';
+      },
     },
-  },
-  {
-    label: "CSV",
-    key: "csv",
-    active: selectedFormat.value === "csv",
-    click: () => {
-      selectedFormat.value = selectedFormat.value === "csv" ? undefined : "csv";
+    {
+      label: 'Binary',
+      key: 'binary',
+      active: selectedFormat.value === 'binary',
+      click: () => {
+        selectedFormat.value =
+          selectedFormat.value === 'binary' ? undefined : 'binary';
+      },
     },
-  },
-  {
-    label: "Binary",
-    key: "binary",
-    active: selectedFormat.value === "binary",
-    click: () => {
-      selectedFormat.value =
-        selectedFormat.value === "binary" ? undefined : "binary";
+  ]);
+
+  function clearFilters() {
+    search.value = '';
+    selectedVendor.value = undefined;
+    selectedFormat.value = undefined;
+  }
+
+  const hasActiveFilters = computed(() => {
+    return search.value || selectedVendor.value || selectedFormat.value;
+  });
+
+  defineShortcuts({
+    '/': () => {
+      input.value?.inputRef?.focus();
     },
-  },
-]);
+  });
 
-function clearFilters() {
-  search.value = "";
-  selectedVendor.value = undefined;
-  selectedFormat.value = undefined;
-}
+  const isMobile = ref(false);
+  onMounted(() => {
+    const checkMobile = () => {
+      isMobile.value = window.innerWidth < 640;
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    onUnmounted(() => window.removeEventListener('resize', checkMobile));
+  });
 
-const hasActiveFilters = computed(() => {
-  return search.value || selectedVendor.value || selectedFormat.value;
-});
+  // Landing page content
+  const features = [
+    {
+      icon: 'i-heroicons-document-text',
+      title: 'The OpenECU Spec',
+      description:
+        'A standardized YAML format for describing ECU log file formats and channel mappings.',
+    },
+    {
+      icon: 'i-heroicons-puzzle-piece',
+      title: 'Adapter Library',
+      description:
+        'Pre-built adapters for popular ECU systems that map vendor channels to standard IDs.',
+    },
+    {
+      icon: 'i-heroicons-code-bracket',
+      title: 'Language Agnostic',
+      description:
+        'YAML-based specs parseable by any language. Build applications in Rust, Python, TypeScript, or anything.',
+    },
+    {
+      icon: 'i-heroicons-users',
+      title: 'Community Driven',
+      description:
+        'Open contribution model - anyone can create adapters or donate compatible projects.',
+    },
+  ];
 
-defineShortcuts({
-  "/": () => {
-    input.value?.inputRef?.focus();
-  },
-});
-
-const isMobile = ref(false);
-onMounted(() => {
-  const checkMobile = () => {
-    isMobile.value = window.innerWidth < 640;
-  };
-  checkMobile();
-  window.addEventListener("resize", checkMobile);
-  onUnmounted(() => window.removeEventListener("resize", checkMobile));
-});
-
-// Landing page content
-const features = [
-  {
-    icon: "i-heroicons-document-text",
-    title: "The OpenECU Spec",
-    description:
-      "A standardized YAML format for describing ECU log file formats and channel mappings.",
-  },
-  {
-    icon: "i-heroicons-puzzle-piece",
-    title: "Adapter Library",
-    description:
-      "Pre-built adapters for popular ECU systems that map vendor channels to standard IDs.",
-  },
-  {
-    icon: "i-heroicons-code-bracket",
-    title: "Language Agnostic",
-    description:
-      "YAML-based specs parseable by any language. Build applications in Rust, Python, TypeScript, or anything.",
-  },
-  {
-    icon: "i-heroicons-users",
-    title: "Community Driven",
-    description:
-      "Open contribution model - anyone can create adapters or donate compatible projects.",
-  },
-];
-
-const compatibleApps = [
-  {
-    name: "UltraLog",
-    description:
-      "High-performance ECU log viewer with multi-format support and computed channels.",
-    url: "https://ultralog.co",
-    logo: "/ultralog-logo.png",
-    status: "available",
-  },
-];
+  const compatibleApps = [
+    {
+      name: 'UltraLog',
+      description:
+        'High-performance ECU log viewer with multi-format support and computed channels.',
+      url: 'https://ultralog.co',
+      logo: '/ultralog-logo.png',
+      status: 'available',
+    },
+  ];
 </script>
 
 <template>
@@ -189,8 +191,8 @@ const compatibleApps = [
           </h1>
 
           <p class="text-lg sm:text-xl text-muted mb-8 max-w-2xl mx-auto">
-            An open specification for standardizing ECU log data formats. One
-            spec, every manufacturer, any analysis tool.
+            An open specification for standardizing ECU log data formats to make
+            building, maintaining, and loving cars easier for everyone
           </p>
 
           <!-- Search & Sort -->

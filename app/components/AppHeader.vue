@@ -6,16 +6,6 @@ const navigation = [
   { label: "Docs", to: "/docs" },
   { label: "Contribute", to: "/contribute" },
 ];
-
-const colorMode = useColorMode();
-
-function toggleColorMode() {
-  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
-}
-
-const colorModeLabel = computed(() =>
-  colorMode.value === "dark" ? "Switch to light mode" : "Switch to dark mode",
-);
 </script>
 
 <template>
@@ -41,18 +31,6 @@ const colorModeLabel = computed(() =>
     </nav>
 
     <template #right>
-      <UTooltip :text="colorModeLabel">
-        <UButton
-          :icon="
-            colorMode.value === 'dark' ? 'i-heroicons-moon' : 'i-heroicons-sun'
-          "
-          color="neutral"
-          variant="ghost"
-          :aria-label="colorModeLabel"
-          @click="toggleColorMode"
-        />
-      </UTooltip>
-
       <UTooltip text="View source on GitHub">
         <UButton
           to="https://github.com/ClassicMiniDIY/OpenECUAlliance"

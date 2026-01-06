@@ -13,6 +13,8 @@ export default defineNuxtConfig({
 
   colorMode: {
     preference: "dark",
+    fallback: "dark",
+    classSuffix: "",
   },
 
   // Site URL for sitemap and SEO
@@ -49,16 +51,10 @@ export default defineNuxtConfig({
         { name: "robots", content: "index, follow" },
         { name: "googlebot", content: "index, follow" },
 
-        // Theme Colors
+        // Theme Color (dark mode only)
         {
           name: "theme-color",
           content: "#0a0a0f",
-          media: "(prefers-color-scheme: dark)",
-        },
-        {
-          name: "theme-color",
-          content: "#ffffff",
-          media: "(prefers-color-scheme: light)",
         },
 
         // Open Graph / Facebook

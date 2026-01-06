@@ -144,19 +144,33 @@ onMounted(() => {
     </div>
 
     <!-- Gradient overlays -->
+    <!-- Left fade -->
     <div
-      class="absolute left-0 top-0 bottom-0 w-1/3 z-10 bg-gradient-to-r from-default to-transparent"
+      class="absolute left-0 top-0 bottom-0 w-1/3 z-10 bg-linear-to-r from-default to-transparent"
     />
+    <!-- Right fade -->
     <div
-      class="absolute right-0 top-0 bottom-0 w-1/3 z-10 bg-gradient-to-l from-default to-transparent"
+      class="absolute right-0 top-0 bottom-0 w-1/3 z-10 bg-linear-to-l from-default to-transparent"
     />
+    <!-- Bottom fade -->
     <div
-      class="absolute top-0 left-0 right-0 size-full z-10 bg-gradient-to-t from-default via-default/80 to-transparent"
+      class="absolute top-0 left-0 right-0 size-full z-10 bg-linear-to-t from-default via-default/80 to-transparent"
     />
+    <!-- Center text protection - radial vignette for better text legibility -->
+    <div class="absolute inset-0 z-10 text-protection" />
   </div>
 </template>
 
 <style scoped>
+.text-protection {
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 55%,
+    var(--ui-bg) 0%,
+    var(--ui-bg) 15%,
+    transparent 65%
+  );
+}
+
 @keyframes marquee {
   0% {
     transform: translateX(0);
