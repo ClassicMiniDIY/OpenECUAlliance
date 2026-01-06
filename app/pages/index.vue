@@ -8,6 +8,20 @@ useSeoMeta({
     "An open specification for standardizing ECU log data. Build spec-compatible applications that work with any ECU system.",
 });
 
+// ARIA live region announcement for search results
+const searchAnnouncement = computed(() => {
+  if (loading.value) return "Loading adapters...";
+  if (hasActiveFilters.value) {
+    return `Showing ${filteredAdapters.value.length} of ${adapters.value.length} adapters`;
+  }
+  return `${adapters.value.length} adapters available`;
+});
+
+// Sort order label for accessibility
+const sortOrderLabel = computed(() =>
+  sortOrder.value === "asc" ? "Sort ascending" : "Sort descending",
+);
+
 // Adapter search functionality
 const { adapters, vendors, filterAdapters, loading } = useAdapters();
 
@@ -191,6 +205,8 @@ const compatibleApps = [
                 variant="subtle"
                 class="flex-1"
                 autocomplete="off"
+                aria-label="Search adapters by name, vendor, or description"
+                aria-describedby="search-results-count"
               >
                 <template #trailing>
                   <UButton
@@ -199,6 +215,7 @@ const compatibleApps = [
                     variant="link"
                     size="lg"
                     icon="i-heroicons-x-mark"
+                    aria-label="Clear search"
                     @click="search = ''"
                   />
                   <UKbd v-else value="/" class="hidden sm:flex" />
@@ -224,6 +241,7 @@ const compatibleApps = [
                   size="lg"
                   color="neutral"
                   variant="outline"
+                  :aria-label="sortOrderLabel"
                   @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
                 />
               </div>
@@ -265,6 +283,7 @@ const compatibleApps = [
                 size="lg"
                 color="neutral"
                 variant="outline"
+                :aria-label="sortOrderLabel"
                 @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
               />
             </div>
@@ -292,15 +311,25 @@ const compatibleApps = [
               :label="format.label"
               color="neutral"
               :variant="format.active ? 'soft' : 'ghost'"
-              size="xs"
+              size="md"
               @click="format.click"
             />
           </div>
         </div>
       </div>
 
+      <!-- ARIA Live Region for Search Results -->
+      <div
+        id="search-results-count"
+        class="sr-only"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {{ searchAnnouncement }}
+      </div>
+
       <!-- Adapter Results -->
-      <div class="relative z-20 pb-16">
+      <section class="relative z-20 pb-16" aria-label="Adapter search results">
         <div class="flex justify-between items-center mb-4 text-sm text-muted">
           <div class="flex items-center gap-2">
             <span v-if="hasActiveFilters">
@@ -312,7 +341,7 @@ const compatibleApps = [
               v-if="hasActiveFilters"
               color="neutral"
               variant="link"
-              size="xs"
+              size="md"
               icon="i-heroicons-x-mark"
               @click="clearFilters"
             >
@@ -332,10 +361,13 @@ const compatibleApps = [
         <div
           v-if="loading"
           class="flex flex-col items-center justify-center py-24"
+          role="status"
+          aria-busy="true"
         >
           <UIcon
             name="i-heroicons-arrow-path"
             class="size-8 text-primary animate-spin mb-4"
+            aria-hidden="true"
           />
           <p class="text-muted">Loading adapters...</p>
         </div>
@@ -372,7 +404,7 @@ const compatibleApps = [
             </UButton>
           </div>
         </UCard>
-      </div>
+      </section>
     </UContainer>
 
     <!-- What is OpenECU Alliance -->
@@ -388,7 +420,10 @@ const compatibleApps = [
           <div class="grid md:grid-cols-3 gap-8">
             <UCard>
               <div class="text-center">
-                <div class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex">
+                <div
+                  class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex"
+                  aria-hidden="true"
+                >
                   <UIcon
                     name="i-heroicons-building-office-2"
                     class="size-6 text-primary"
@@ -404,7 +439,10 @@ const compatibleApps = [
 
             <UCard>
               <div class="text-center">
-                <div class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex">
+                <div
+                  class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex"
+                  aria-hidden="true"
+                >
                   <UIcon
                     name="i-heroicons-document-text"
                     class="size-6 text-primary"
@@ -420,7 +458,10 @@ const compatibleApps = [
 
             <UCard>
               <div class="text-center">
-                <div class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex">
+                <div
+                  class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex"
+                  aria-hidden="true"
+                >
                   <UIcon name="i-heroicons-cube" class="size-6 text-primary" />
                 </div>
                 <h3 class="font-semibold mb-2">The Ecosystem</h3>
@@ -455,7 +496,7 @@ const compatibleApps = [
             class="text-center"
           >
             <div class="flex flex-col items-center">
-              <div class="bg-primary/10 p-3 rounded-xl mb-4">
+              <div class="bg-primary/10 p-3 rounded-xl mb-4" aria-hidden="true">
                 <UIcon :name="feature.icon" class="size-6 text-primary" />
               </div>
               <h3 class="font-semibold mb-2">{{ feature.title }}</h3>
@@ -486,22 +527,31 @@ const compatibleApps = [
             :as="NuxtLink"
             :to="app.url"
             target="_blank"
+            rel="noopener noreferrer"
             class="hover:ring-2 hover:ring-primary/50 transition-all cursor-pointer"
+            :aria-label="`${app.name} - ${app.description} (opens in new tab)`"
           >
             <div class="flex items-center gap-4">
-              <div class="bg-primary/10 p-4 rounded-xl shrink-0">
+              <div
+                class="bg-primary/10 p-4 rounded-xl shrink-0"
+                aria-hidden="true"
+              >
                 <img
                   v-if="app.logo"
                   :src="app.logo"
-                  :alt="app.name"
+                  :alt="`${app.name} logo`"
                   class="size-10 object-contain"
                 />
-                <UIcon v-else name="i-heroicons-cube" class="size-10 text-primary" />
+                <UIcon
+                  v-else
+                  name="i-heroicons-cube"
+                  class="size-10 text-primary"
+                />
               </div>
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <h3 class="font-semibold">{{ app.name }}</h3>
-                  <UBadge color="success" variant="subtle" size="xs">
+                  <UBadge color="success" variant="subtle" size="md">
                     Available
                   </UBadge>
                 </div>
@@ -510,6 +560,7 @@ const compatibleApps = [
               <UIcon
                 name="i-heroicons-arrow-top-right-on-square"
                 class="size-4 text-muted"
+                aria-hidden="true"
               />
             </div>
           </UCard>

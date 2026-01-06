@@ -5,3 +5,138 @@
   --ui-radius: 0.5rem;
   --ui-container: 80rem;
 }
+
+/* ============================================
+   WCAG AAA Accessibility Enhancements
+   ============================================ */
+
+/* Ensure text remains readable with sufficient line height */
+body {
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+/* Ensure sufficient paragraph spacing for readability */
+p {
+  margin-bottom: 1em;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* Enhanced link styling for better visibility */
+a:not([class]) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:not([class]):hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Screen reader only utility (enhanced) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Make sr-only content visible on focus (for skip links) */
+.sr-only:focus,
+.sr-only:focus-within {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Selection colors for better contrast */
+::selection {
+  background-color: var(--color-primary);
+  color: #000;
+}
+
+/* Ensure images don't cause horizontal scroll */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Improved table accessibility */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  text-align: left;
+  font-weight: 600;
+}
+
+/* Print styles for accessibility */
+@media print {
+  /* Ensure links show their URLs in print */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    font-weight: normal;
+  }
+
+  /* Ensure sufficient contrast in print */
+  * {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Hide non-essential elements */
+  nav,
+  .skip-link {
+    display: none !important;
+  }
+}
+
+/* Ensure form elements have visible labels */
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+/* Error state for form validation */
+[aria-invalid="true"] {
+  border-color: var(--color-error) !important;
+}
+
+/* Required field indicator */
+[aria-required="true"]::after {
+  content: " *";
+  color: var(--color-error);
+}
+
+/* Ensure disabled elements are clearly distinguishable */
+[disabled],
+[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading state announcement for screen readers */
+[aria-busy="true"] {
+  cursor: wait;
+}
+
+/* Improve visibility of current page in navigation */
+[aria-current="page"] {
+  font-weight: 600;
+}

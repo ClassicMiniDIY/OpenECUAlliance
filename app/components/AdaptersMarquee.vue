@@ -16,7 +16,7 @@ const shuffleNoAdjacent = (array: Adapter[]): Adapter[] => {
     const lastId = result.length > 0 ? result[result.length - 1]!.id : null;
 
     // Find candidates that aren't the same as the last item
-    const candidates = available.filter(a => a.id !== lastId);
+    const candidates = available.filter((a) => a.id !== lastId);
 
     if (candidates.length === 0) {
       // If stuck, just take any remaining item
@@ -26,7 +26,7 @@ const shuffleNoAdjacent = (array: Adapter[]): Adapter[] => {
       const idx = Math.floor(Math.random() * candidates.length);
       const chosen = candidates[idx]!;
       result.push(chosen);
-      const availableIdx = available.findIndex(a => a.id === chosen.id);
+      const availableIdx = available.findIndex((a) => a.id === chosen.id);
       available.splice(availableIdx, 1);
     }
   }
@@ -124,7 +124,9 @@ onMounted(() => {
               ? 'opacity-100 scale-100 blur-0'
               : 'opacity-0 scale-50 blur-sm'
           "
-          :style="{ transitionDelay: `${getRandomDelay(rowIndex, index + row.length)}s` }"
+          :style="{
+            transitionDelay: `${getRandomDelay(rowIndex, index + row.length)}s`,
+          }"
         >
           <img
             v-if="adapter.branding?.icon"

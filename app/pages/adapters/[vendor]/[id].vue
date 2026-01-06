@@ -209,11 +209,11 @@ const fallbackIcon = computed(() => getVendorIcon(vendor));
                       >
                         {{ channel.description }}
                       </p>
-                      <div class="flex flex-wrap gap-2 text-xs">
-                        <UBadge color="neutral" variant="subtle" size="xs">
+                      <div class="flex flex-wrap gap-2 text-sm">
+                        <UBadge color="neutral" variant="subtle" size="md">
                           {{ channel.unit }}
                         </UBadge>
-                        <UBadge color="neutral" variant="subtle" size="xs">
+                        <UBadge color="neutral" variant="subtle" size="md">
                           {{ channel.dataType }}
                         </UBadge>
                         <template
@@ -222,7 +222,7 @@ const fallbackIcon = computed(() => getVendorIcon(vendor));
                             channel.max !== undefined
                           "
                         >
-                          <UBadge color="neutral" variant="subtle" size="xs">
+                          <UBadge color="neutral" variant="subtle" size="md">
                             {{ channel.min }} - {{ channel.max }}
                           </UBadge>
                         </template>
@@ -233,7 +233,7 @@ const fallbackIcon = computed(() => getVendorIcon(vendor));
                         icon="i-heroicons-eye"
                         color="neutral"
                         variant="ghost"
-                        size="xs"
+                        size="md"
                       />
                       <template #content>
                         <div class="p-3 max-w-xs">
@@ -244,7 +244,7 @@ const fallbackIcon = computed(() => getVendorIcon(vendor));
                             <code
                               v-for="name in channel.sourceNames"
                               :key="name"
-                              class="block text-xs font-mono bg-muted/50 px-2 py-1 rounded"
+                              class="block text-sm font-mono bg-muted/50 px-2 py-1 rounded"
                             >
                               {{ name }}
                             </code>

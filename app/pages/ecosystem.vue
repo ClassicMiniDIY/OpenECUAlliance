@@ -138,7 +138,11 @@ const donateProjects = [
                   :alt="app.name"
                   class="size-14 object-contain"
                 />
-                <UIcon v-else name="i-heroicons-cube" class="size-14 text-primary" />
+                <UIcon
+                  v-else
+                  name="i-heroicons-cube"
+                  class="size-14 text-primary"
+                />
               </div>
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">
@@ -146,7 +150,7 @@ const donateProjects = [
                   <UBadge
                     :color="app.status === 'available' ? 'success' : 'warning'"
                     variant="subtle"
-                    size="xs"
+                    size="md"
                   >
                     {{
                       app.status === "available" ? "Available" : "Coming Soon"
@@ -160,7 +164,7 @@ const donateProjects = [
                     :key="feature"
                     color="neutral"
                     variant="subtle"
-                    size="xs"
+                    size="md"
                   >
                     {{ feature }}
                   </UBadge>
@@ -187,7 +191,7 @@ const donateProjects = [
               <div>
                 <div class="flex items-center gap-2 mb-2">
                   <h3 class="font-semibold">{{ lib.name }}</h3>
-                  <UBadge color="warning" variant="subtle" size="xs">
+                  <UBadge color="warning" variant="subtle" size="md">
                     {{ lib.status }}
                   </UBadge>
                 </div>
@@ -198,7 +202,7 @@ const donateProjects = [
                     :key="lang"
                     color="neutral"
                     variant="subtle"
-                    size="xs"
+                    size="md"
                   >
                     {{ lang }}
                   </UBadge>

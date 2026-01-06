@@ -12,45 +12,64 @@ const colorMode = useColorMode();
 function toggleColorMode() {
   colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
 }
+
+const colorModeLabel = computed(() =>
+  colorMode.value === "dark" ? "Switch to light mode" : "Switch to dark mode",
+);
 </script>
 
 <template>
   <UHeader>
     <template #left>
-      <NuxtLink to="/" class="flex items-center gap-2">
-        <UIcon name="i-heroicons-cpu-chip" class="size-7 text-primary" />
+      <NuxtLink
+        to="/"
+        class="flex items-center gap-2"
+        aria-label="OpenECU Alliance - Home"
+      >
+        <UIcon
+          name="i-heroicons-cpu-chip"
+          class="size-7 text-primary"
+          aria-hidden="true"
+        />
         <span class="font-bold text-lg">OpenECU Alliance</span>
       </NuxtLink>
     </template>
 
     <!-- Default slot for navigation -->
-    <UNavigationMenu :items="navigation" class="hidden md:flex" />
+    <nav aria-label="Main navigation">
+      <UNavigationMenu :items="navigation" class="hidden md:flex" />
+    </nav>
 
     <template #right>
-      <UTooltip text="Toggle color mode">
+      <UTooltip :text="colorModeLabel">
         <UButton
           :icon="
             colorMode.value === 'dark' ? 'i-heroicons-moon' : 'i-heroicons-sun'
           "
           color="neutral"
           variant="ghost"
+          :aria-label="colorModeLabel"
           @click="toggleColorMode"
         />
       </UTooltip>
 
-      <UTooltip text="GitHub">
+      <UTooltip text="View source on GitHub">
         <UButton
           to="https://github.com/ClassicMiniDIY/OpenECUAlliance"
           target="_blank"
           icon="i-simple-icons-github"
           color="neutral"
           variant="ghost"
+          aria-label="View source on GitHub (opens in new tab)"
+          rel="noopener noreferrer"
         />
       </UTooltip>
     </template>
 
     <template #body>
-      <UNavigationMenu :items="navigation" orientation="vertical" />
+      <nav aria-label="Mobile navigation">
+        <UNavigationMenu :items="navigation" orientation="vertical" />
+      </nav>
     </template>
   </UHeader>
 </template>
