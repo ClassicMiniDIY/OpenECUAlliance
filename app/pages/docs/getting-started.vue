@@ -380,7 +380,9 @@ const nextSteps = [
                   <UIcon :name="step.icon" class="size-5 text-primary" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <h3 class="font-semibold mb-0.5 group-hover:text-primary transition-colors">
+                  <h3
+                    class="font-semibold mb-0.5 group-hover:text-primary transition-colors"
+                  >
                     {{ step.title }}
                   </h3>
                   <p class="text-sm text-muted">{{ step.description }}</p>
