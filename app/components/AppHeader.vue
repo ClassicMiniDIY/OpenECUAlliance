@@ -1,6 +1,14 @@
 <script setup lang="ts">
 const navigation = [
-  { label: "Adapters", to: "/" },
+  {
+    label: "Browse",
+    children: [
+      { label: "All", to: "/", description: "Browse all content" },
+      { label: "Adapters", to: "/adapters", description: "Log file format definitions" },
+      { label: "Protocols", to: "/protocols", description: "CAN Bus protocol definitions" },
+      { label: "3D Models", to: "/models", description: "Printable mounts & accessories" },
+    ],
+  },
   { label: "Ecosystem", to: "/ecosystem" },
   { label: "Spec", to: "/spec" },
   { label: "Docs", to: "/docs" },

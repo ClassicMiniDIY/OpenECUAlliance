@@ -1,19 +1,33 @@
 <script setup lang="ts">
+const NuxtLink = resolveComponent("NuxtLink");
+
 useSeoMeta({
   title: "Contribute - OpenECU Alliance",
   description:
-    "Learn how to contribute adapters, brand assets, and more to the OpenECU Alliance.",
+    "Learn how to contribute adapters, CAN protocols, 3D models, and more to the OpenECU Alliance.",
 });
 
 const waysToContribute = [
   {
     type: "Submit Adapters",
-    description: "Add support for new ECU formats",
+    description: "Add support for new ECU log formats",
     difficulty: "Beginner",
     color: "success" as const,
   },
   {
-    type: "Improve Adapters",
+    type: "Submit Protocols",
+    description: "Define CAN Bus messages and signals",
+    difficulty: "Intermediate",
+    color: "warning" as const,
+  },
+  {
+    type: "Submit 3D Models",
+    description: "Share printable mounts and enclosures",
+    difficulty: "Beginner",
+    color: "success" as const,
+  },
+  {
+    type: "Improve Content",
     description: "Add source_names, fix issues",
     difficulty: "Beginner",
     color: "success" as const,
@@ -32,7 +46,7 @@ const waysToContribute = [
   },
   {
     type: "Review PRs",
-    description: "Help review adapter submissions",
+    description: "Help review submissions",
     difficulty: "Intermediate",
     color: "warning" as const,
   },
@@ -47,6 +61,30 @@ const waysToContribute = [
     description: "Validation tools, SDKs",
     difficulty: "Advanced",
     color: "error" as const,
+  },
+];
+
+const contributionTypes = [
+  {
+    icon: "i-heroicons-document-text",
+    title: "Adapters",
+    description: "Log file format definitions for ECU data parsing",
+    to: "/docs/creating-adapters",
+    color: "primary",
+  },
+  {
+    icon: "i-heroicons-signal",
+    title: "Protocols",
+    description: "CAN Bus message definitions with DBC export",
+    to: "/docs/creating-protocols",
+    color: "success",
+  },
+  {
+    icon: "i-heroicons-cube",
+    title: "3D Models",
+    description: "Printable mounts, enclosures, and accessories",
+    to: "/docs/creating-models",
+    color: "warning",
   },
 ];
 
@@ -147,6 +185,8 @@ const rfcSteps = [
 
 const commitTypes = [
   { type: "adapter:", description: "Adding or updating adapters" },
+  { type: "protocol:", description: "Adding or updating CAN protocols" },
+  { type: "model:", description: "Adding or updating 3D models" },
   { type: "spec:", description: "Specification changes" },
   { type: "docs:", description: "Documentation only" },
   { type: "schema:", description: "JSON Schema changes" },
@@ -225,10 +265,38 @@ done`,
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">Contribute</h1>
         <p class="text-lg text-muted">
           Thank you for your interest in contributing to the OpenECU Alliance!
-          Learn how to contribute adapters, propose changes, and participate in
-          the community.
+          Learn how to contribute adapters, protocols, 3D models, and more.
         </p>
       </div>
+
+      <!-- Quick Start Cards -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">What Would You Like to Contribute?</h2>
+        <div class="grid sm:grid-cols-3 gap-4">
+          <UCard
+            v-for="ct in contributionTypes"
+            :key="ct.title"
+            :as="NuxtLink"
+            :to="ct.to"
+            class="cursor-pointer hover:ring-2 transition-all"
+            :class="`hover:ring-${ct.color}/50`"
+          >
+            <div class="flex items-start gap-3">
+              <div :class="`bg-${ct.color}/10`" class="p-2 rounded-lg shrink-0">
+                <UIcon :name="ct.icon" :class="`size-5 text-${ct.color}`" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-semibold mb-1">{{ ct.title }}</h3>
+                <p class="text-sm text-muted">{{ ct.description }}</p>
+              </div>
+              <UIcon
+                name="i-heroicons-chevron-right"
+                class="size-5 text-muted shrink-0"
+              />
+            </div>
+          </UCard>
+        </div>
+      </section>
 
       <!-- Ways to Contribute -->
       <section class="mb-12">
@@ -623,7 +691,7 @@ done`,
       </section>
 
       <!-- CTA -->
-      <div class="flex flex-col sm:flex-row gap-4">
+      <div class="flex flex-wrap gap-4">
         <UButton
           to="https://github.com/ClassicMiniDIY/OECUASpecs"
           target="_blank"
@@ -634,7 +702,7 @@ done`,
         </UButton>
         <UButton
           to="/docs/creating-adapters"
-          color="neutral"
+          color="primary"
           variant="outline"
           icon="i-heroicons-document-plus"
           size="lg"
@@ -642,13 +710,22 @@ done`,
           Adapter Guide
         </UButton>
         <UButton
-          to="/spec"
-          color="neutral"
+          to="/docs/creating-protocols"
+          color="success"
           variant="outline"
-          icon="i-heroicons-document-text"
+          icon="i-heroicons-signal"
           size="lg"
         >
-          Read the Spec
+          Protocol Guide
+        </UButton>
+        <UButton
+          to="/docs/creating-models"
+          color="warning"
+          variant="outline"
+          icon="i-heroicons-cube"
+          size="lg"
+        >
+          3D Model Guide
         </UButton>
       </div>
     </UContainer>

@@ -1,117 +1,124 @@
 <script setup lang="ts">
+import type { ContentType } from "~/types/content";
+
 const NuxtLink = resolveComponent("NuxtLink");
 const input = useTemplateRef("input");
 
 useSeoMeta({
-  title: "OpenECU Alliance - The OpenECU Spec",
+  title: "OpenECU Alliance - Adapters, Protocols & 3D Models",
   description:
-    "An open specification for standardizing ECU log data. Build spec-compatible applications that work with any ECU system.",
+    "An open community for ECU resources. Browse log adapters, CAN protocols, and 3D printable mounts - all free and open source.",
 });
 
-// ARIA live region announcement for search results
-const searchAnnouncement = computed(() => {
-  if (loading.value) return "Loading adapters...";
-  if (hasActiveFilters.value) {
-    return `Showing ${filteredAdapters.value.length} of ${adapters.value.length} adapters`;
-  }
-  return `${adapters.value.length} adapters available`;
-});
+// Content composables
+const {
+  adapters,
+  protocols,
+  models,
+  counts,
+  allVendors,
+  filterContent,
+  loading,
+  getTypeLabel,
+  getTypeIcon,
+  getTypeColor,
+} = useContent();
 
-// Sort order label for accessibility
-const sortOrderLabel = computed(() =>
-  sortOrder.value === "asc" ? "Sort ascending" : "Sort descending",
-);
+const { filterAdapters } = useAdapters();
+const { filterProtocols } = useProtocols();
+const { filterModels, getCategoryLabel } = useModels();
 
-// Adapter search functionality
-const { adapters, vendors, filterAdapters, loading } = useAdapters();
-
+// State
 const search = ref("");
+const selectedType = ref<ContentType | "all">("all");
 const selectedVendor = ref<string>();
-const selectedFormat = ref<string>();
-const sortBy = ref<"name" | "channels" | "vendor">("vendor");
+const sortBy = ref<"name" | "vendor" | "type">("vendor");
 const sortOrder = ref<"asc" | "desc">("asc");
 
+// Filtered content based on selected type
 const filteredAdapters = computed(() => {
-  let result = filterAdapters({
+  if (selectedType.value !== "all" && selectedType.value !== "adapter") return [];
+  return filterAdapters({
     search: search.value,
     vendor: selectedVendor.value,
-    fileFormat: selectedFormat.value,
   });
-
-  result = [...result].sort((a, b) => {
-    let cmp = 0;
-    switch (sortBy.value) {
-      case "name":
-        cmp = a.name.localeCompare(b.name);
-        break;
-      case "channels":
-        cmp = a.channelCount - b.channelCount;
-        break;
-      case "vendor":
-      default:
-        cmp = a.vendor.localeCompare(b.vendor) || a.name.localeCompare(b.name);
-        break;
-    }
-    return sortOrder.value === "desc" ? -cmp : cmp;
-  });
-
-  return result;
 });
 
-const vendorButtons = computed(() =>
-  vendors.value.map((v) => ({
-    label: v.charAt(0).toUpperCase() + v.slice(1),
-    key: v,
-    active: selectedVendor.value === v,
-    click: () => {
-      selectedVendor.value = selectedVendor.value === v ? undefined : v;
-    },
-  })),
-);
+const filteredProtocols = computed(() => {
+  if (selectedType.value !== "all" && selectedType.value !== "protocol") return [];
+  return filterProtocols({
+    search: search.value,
+    vendor: selectedVendor.value,
+  });
+});
 
-const sortOptions = [
-  { label: "Vendor", value: "vendor" },
-  { label: "Name", value: "name" },
-  { label: "Channels", value: "channels" },
-];
+const filteredModels = computed(() => {
+  if (selectedType.value !== "all" && selectedType.value !== "model") return [];
+  return filterModels({
+    search: search.value,
+    vendor: selectedVendor.value,
+  });
+});
 
-const formatButtons = computed(() => [
-  {
-    label: "All",
-    key: undefined,
-    active: !selectedFormat.value,
-    click: () => {
-      selectedFormat.value = undefined;
-    },
-  },
-  {
-    label: "CSV",
-    key: "csv",
-    active: selectedFormat.value === "csv",
-    click: () => {
-      selectedFormat.value = selectedFormat.value === "csv" ? undefined : "csv";
-    },
-  },
-  {
-    label: "Binary",
-    key: "binary",
-    active: selectedFormat.value === "binary",
-    click: () => {
-      selectedFormat.value =
-        selectedFormat.value === "binary" ? undefined : "binary";
-    },
-  },
-]);
+// Combined count for display
+const totalFiltered = computed(() => {
+  return filteredAdapters.value.length + filteredProtocols.value.length + filteredModels.value.length;
+});
+
+const totalItems = computed(() => {
+  return adapters.value.length + protocols.value.length + models.value.length;
+});
+
+// Search announcement for accessibility
+const searchAnnouncement = computed(() => {
+  if (loading.value) return "Loading content...";
+  if (hasActiveFilters.value) {
+    return `Showing ${totalFiltered.value} of ${totalItems.value} items`;
+  }
+  return `${totalItems.value} items available`;
+});
+
+const hasActiveFilters = computed(() => {
+  return search.value || selectedVendor.value || selectedType.value !== "all";
+});
 
 function clearFilters() {
   search.value = "";
   selectedVendor.value = undefined;
-  selectedFormat.value = undefined;
+  selectedType.value = "all";
 }
 
-const hasActiveFilters = computed(() => {
-  return search.value || selectedVendor.value || selectedFormat.value;
-});
+// Content type tabs
+const contentTabs = computed(() => [
+  {
+    key: "all" as const,
+    label: "All",
+    count: counts.value.all,
+    icon: "i-heroicons-squares-2x2",
+    color: "neutral",
+  },
+  {
+    key: "adapter" as const,
+    label: "Adapters",
+    count: counts.value.adapter,
+    icon: "i-heroicons-document-text",
+    color: "primary",
+  },
+  {
+    key: "protocol" as const,
+    label: "Protocols",
+    count: counts.value.protocol,
+    icon: "i-heroicons-signal",
+    color: "success",
+  },
+  {
+    key: "model" as const,
+    label: "3D Models",
+    count: counts.value.model,
+    icon: "i-heroicons-cube",
+    color: "warning",
+  },
+]);
 
 defineShortcuts({
   "/": () => {
@@ -133,27 +140,31 @@ onMounted(() => {
 const features = [
   {
     icon: "i-heroicons-document-text",
-    title: "The OpenECU Spec",
+    title: "Log Adapters",
     description:
-      "A standardized YAML format for describing ECU log file formats and channel mappings.",
+      "Parse ECU log files from any vendor using standardized YAML definitions.",
+    color: "primary",
   },
   {
-    icon: "i-heroicons-puzzle-piece",
-    title: "Adapter Library",
+    icon: "i-heroicons-signal",
+    title: "CAN Protocols",
     description:
-      "Pre-built adapters for popular ECU systems that map vendor channels to standard IDs.",
+      "Real-time CAN Bus message definitions with DBC export for industry tools.",
+    color: "success",
   },
   {
-    icon: "i-heroicons-code-bracket",
-    title: "Language Agnostic",
+    icon: "i-heroicons-cube",
+    title: "3D Models",
     description:
-      "YAML-based specs parseable by any language. Build applications in Rust, Python, TypeScript, or anything.",
+      "Printable ECU mounts, enclosures, and brackets with full print settings.",
+    color: "warning",
   },
   {
     icon: "i-heroicons-users",
     title: "Community Driven",
     description:
-      "Open contribution model - anyone can create adapters or donate compatible projects.",
+      "Open contribution model - anyone can create and share resources.",
+    color: "neutral",
   },
 ];
 
@@ -171,154 +182,129 @@ const compatibleApps = [
 
 <template>
   <div>
-    <!-- Hero + Adapter Search Section -->
+    <!-- Hero + Unified Search Section -->
     <UContainer class="relative">
       <AdaptersMarquee :adapters="adapters" />
 
       <div class="relative z-20 pt-24 pb-8">
         <div class="text-center max-w-4xl mx-auto">
           <UBadge color="primary" variant="subtle" class="mb-4">
-            Open Source Specification
+            Open Source Community
           </UBadge>
 
           <h1
             class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
           >
             The
-            <span class="text-primary">OpenECU Spec</span>
+            <span class="text-primary">OpenECU Alliance</span>
           </h1>
 
           <p class="text-lg sm:text-xl text-muted mb-8 max-w-2xl mx-auto">
-            An open specification for standardizing ECU log data formats to make
-            building, maintaining, and loving cars easier for everyone
+            One community. Shared standards. Free resources for ECU enthusiasts,
+            tuners, and developers.
           </p>
 
-          <!-- Search & Sort -->
-          <div class="max-w-2xl mx-auto">
-            <div class="flex flex-col sm:flex-row gap-2">
-              <UInput
-                ref="input"
-                v-model="search"
-                icon="i-heroicons-magnifying-glass"
-                placeholder="Search adapters..."
-                size="lg"
-                variant="subtle"
-                class="flex-1"
-                autocomplete="off"
-                aria-label="Search adapters by name, vendor, or description"
-                aria-describedby="search-results-count"
-              >
-                <template #trailing>
-                  <UButton
-                    v-if="search"
-                    color="neutral"
-                    variant="link"
-                    size="lg"
-                    icon="i-heroicons-x-mark"
-                    aria-label="Clear search"
-                    @click="search = ''"
-                  />
-                  <UKbd v-else value="/" class="hidden sm:flex" />
-                </template>
-              </UInput>
-
-              <div v-if="!isMobile" class="flex gap-2">
-                <USelectMenu
-                  v-model="sortBy"
-                  :items="sortOptions"
-                  value-key="value"
-                  size="lg"
-                  color="neutral"
-                  variant="outline"
-                  class="w-32"
-                />
+          <!-- Unified Search -->
+          <div class="max-w-2xl mx-auto mb-6">
+            <UInput
+              ref="input"
+              v-model="search"
+              icon="i-heroicons-magnifying-glass"
+              placeholder="Search adapters, protocols, models..."
+              size="lg"
+              variant="subtle"
+              class="w-full"
+              autocomplete="off"
+              aria-label="Search all content"
+              aria-describedby="search-results-count"
+            >
+              <template #trailing>
                 <UButton
-                  :icon="
-                    sortOrder === 'asc'
-                      ? 'i-heroicons-bars-arrow-up'
-                      : 'i-heroicons-bars-arrow-down'
-                  "
-                  size="lg"
+                  v-if="search"
                   color="neutral"
-                  variant="outline"
-                  :aria-label="sortOrderLabel"
-                  @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+                  variant="link"
+                  size="lg"
+                  icon="i-heroicons-x-mark"
+                  aria-label="Clear search"
+                  @click="search = ''"
                 />
-              </div>
-            </div>
-
-            <!-- Mobile filters -->
-            <div v-if="isMobile" class="flex gap-2 mt-2">
-              <USelectMenu
-                v-model="selectedVendor"
-                :items="[
-                  { label: 'All Vendors', value: undefined },
-                  ...vendors.map((v) => ({
-                    label: v.charAt(0).toUpperCase() + v.slice(1),
-                    value: v,
-                  })),
-                ]"
-                value-key="value"
-                size="lg"
-                color="neutral"
-                variant="outline"
-                class="flex-1"
-                placeholder="Vendor"
-              />
-              <USelectMenu
-                v-model="sortBy"
-                :items="sortOptions"
-                value-key="value"
-                size="lg"
-                color="neutral"
-                variant="outline"
-                class="w-28"
-              />
-              <UButton
-                :icon="
-                  sortOrder === 'asc'
-                    ? 'i-heroicons-bars-arrow-up'
-                    : 'i-heroicons-bars-arrow-down'
-                "
-                size="lg"
-                color="neutral"
-                variant="outline"
-                :aria-label="sortOrderLabel"
-                @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
-              />
-            </div>
+                <UKbd v-else value="/" class="hidden sm:flex" />
+              </template>
+            </UInput>
           </div>
 
-          <!-- Vendor Filter Chips (Desktop) -->
-          <div class="hidden sm:flex mt-6 flex-wrap gap-1.5 justify-center">
+          <!-- Content Type Tabs -->
+          <div
+            class="flex flex-wrap gap-2 justify-center mb-6"
+            role="tablist"
+            aria-label="Content type filter"
+          >
+            <button
+              v-for="tab in contentTabs"
+              :key="tab.key"
+              role="tab"
+              :aria-selected="selectedType === tab.key"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              :class="[
+                selectedType === tab.key
+                  ? `bg-${tab.color}/10 text-${tab.color} ring-2 ring-${tab.color}/30`
+                  : 'bg-muted/30 text-muted hover:bg-muted/50 hover:text-default',
+              ]"
+              @click="selectedType = tab.key"
+            >
+              <UIcon :name="tab.icon" class="size-4" aria-hidden="true" />
+              <span class="hidden sm:inline">{{ tab.label }}</span>
+              <span
+                class="px-1.5 py-0.5 rounded text-xs"
+                :class="[
+                  selectedType === tab.key ? `bg-${tab.color}/20` : 'bg-muted/50',
+                ]"
+              >
+                {{ tab.count }}
+              </span>
+            </button>
+          </div>
+
+          <!-- Vendor Filter (Desktop) -->
+          <div
+            v-if="allVendors.length > 0"
+            class="hidden sm:flex flex-wrap gap-1.5 justify-center"
+          >
             <UButton
-              v-for="vendor in vendorButtons"
-              :key="vendor.key"
-              :label="vendor.label"
+              v-for="vendor in allVendors"
+              :key="vendor"
+              :label="vendor.charAt(0).toUpperCase() + vendor.slice(1)"
               color="neutral"
-              :variant="vendor.active ? 'subtle' : 'outline'"
-              :class="vendor.active ? 'ring-2 ring-primary' : ''"
+              :variant="selectedVendor === vendor ? 'subtle' : 'outline'"
+              :class="selectedVendor === vendor ? 'ring-2 ring-primary' : ''"
               size="sm"
-              @click="vendor.click"
+              @click="selectedVendor = selectedVendor === vendor ? undefined : vendor"
             />
           </div>
 
-          <!-- Format Filter -->
-          <div class="flex mt-4 gap-1.5 justify-center">
-            <UButton
-              v-for="format in formatButtons"
-              :key="format.key ?? 'all'"
-              :label="format.label"
+          <!-- Mobile Vendor Filter -->
+          <div v-if="isMobile && allVendors.length > 0" class="mt-4">
+            <USelectMenu
+              v-model="selectedVendor"
+              :items="[
+                { label: 'All Vendors', value: undefined },
+                ...allVendors.map((v) => ({
+                  label: v.charAt(0).toUpperCase() + v.slice(1),
+                  value: v,
+                })),
+              ]"
+              value-key="value"
+              size="lg"
               color="neutral"
-              :variant="format.active ? 'soft' : 'ghost'"
-              size="md"
-              @click="format.click"
+              variant="outline"
+              placeholder="Filter by vendor"
+              class="w-full"
             />
           </div>
         </div>
       </div>
 
-      <!-- ARIA Live Region for Search Results -->
+      <!-- ARIA Live Region -->
       <div
         id="search-results-count"
         class="sr-only"
@@ -328,15 +314,14 @@ const compatibleApps = [
         {{ searchAnnouncement }}
       </div>
 
-      <!-- Adapter Results -->
-      <section class="relative z-20 pb-16" aria-label="Adapter search results">
+      <!-- Results Section -->
+      <section class="relative z-20 pb-16" aria-label="Search results">
         <div class="flex justify-between items-center mb-4 text-sm text-muted">
           <div class="flex items-center gap-2">
             <span v-if="hasActiveFilters">
-              Showing {{ filteredAdapters.length }} of
-              {{ adapters.length }} adapters
+              Showing {{ totalFiltered }} of {{ totalItems }} items
             </span>
-            <span v-else> {{ adapters.length }} adapters available </span>
+            <span v-else>{{ totalItems }} items available</span>
             <UButton
               v-if="hasActiveFilters"
               color="neutral"
@@ -352,7 +337,7 @@ const compatibleApps = [
             to="/contribute"
             class="hidden md:flex items-center gap-1 hover:text-primary transition-colors"
           >
-            Create your own adapter
+            Contribute
             <UIcon name="i-heroicons-arrow-right" class="size-4" />
           </NuxtLink>
         </div>
@@ -369,19 +354,99 @@ const compatibleApps = [
             class="size-8 text-primary animate-spin mb-4"
             aria-hidden="true"
           />
-          <p class="text-muted">Loading adapters...</p>
+          <p class="text-muted">Loading content...</p>
         </div>
 
-        <!-- Adapter Grid -->
-        <div
-          v-else-if="filteredAdapters.length > 0"
-          class="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4"
-        >
-          <AdapterCard
-            v-for="adapter in filteredAdapters"
-            :key="adapter.id"
-            :adapter="adapter"
-          />
+        <!-- Content Sections -->
+        <div v-else-if="totalFiltered > 0" class="space-y-8">
+          <!-- Adapters Section -->
+          <div v-if="filteredAdapters.length > 0">
+            <div
+              v-if="selectedType === 'all'"
+              class="flex items-center gap-2 mb-4"
+            >
+              <UIcon
+                name="i-heroicons-document-text"
+                class="size-5 text-primary"
+              />
+              <h2 class="font-semibold">
+                Adapters ({{ filteredAdapters.length }})
+              </h2>
+              <NuxtLink
+                to="/adapters"
+                class="ml-auto text-sm text-muted hover:text-primary"
+              >
+                View all
+              </NuxtLink>
+            </div>
+            <div
+              class="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4"
+            >
+              <AdapterCard
+                v-for="adapter in selectedType === 'all'
+                  ? filteredAdapters.slice(0, 6)
+                  : filteredAdapters"
+                :key="adapter.id"
+                :adapter="adapter"
+              />
+            </div>
+          </div>
+
+          <!-- Protocols Section -->
+          <div v-if="filteredProtocols.length > 0">
+            <div
+              v-if="selectedType === 'all'"
+              class="flex items-center gap-2 mb-4"
+            >
+              <UIcon name="i-heroicons-signal" class="size-5 text-success" />
+              <h2 class="font-semibold">
+                Protocols ({{ filteredProtocols.length }})
+              </h2>
+              <NuxtLink
+                to="/protocols"
+                class="ml-auto text-sm text-muted hover:text-success"
+              >
+                View all
+              </NuxtLink>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <ProtocolCard
+                v-for="protocol in selectedType === 'all'
+                  ? filteredProtocols.slice(0, 6)
+                  : filteredProtocols"
+                :key="protocol.id"
+                :protocol="protocol"
+              />
+            </div>
+          </div>
+
+          <!-- Models Section -->
+          <div v-if="filteredModels.length > 0">
+            <div
+              v-if="selectedType === 'all'"
+              class="flex items-center gap-2 mb-4"
+            >
+              <UIcon name="i-heroicons-cube" class="size-5 text-warning" />
+              <h2 class="font-semibold">
+                3D Models ({{ filteredModels.length }})
+              </h2>
+              <NuxtLink
+                to="/models"
+                class="ml-auto text-sm text-muted hover:text-warning"
+              >
+                View all
+              </NuxtLink>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <ModelCard
+                v-for="model in selectedType === 'all'
+                  ? filteredModels.slice(0, 8)
+                  : filteredModels"
+                :key="model.id"
+                :model="model"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Empty State -->
@@ -390,10 +455,10 @@ const compatibleApps = [
             name="i-heroicons-magnifying-glass"
             class="size-12 text-muted mx-auto mb-4"
           />
-          <h3 class="font-semibold mb-2">No adapters found</h3>
+          <h3 class="font-semibold mb-2">No results found</h3>
           <p class="text-muted mb-4">
-            There's no adapter matching "{{ search }}" yet. Be the first to
-            create it!
+            No content matches your search. Try different filters or be the
+            first to contribute!
           </p>
           <div class="flex gap-2 justify-center">
             <UButton color="neutral" variant="soft" to="/contribute">
@@ -415,6 +480,10 @@ const compatibleApps = [
             <h2 class="text-2xl sm:text-3xl font-bold mb-4">
               What is the OpenECU Alliance?
             </h2>
+            <p class="text-muted max-w-2xl mx-auto">
+              A community-driven initiative providing free, open resources for
+              the automotive ECU enthusiast community.
+            </p>
           </div>
 
           <div class="grid md:grid-cols-3 gap-8">
@@ -431,8 +500,8 @@ const compatibleApps = [
                 </div>
                 <h3 class="font-semibold mb-2">The Alliance</h3>
                 <p class="text-sm text-muted">
-                  An open community that publishes and maintains the OpenECU
-                  Spec, adapter definitions, and compatible tools.
+                  An open community that publishes and maintains adapters,
+                  protocols, 3D models, and compatible tools.
                 </p>
               </div>
             </UCard>
@@ -450,8 +519,8 @@ const compatibleApps = [
                 </div>
                 <h3 class="font-semibold mb-2">The Spec</h3>
                 <p class="text-sm text-muted">
-                  A YAML-based specification that defines how to describe ECU
-                  log formats and map channels to standard identifiers.
+                  YAML-based specifications that define adapters, protocols, and
+                  models with JSON Schema validation.
                 </p>
               </div>
             </UCard>
@@ -466,7 +535,7 @@ const compatibleApps = [
                 </div>
                 <h3 class="font-semibold mb-2">The Ecosystem</h3>
                 <p class="text-sm text-muted">
-                  Spec-compatible applications, adapters, and tools that work
+                  Spec-compatible applications, tools, and resources that work
                   together seamlessly.
                 </p>
               </div>
@@ -481,11 +550,11 @@ const compatibleApps = [
       <UContainer>
         <div class="text-center mb-12">
           <h2 class="text-2xl sm:text-3xl font-bold mb-4">
-            Why Use the OpenECU Spec?
+            What We Share
           </h2>
           <p class="text-muted max-w-2xl mx-auto">
-            Every ECU uses different channel names for the same data. The spec
-            creates a universal standard that benefits everyone.
+            Free, community-maintained resources for ECU enthusiasts, tuners,
+            and developers.
           </p>
         </div>
 
@@ -496,8 +565,15 @@ const compatibleApps = [
             class="text-center"
           >
             <div class="flex flex-col items-center">
-              <div class="bg-primary/10 p-3 rounded-xl mb-4" aria-hidden="true">
-                <UIcon :name="feature.icon" class="size-6 text-primary" />
+              <div
+                :class="`bg-${feature.color}/10`"
+                class="p-3 rounded-xl mb-4"
+                aria-hidden="true"
+              >
+                <UIcon
+                  :name="feature.icon"
+                  :class="`size-6 text-${feature.color}`"
+                />
               </div>
               <h3 class="font-semibold mb-2">{{ feature.title }}</h3>
               <p class="text-sm text-muted">{{ feature.description }}</p>
@@ -515,8 +591,8 @@ const compatibleApps = [
             Spec-Compatible Applications
           </h2>
           <p class="text-muted max-w-2xl mx-auto">
-            Applications built with OpenECU Spec support can read logs from any
-            ECU with an adapter.
+            Applications built with OpenECU Spec support can use adapters,
+            protocols, and models from this community.
           </p>
         </div>
 
@@ -583,7 +659,7 @@ const compatibleApps = [
           <div class="text-center mb-12">
             <h2 class="text-2xl sm:text-3xl font-bold mb-4">For Developers</h2>
             <p class="text-muted max-w-2xl mx-auto">
-              The OpenECU Spec makes it easy to add ECU log support to your
+              The OpenECU Spec makes it easy to add ECU support to your
               application.
             </p>
           </div>
@@ -597,21 +673,21 @@ const compatibleApps = [
                     name="i-heroicons-check"
                     class="size-4 text-success shrink-0 mt-0.5"
                   />
-                  <span>Parse any ECU log format with a single codebase</span>
+                  <span>Parse any ECU log format with adapters</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <UIcon
                     name="i-heroicons-check"
                     class="size-4 text-success shrink-0 mt-0.5"
                   />
-                  <span>Use canonical channel IDs across all ECU systems</span>
+                  <span>Use CAN protocols with DBC export</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <UIcon
                     name="i-heroicons-check"
                     class="size-4 text-success shrink-0 mt-0.5"
                   />
-                  <span>Leverage community-maintained adapters</span>
+                  <span>Leverage community-maintained resources</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <UIcon
@@ -643,14 +719,14 @@ const compatibleApps = [
                     name="i-heroicons-plus"
                     class="size-4 text-primary shrink-0 mt-0.5"
                   />
-                  <span>Improve existing channel mappings</span>
+                  <span>Add CAN protocol definitions</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <UIcon
                     name="i-heroicons-plus"
                     class="size-4 text-primary shrink-0 mt-0.5"
                   />
-                  <span>Donate ECU-related projects for maintenance</span>
+                  <span>Share 3D printable models and designs</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <UIcon

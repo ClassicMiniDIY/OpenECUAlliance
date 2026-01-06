@@ -4,7 +4,7 @@ const NuxtLink = resolveComponent("NuxtLink");
 useSeoMeta({
   title: "Documentation - OpenECU Alliance",
   description:
-    "Learn how to create adapters and integrate with OpenECU Alliance.",
+    "Learn how to create adapters, CAN protocols, and 3D models for the OpenECU Alliance.",
 });
 
 const guides = [
@@ -13,24 +13,42 @@ const guides = [
     title: "Getting Started",
     description: "Introduction to OpenECU Alliance and the adapter ecosystem.",
     to: "/docs/getting-started",
+    color: "primary",
   },
   {
     icon: "i-heroicons-document-plus",
     title: "Creating Adapters",
     description: "Step-by-step guide to creating your own adapter.",
     to: "/docs/creating-adapters",
+    color: "primary",
+  },
+  {
+    icon: "i-heroicons-signal",
+    title: "Creating Protocols",
+    description: "Define CAN Bus messages and signals for real-time data.",
+    to: "/docs/creating-protocols",
+    color: "success",
+  },
+  {
+    icon: "i-heroicons-cube",
+    title: "Creating 3D Models",
+    description: "Contribute printable mounts, enclosures, and accessories.",
+    to: "/docs/creating-models",
+    color: "warning",
   },
   {
     icon: "i-heroicons-check-badge",
     title: "Compliance Levels",
     description: "Understanding Level 1-3 compliance for applications.",
     to: "/docs/compliance",
+    color: "primary",
   },
   {
     icon: "i-heroicons-users",
     title: "Governance",
     description: "How the Alliance operates and makes decisions.",
     to: "/docs/governance",
+    color: "primary",
   },
 ];
 
@@ -62,7 +80,8 @@ const references = [
       <div class="mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">Documentation</h1>
         <p class="text-lg text-muted">
-          Learn how to create adapters and integrate with OpenECU Alliance.
+          Learn how to create adapters, protocols, and 3D models for the
+          OpenECU Alliance.
         </p>
       </div>
 
@@ -78,8 +97,8 @@ const references = [
             class="cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
           >
             <div class="flex items-start gap-3">
-              <div class="bg-primary/10 p-2 rounded-lg shrink-0">
-                <UIcon :name="guide.icon" class="size-5 text-primary" />
+              <div :class="`bg-${guide.color || 'primary'}/10`" class="p-2 rounded-lg shrink-0">
+                <UIcon :name="guide.icon" :class="`size-5 text-${guide.color || 'primary'}`" />
               </div>
               <div class="flex-1 min-w-0">
                 <h3 class="font-semibold mb-1">{{ guide.title }}</h3>
