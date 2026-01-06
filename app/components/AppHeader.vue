@@ -1,9 +1,10 @@
 <script setup lang="ts">
 const navigation = [
-  { label: "Adapters", to: "/adapters" },
+  { label: "Adapters", to: "/" },
   { label: "Ecosystem", to: "/ecosystem" },
   { label: "Spec", to: "/spec" },
   { label: "Docs", to: "/docs" },
+  { label: "Contribute", to: "/contribute" },
 ];
 
 const colorMode = useColorMode();
@@ -22,9 +23,8 @@ function toggleColorMode() {
       </NuxtLink>
     </template>
 
-    <template #center>
-      <UNavigationMenu :items="navigation" class="hidden md:flex" />
-    </template>
+    <!-- Default slot for navigation -->
+    <UNavigationMenu :items="navigation" class="hidden md:flex" />
 
     <template #right>
       <UTooltip text="Toggle color mode">
@@ -50,11 +50,7 @@ function toggleColorMode() {
     </template>
 
     <template #body>
-      <UNavigationMenu
-        :items="navigation"
-        orientation="vertical"
-        class="md:hidden"
-      />
+      <UNavigationMenu :items="navigation" orientation="vertical" />
     </template>
   </UHeader>
 </template>

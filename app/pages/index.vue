@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const NuxtLink = resolveComponent("NuxtLink");
+const input = useTemplateRef("input");
 
 useSeoMeta({
   title: "OpenECU Alliance - The OpenECU Spec",
@@ -7,6 +8,114 @@ useSeoMeta({
     "An open specification for standardizing ECU log data. Build spec-compatible applications that work with any ECU system.",
 });
 
+// Adapter search functionality
+const { adapters, vendors, filterAdapters, loading } = useAdapters();
+
+const search = ref("");
+const selectedVendor = ref<string>();
+const selectedFormat = ref<string>();
+const sortBy = ref<"name" | "channels" | "vendor">("vendor");
+const sortOrder = ref<"asc" | "desc">("asc");
+
+const filteredAdapters = computed(() => {
+  let result = filterAdapters({
+    search: search.value,
+    vendor: selectedVendor.value,
+    fileFormat: selectedFormat.value,
+  });
+
+  result = [...result].sort((a, b) => {
+    let cmp = 0;
+    switch (sortBy.value) {
+      case "name":
+        cmp = a.name.localeCompare(b.name);
+        break;
+      case "channels":
+        cmp = a.channelCount - b.channelCount;
+        break;
+      case "vendor":
+      default:
+        cmp = a.vendor.localeCompare(b.vendor) || a.name.localeCompare(b.name);
+        break;
+    }
+    return sortOrder.value === "desc" ? -cmp : cmp;
+  });
+
+  return result;
+});
+
+const vendorButtons = computed(() =>
+  vendors.value.map((v) => ({
+    label: v.charAt(0).toUpperCase() + v.slice(1),
+    key: v,
+    active: selectedVendor.value === v,
+    click: () => {
+      selectedVendor.value = selectedVendor.value === v ? undefined : v;
+    },
+  })),
+);
+
+const sortOptions = [
+  { label: "Vendor", value: "vendor" },
+  { label: "Name", value: "name" },
+  { label: "Channels", value: "channels" },
+];
+
+const formatButtons = computed(() => [
+  {
+    label: "All",
+    key: undefined,
+    active: !selectedFormat.value,
+    click: () => {
+      selectedFormat.value = undefined;
+    },
+  },
+  {
+    label: "CSV",
+    key: "csv",
+    active: selectedFormat.value === "csv",
+    click: () => {
+      selectedFormat.value = selectedFormat.value === "csv" ? undefined : "csv";
+    },
+  },
+  {
+    label: "Binary",
+    key: "binary",
+    active: selectedFormat.value === "binary",
+    click: () => {
+      selectedFormat.value =
+        selectedFormat.value === "binary" ? undefined : "binary";
+    },
+  },
+]);
+
+function clearFilters() {
+  search.value = "";
+  selectedVendor.value = undefined;
+  selectedFormat.value = undefined;
+}
+
+const hasActiveFilters = computed(() => {
+  return search.value || selectedVendor.value || selectedFormat.value;
+});
+
+defineShortcuts({
+  "/": () => {
+    input.value?.inputRef?.focus();
+  },
+});
+
+const isMobile = ref(false);
+onMounted(() => {
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 640;
+  };
+  checkMobile();
+  window.addEventListener("resize", checkMobile);
+  onUnmounted(() => window.removeEventListener("resize", checkMobile));
+});
+
+// Landing page content
 const features = [
   {
     icon: "i-heroicons-document-text",
@@ -39,59 +148,232 @@ const compatibleApps = [
     name: "UltraLog",
     description:
       "High-performance ECU log viewer with multi-format support and computed channels.",
-    url: "https://ultralog.app",
-    icon: "i-heroicons-chart-bar",
+    url: "https://ultralog.co",
+    logo: "/ultralog-logo.png",
     status: "available",
   },
-];
-
-const vendors = [
-  { name: "Haltech", status: "ready" },
-  { name: "Link", status: "ready" },
-  { name: "AiM", status: "ready" },
-  { name: "ECUMaster", status: "ready" },
-  { name: "Speeduino", status: "ready" },
-  { name: "rusEFI", status: "ready" },
-  { name: "RomRaider", status: "ready" },
-  { name: "MoTeC", status: "planned" },
-  { name: "AEM", status: "planned" },
-  { name: "Holley", status: "planned" },
-  { name: "FuelTech", status: "planned" },
 ];
 </script>
 
 <template>
   <div>
-    <!-- Hero Section -->
-    <section class="py-24 px-4">
-      <UContainer>
+    <!-- Hero + Adapter Search Section -->
+    <UContainer class="relative">
+      <AdaptersMarquee :adapters="adapters" />
+
+      <div class="relative z-20 pt-24 pb-8">
         <div class="text-center max-w-4xl mx-auto">
           <UBadge color="primary" variant="subtle" class="mb-4">
             Open Source Specification
           </UBadge>
+
           <h1
             class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
           >
             The
             <span class="text-primary">OpenECU Spec</span>
           </h1>
-          <p class="text-lg sm:text-xl text-muted mb-4 max-w-2xl mx-auto">
-            An open specification for standardizing ECU log data formats.
+
+          <p class="text-lg sm:text-xl text-muted mb-8 max-w-2xl mx-auto">
+            An open specification for standardizing ECU log data formats. One
+            spec, every manufacturer, any analysis tool.
           </p>
-          <p class="text-base text-muted mb-8 max-w-2xl mx-auto">
-            Build spec-compatible applications that work with
-            <strong>any</strong> ECU system. One specification, every
-            manufacturer, any analysis tool.
-          </p>
-          <div class="flex flex-wrap justify-center gap-4">
-            <UButton to="/adapters" size="lg"> Browse Adapters </UButton>
-            <UButton to="/spec" size="lg" color="neutral" variant="outline">
-              Read the Spec
-            </UButton>
+
+          <!-- Search & Sort -->
+          <div class="max-w-2xl mx-auto">
+            <div class="flex flex-col sm:flex-row gap-2">
+              <UInput
+                ref="input"
+                v-model="search"
+                icon="i-heroicons-magnifying-glass"
+                placeholder="Search adapters..."
+                size="lg"
+                variant="subtle"
+                class="flex-1"
+                autocomplete="off"
+              >
+                <template #trailing>
+                  <UButton
+                    v-if="search"
+                    color="neutral"
+                    variant="link"
+                    size="lg"
+                    icon="i-heroicons-x-mark"
+                    @click="search = ''"
+                  />
+                  <UKbd v-else value="/" class="hidden sm:flex" />
+                </template>
+              </UInput>
+
+              <div v-if="!isMobile" class="flex gap-2">
+                <USelectMenu
+                  v-model="sortBy"
+                  :items="sortOptions"
+                  value-key="value"
+                  size="lg"
+                  color="neutral"
+                  variant="outline"
+                  class="w-32"
+                />
+                <UButton
+                  :icon="
+                    sortOrder === 'asc'
+                      ? 'i-heroicons-bars-arrow-up'
+                      : 'i-heroicons-bars-arrow-down'
+                  "
+                  size="lg"
+                  color="neutral"
+                  variant="outline"
+                  @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+                />
+              </div>
+            </div>
+
+            <!-- Mobile filters -->
+            <div v-if="isMobile" class="flex gap-2 mt-2">
+              <USelectMenu
+                v-model="selectedVendor"
+                :items="[
+                  { label: 'All Vendors', value: undefined },
+                  ...vendors.map((v) => ({
+                    label: v.charAt(0).toUpperCase() + v.slice(1),
+                    value: v,
+                  })),
+                ]"
+                value-key="value"
+                size="lg"
+                color="neutral"
+                variant="outline"
+                class="flex-1"
+                placeholder="Vendor"
+              />
+              <USelectMenu
+                v-model="sortBy"
+                :items="sortOptions"
+                value-key="value"
+                size="lg"
+                color="neutral"
+                variant="outline"
+                class="w-28"
+              />
+              <UButton
+                :icon="
+                  sortOrder === 'asc'
+                    ? 'i-heroicons-bars-arrow-up'
+                    : 'i-heroicons-bars-arrow-down'
+                "
+                size="lg"
+                color="neutral"
+                variant="outline"
+                @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+              />
+            </div>
+          </div>
+
+          <!-- Vendor Filter Chips (Desktop) -->
+          <div class="hidden sm:flex mt-6 flex-wrap gap-1.5 justify-center">
+            <UButton
+              v-for="vendor in vendorButtons"
+              :key="vendor.key"
+              :label="vendor.label"
+              color="neutral"
+              :variant="vendor.active ? 'subtle' : 'outline'"
+              :class="vendor.active ? 'ring-2 ring-primary' : ''"
+              size="sm"
+              @click="vendor.click"
+            />
+          </div>
+
+          <!-- Format Filter -->
+          <div class="flex mt-4 gap-1.5 justify-center">
+            <UButton
+              v-for="format in formatButtons"
+              :key="format.key ?? 'all'"
+              :label="format.label"
+              color="neutral"
+              :variant="format.active ? 'soft' : 'ghost'"
+              size="xs"
+              @click="format.click"
+            />
           </div>
         </div>
-      </UContainer>
-    </section>
+      </div>
+
+      <!-- Adapter Results -->
+      <div class="relative z-20 pb-16">
+        <div class="flex justify-between items-center mb-4 text-sm text-muted">
+          <div class="flex items-center gap-2">
+            <span v-if="hasActiveFilters">
+              Showing {{ filteredAdapters.length }} of
+              {{ adapters.length }} adapters
+            </span>
+            <span v-else> {{ adapters.length }} adapters available </span>
+            <UButton
+              v-if="hasActiveFilters"
+              color="neutral"
+              variant="link"
+              size="xs"
+              icon="i-heroicons-x-mark"
+              @click="clearFilters"
+            >
+              Clear filters
+            </UButton>
+          </div>
+          <NuxtLink
+            to="/contribute"
+            class="hidden md:flex items-center gap-1 hover:text-primary transition-colors"
+          >
+            Create your own adapter
+            <UIcon name="i-heroicons-arrow-right" class="size-4" />
+          </NuxtLink>
+        </div>
+
+        <!-- Loading State -->
+        <div
+          v-if="loading"
+          class="flex flex-col items-center justify-center py-24"
+        >
+          <UIcon
+            name="i-heroicons-arrow-path"
+            class="size-8 text-primary animate-spin mb-4"
+          />
+          <p class="text-muted">Loading adapters...</p>
+        </div>
+
+        <!-- Adapter Grid -->
+        <div
+          v-else-if="filteredAdapters.length > 0"
+          class="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4"
+        >
+          <AdapterCard
+            v-for="adapter in filteredAdapters"
+            :key="adapter.id"
+            :adapter="adapter"
+          />
+        </div>
+
+        <!-- Empty State -->
+        <UCard v-else class="text-center py-12">
+          <UIcon
+            name="i-heroicons-magnifying-glass"
+            class="size-12 text-muted mx-auto mb-4"
+          />
+          <h3 class="font-semibold mb-2">No adapters found</h3>
+          <p class="text-muted mb-4">
+            There's no adapter matching "{{ search }}" yet. Be the first to
+            create it!
+          </p>
+          <div class="flex gap-2 justify-center">
+            <UButton color="neutral" variant="soft" to="/contribute">
+              Contribute on GitHub
+            </UButton>
+            <UButton color="neutral" variant="ghost" @click="clearFilters">
+              Clear filters
+            </UButton>
+          </div>
+        </UCard>
+      </div>
+    </UContainer>
 
     <!-- What is OpenECU Alliance -->
     <section class="py-16 px-4 bg-elevated">
@@ -207,8 +489,14 @@ const vendors = [
             class="hover:ring-2 hover:ring-primary/50 transition-all cursor-pointer"
           >
             <div class="flex items-center gap-4">
-              <div class="bg-primary/10 p-3 rounded-xl shrink-0">
-                <UIcon :name="app.icon" class="size-6 text-primary" />
+              <div class="bg-primary/10 p-4 rounded-xl shrink-0">
+                <img
+                  v-if="app.logo"
+                  :src="app.logo"
+                  :alt="app.name"
+                  class="size-10 object-contain"
+                />
+                <UIcon v-else name="i-heroicons-cube" class="size-10 text-primary" />
               </div>
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
@@ -237,37 +525,8 @@ const vendors = [
       </UContainer>
     </section>
 
-    <!-- Supported Vendors -->
-    <section class="py-16 px-4">
-      <UContainer>
-        <div class="text-center mb-12">
-          <h2 class="text-2xl sm:text-3xl font-bold mb-4">
-            Supported ECU Systems
-          </h2>
-          <p class="text-muted max-w-2xl mx-auto">
-            Adapters available for these ECU manufacturers. More coming soon.
-          </p>
-        </div>
-
-        <div class="flex flex-wrap justify-center gap-3">
-          <UBadge
-            v-for="vendor in vendors"
-            :key="vendor.name"
-            :color="vendor.status === 'ready' ? 'success' : 'neutral'"
-            variant="subtle"
-            size="lg"
-          >
-            <template v-if="vendor.status === 'ready'">
-              <UIcon name="i-heroicons-check-circle" class="size-3.5 mr-1" />
-            </template>
-            {{ vendor.name }}
-          </UBadge>
-        </div>
-      </UContainer>
-    </section>
-
     <!-- For Developers -->
-    <section class="py-16 px-4 bg-elevated">
+    <section class="py-16 px-4">
       <UContainer>
         <div class="max-w-4xl mx-auto">
           <div class="text-center mb-12">
@@ -312,8 +571,8 @@ const vendors = [
                 </li>
               </ul>
               <div class="mt-4">
-                <UButton to="/docs" variant="soft" size="sm">
-                  Read Documentation
+                <UButton to="/spec" variant="soft" size="sm">
+                  Read the Spec
                 </UButton>
               </div>
             </UCard>
@@ -358,27 +617,6 @@ const vendors = [
             </UCard>
           </div>
         </div>
-      </UContainer>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-16 px-4">
-      <UContainer>
-        <UCard class="text-center">
-          <div class="py-8 px-4">
-            <h2 class="text-2xl font-bold mb-4">Ready to get started?</h2>
-            <p class="text-muted mb-6 max-w-xl mx-auto">
-              Browse the adapter library, read the specification, or start
-              building a spec-compatible application.
-            </p>
-            <div class="flex flex-wrap justify-center gap-4">
-              <UButton to="/adapters"> Browse Adapters </UButton>
-              <UButton to="/spec" color="neutral" variant="soft">
-                Read the Spec
-              </UButton>
-            </div>
-          </div>
-        </UCard>
       </UContainer>
     </section>
   </div>

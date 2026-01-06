@@ -23,7 +23,7 @@ const links = [
   {
     label: "Ecosystem",
     children: [
-      { label: "UltraLog", to: "https://ultralog.app", target: "_blank" },
+      { label: "UltraLog", to: "https://ultralog.co", target: "_blank" },
     ],
   },
 ];

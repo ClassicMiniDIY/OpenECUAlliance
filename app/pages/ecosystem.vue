@@ -10,8 +10,8 @@ const compatibleApps = [
     name: "UltraLog",
     description:
       "High-performance ECU log viewer written in Rust. Features multi-format support, computed channels, scatter plots, and PDF/PNG export.",
-    url: "https://ultralog.app",
-    icon: "i-heroicons-chart-bar",
+    url: "https://ultralog.co",
+    logo: "/ultralog-logo.png",
     status: "available" as const,
     features: [
       "Multi-file tabs",
@@ -131,8 +131,14 @@ const donateProjects = [
             class="hover:ring-2 hover:ring-primary/50 transition-all"
           >
             <div class="flex flex-col sm:flex-row gap-4">
-              <div class="bg-primary/10 p-4 rounded-xl shrink-0 self-start">
-                <UIcon :name="app.icon" class="size-8 text-primary" />
+              <div class="bg-primary/10 p-5 rounded-xl shrink-0 self-start">
+                <img
+                  v-if="app.logo"
+                  :src="app.logo"
+                  :alt="app.name"
+                  class="size-14 object-contain"
+                />
+                <UIcon v-else name="i-heroicons-cube" class="size-14 text-primary" />
               </div>
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">

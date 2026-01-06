@@ -16,7 +16,7 @@ This is the Nuxt 4 website that serves as the public face of the OpenECU Allianc
 
 - **Adapter Browser** - Search and explore adapters for different ECU systems
 - **Specification Documentation** - Reference for the OpenECU Spec format
-- **Ecosystem Showcase** - Spec-compatible applications like [UltraLog](https://ultralog.app)
+- **Ecosystem Showcase** - Spec-compatible applications like [UltraLog](https://ultralog.co)
 - **Contribution Guide** - How to create and submit new adapters
 
 ## Related Repositories
