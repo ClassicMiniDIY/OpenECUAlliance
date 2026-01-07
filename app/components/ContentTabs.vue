@@ -71,11 +71,7 @@ const tabs = computed(() => [
       <span>{{ tab.label }}</span>
       <span
         class="px-1.5 py-0.5 rounded text-xs"
-        :class="[
-          selected === tab.key
-            ? `bg-${tab.color}/20`
-            : 'bg-muted/50',
-        ]"
+        :class="[selected === tab.key ? `bg-${tab.color}/20` : 'bg-muted/50']"
       >
         {{ tab.count }}
       </span>

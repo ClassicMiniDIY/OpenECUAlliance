@@ -121,21 +121,14 @@ function toggleMessage(msgId: string) {
       <div v-else-if="protocol">
         <!-- Header -->
         <div class="flex items-start gap-4 mb-8">
-          <div
-            class="bg-success/10 p-4 rounded-xl shrink-0"
-            aria-hidden="true"
-          >
+          <div class="bg-success/10 p-4 rounded-xl shrink-0" aria-hidden="true">
             <img
               v-if="protocol.branding?.icon"
               :src="protocol.branding.icon"
               :alt="`${vendor} logo`"
               class="size-12 object-contain"
             />
-            <UIcon
-              v-else
-              :name="fallbackIcon"
-              class="size-12 text-success"
-            />
+            <UIcon v-else :name="fallbackIcon" class="size-12 text-success" />
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-3 mb-2">

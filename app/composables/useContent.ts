@@ -1,12 +1,25 @@
 import type { ContentType, ContentListItem } from "~/types/content";
 
 export function useContent() {
-  const { adapters, loading: adaptersLoading, refresh: refreshAdapters } = useAdapters();
-  const { protocols, loading: protocolsLoading, refresh: refreshProtocols } = useProtocols();
-  const { models, loading: modelsLoading, refresh: refreshModels } = useModels();
+  const {
+    adapters,
+    loading: adaptersLoading,
+    refresh: refreshAdapters,
+  } = useAdapters();
+  const {
+    protocols,
+    loading: protocolsLoading,
+    refresh: refreshProtocols,
+  } = useProtocols();
+  const {
+    models,
+    loading: modelsLoading,
+    refresh: refreshModels,
+  } = useModels();
 
   const loading = computed(
-    () => adaptersLoading.value || protocolsLoading.value || modelsLoading.value,
+    () =>
+      adaptersLoading.value || protocolsLoading.value || modelsLoading.value,
   );
 
   /**
@@ -95,7 +108,11 @@ export function useContent() {
   }): ContentListItem[] {
     return allContent.value.filter((item) => {
       // Type filter
-      if (options.type && options.type !== "all" && item.type !== options.type) {
+      if (
+        options.type &&
+        options.type !== "all" &&
+        item.type !== options.type
+      ) {
         return false;
       }
 

@@ -11,46 +11,84 @@ const specTypes = [
   {
     id: "adapter",
     name: "Adapters",
-    description: "Log file format definitions that map vendor-specific channels to canonical identifiers.",
+    description:
+      "Log file format definitions that map vendor-specific channels to canonical identifiers.",
     icon: "i-heroicons-document-text",
     color: "primary",
     fileExtension: ".adapter.yaml",
-    schemaUrl: "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/adapter.schema.json",
+    schemaUrl:
+      "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/adapter.schema.json",
     docsUrl: "/docs/creating-adapters",
   },
   {
     id: "protocol",
     name: "Protocols",
-    description: "CAN Bus message and signal definitions with DBC export support.",
+    description:
+      "CAN Bus message and signal definitions with DBC export support.",
     icon: "i-heroicons-signal",
     color: "success",
     fileExtension: ".protocol.yaml",
-    schemaUrl: "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/protocol.schema.json",
+    schemaUrl:
+      "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/protocol.schema.json",
     docsUrl: "/docs/creating-protocols",
   },
   {
     id: "model",
     name: "3D Models",
-    description: "Printable mounts, enclosures, and accessories with print settings metadata.",
+    description:
+      "Printable mounts, enclosures, and accessories with print settings metadata.",
     icon: "i-heroicons-cube",
     color: "warning",
     fileExtension: ".model.yaml",
-    schemaUrl: "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/model.schema.json",
+    schemaUrl:
+      "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/model.schema.json",
     docsUrl: "/docs/creating-models",
   },
 ];
 
 const commonFields = [
-  { field: "openecualliance", description: "Spec version (currently \"1.0\")", required: true },
-  { field: "type", description: "Content type: adapter, protocol, or model", required: true },
-  { field: "id", description: "Unique identifier (lowercase, hyphens)", required: true },
+  {
+    field: "openecualliance",
+    description: 'Spec version (currently "1.0")',
+    required: true,
+  },
+  {
+    field: "type",
+    description: "Content type: adapter, protocol, or model",
+    required: true,
+  },
+  {
+    field: "id",
+    description: "Unique identifier (lowercase, hyphens)",
+    required: true,
+  },
   { field: "name", description: "Human-readable display name", required: true },
-  { field: "version", description: "Semantic version (e.g., 1.0.0)", required: true },
-  { field: "vendor", description: "ECU vendor or manufacturer", required: true },
-  { field: "description", description: "Detailed description", required: false },
-  { field: "website", description: "URL for more information", required: false },
+  {
+    field: "version",
+    description: "Semantic version (e.g., 1.0.0)",
+    required: true,
+  },
+  {
+    field: "vendor",
+    description: "ECU vendor or manufacturer",
+    required: true,
+  },
+  {
+    field: "description",
+    description: "Detailed description",
+    required: false,
+  },
+  {
+    field: "website",
+    description: "URL for more information",
+    required: false,
+  },
   { field: "branding", description: "Logo, icon, colors", required: false },
-  { field: "metadata", description: "Author, license, changelog", required: false },
+  {
+    field: "metadata",
+    description: "Author, license, changelog",
+    required: false,
+  },
 ];
 
 const canonicalChannels = [
@@ -119,7 +157,8 @@ channels:
           OpenECU Specification
         </h1>
         <p class="text-lg text-muted">
-          YAML-based specifications for ECU adapters, CAN protocols, and 3D models.
+          YAML-based specifications for ECU adapters, CAN protocols, and 3D
+          models.
         </p>
       </div>
 
@@ -131,14 +170,21 @@ channels:
             <div class="flex flex-col h-full">
               <div class="flex items-center gap-3 mb-3">
                 <div :class="`bg-${spec.color}/10`" class="p-2 rounded-lg">
-                  <UIcon :name="spec.icon" :class="`size-5 text-${spec.color}`" />
+                  <UIcon
+                    :name="spec.icon"
+                    :class="`size-5 text-${spec.color}`"
+                  />
                 </div>
                 <div>
                   <h3 class="font-semibold">{{ spec.name }}</h3>
-                  <code class="text-xs text-muted">{{ spec.fileExtension }}</code>
+                  <code class="text-xs text-muted">{{
+                    spec.fileExtension
+                  }}</code>
                 </div>
               </div>
-              <p class="text-sm text-muted mb-4 flex-1">{{ spec.description }}</p>
+              <p class="text-sm text-muted mb-4 flex-1">
+                {{ spec.description }}
+              </p>
               <div class="flex gap-2">
                 <UButton
                   :to="spec.schemaUrl"
@@ -186,7 +232,9 @@ channels:
                   class="border-b border-default last:border-0"
                 >
                   <td class="py-2 pr-4">
-                    <code class="bg-muted px-1.5 py-0.5 rounded text-primary text-xs">
+                    <code
+                      class="bg-muted px-1.5 py-0.5 rounded text-primary text-xs"
+                    >
                       {{ field.field }}
                     </code>
                   </td>
@@ -217,21 +265,29 @@ channels:
       <section class="mb-12">
         <h2 class="text-xl font-semibold mb-4">Canonical Channel IDs</h2>
         <p class="text-muted mb-4">
-          Standardized identifiers for common ECU channels. Use these in adapters for cross-format compatibility.
+          Standardized identifiers for common ECU channels. Use these in
+          adapters for cross-format compatibility.
         </p>
         <UCard>
-          <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1 text-sm">
+          <div
+            class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1 text-sm"
+          >
             <div
               v-for="channel in canonicalChannels"
               :key="channel.id"
               class="flex items-center gap-2 py-1"
             >
-              <code class="bg-muted px-1.5 py-0.5 rounded text-xs">{{ channel.id }}</code>
+              <code class="bg-muted px-1.5 py-0.5 rounded text-xs">{{
+                channel.id
+              }}</code>
               <span class="text-muted">{{ channel.name }}</span>
             </div>
           </div>
           <p class="text-xs text-muted mt-4">
-            <NuxtLink to="/docs/creating-adapters#channels" class="text-primary hover:underline">
+            <NuxtLink
+              to="/docs/creating-adapters#channels"
+              class="text-primary hover:underline"
+            >
               View full list
             </NuxtLink>
           </p>

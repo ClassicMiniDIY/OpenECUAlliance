@@ -123,9 +123,9 @@ textarea:focus-visible {
 }
 
 /* Ensure minimum touch target size (WCAG AAA - 44x44px) */
-button,
+button:not([role="switch"]),
 a,
-[role="button"],
+[role="button"]:not([role="switch"]),
 input[type="checkbox"],
 input[type="radio"] {
   min-height: 44px;

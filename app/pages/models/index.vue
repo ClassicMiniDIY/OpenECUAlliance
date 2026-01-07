@@ -176,10 +176,10 @@ const searchAnnouncement = computed(() => {
           </UButton>
         </div>
         <NuxtLink
-          to="/contribute"
+          to="/models/upload"
           class="hidden md:flex items-center gap-1 hover:text-warning transition-colors"
         >
-          Submit a model
+          Upload a model
           <UIcon name="i-heroicons-arrow-right" class="size-4" />
         </NuxtLink>
       </div>
@@ -221,8 +221,8 @@ const searchAnnouncement = computed(() => {
           There's no model matching your search yet. Be the first to create it!
         </p>
         <div class="flex gap-2 justify-center">
-          <UButton color="warning" variant="soft" to="/contribute">
-            Contribute on GitHub
+          <UButton color="warning" variant="soft" to="/models/upload">
+            Upload a model
           </UButton>
           <UButton color="neutral" variant="ghost" @click="clearFilters">
             Clear filters

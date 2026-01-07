@@ -1,4 +1,4 @@
-import type { Model, ModelCategory } from "~/types/model";
+import type { UserModel, ModelCategory } from "~/types/model";
 
 export function useModels() {
   const {
@@ -6,7 +6,7 @@ export function useModels() {
     status,
     refresh,
     error,
-  } = useFetch<Model[]>("/api/models", {
+  } = useFetch<UserModel[]>("/api/models", {
     key: "models-list",
     default: () => [],
     getCachedData(key, nuxtApp) {
@@ -20,15 +20,13 @@ export function useModels() {
     const vendorSet = new Set(
       (models.value ?? [])
         .map((m) => m.vendor)
-        .filter((v): v is string => v !== undefined),
+        .filter((v): v is string => v !== null && v !== undefined),
     );
     return Array.from(vendorSet).sort();
   });
 
   const categories = computed((): ModelCategory[] => {
-    const categorySet = new Set(
-      (models.value ?? []).map((m) => m.category),
-    );
+    const categorySet = new Set((models.value ?? []).map((m) => m.category));
     return Array.from(categorySet).sort() as ModelCategory[];
   });
 
@@ -52,7 +50,8 @@ export function useModels() {
         const matchesSearch =
           model.name.toLowerCase().includes(search) ||
           model.vendor?.toLowerCase().includes(search) ||
-          model.description?.toLowerCase().includes(search);
+          model.description?.toLowerCase().includes(search) ||
+          model.author?.username?.toLowerCase().includes(search);
         if (!matchesSearch) return false;
       }
 

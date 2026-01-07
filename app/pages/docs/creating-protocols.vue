@@ -216,19 +216,31 @@ git push origin add-vendorname-protocol`,
               <h4 class="font-semibold mb-2">Use Cases:</h4>
               <ul class="space-y-1 text-sm text-muted">
                 <li class="flex items-center gap-2">
-                  <UIcon name="i-heroicons-signal" class="size-4 text-success" />
+                  <UIcon
+                    name="i-heroicons-signal"
+                    class="size-4 text-success"
+                  />
                   Real-time CAN data logging
                 </li>
                 <li class="flex items-center gap-2">
-                  <UIcon name="i-heroicons-signal" class="size-4 text-success" />
+                  <UIcon
+                    name="i-heroicons-signal"
+                    class="size-4 text-success"
+                  />
                   Digital dashboards
                 </li>
                 <li class="flex items-center gap-2">
-                  <UIcon name="i-heroicons-signal" class="size-4 text-success" />
+                  <UIcon
+                    name="i-heroicons-signal"
+                    class="size-4 text-success"
+                  />
                   Data acquisition systems
                 </li>
                 <li class="flex items-center gap-2">
-                  <UIcon name="i-heroicons-signal" class="size-4 text-success" />
+                  <UIcon
+                    name="i-heroicons-signal"
+                    class="size-4 text-success"
+                  />
                   CANalyzer / PCAN-View integration
                 </li>
               </ul>

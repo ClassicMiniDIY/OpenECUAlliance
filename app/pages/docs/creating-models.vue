@@ -1,135 +1,9 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: "Creating 3D Models - OpenECU Alliance",
+  title: "Submitting 3D Models - OpenECU Alliance",
   description:
-    "Step-by-step guide to contributing 3D printable ECU mounts, enclosures, and accessories.",
+    "Guide to submitting 3D printable ECU mounts, enclosures, and accessories to the OpenECU Alliance.",
 });
-
-const codeExamples = {
-  step1: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
-cd OECUASpecs`,
-
-  step2: `mkdir -p models/mounts/my-ecu-mount`,
-
-  step3: `touch models/mounts/my-ecu-mount/my-ecu-mount.model.yaml`,
-
-  step4: `openecualliance: "1.0"
-type: model
-id: haltech-elite-2500-mount
-name: "Haltech Elite 2500 ECU Mount"
-version: "1.0.0"
-vendor: haltech
-description: |
-  Universal mounting bracket for Haltech Elite 2500 ECU.
-  Designed for firewall or bulkhead mounting with vibration isolation.
-
-category: mounts  # mounts | enclosures | brackets | adapters | accessories
-
-compatibility:
-  ecus:
-    - vendor: haltech
-      models: ["Elite 2500", "Elite 2000"]
-  notes: "Fits any flat surface with 4x M6 mounting holes"
-
-files:
-  - filename: haltech-elite-mount.stl
-    format: stl
-    description: "Print-ready mesh"
-    primary: true
-
-  - filename: haltech-elite-mount.step
-    format: step
-    description: "CAD source file for modifications"
-
-  - filename: haltech-elite-mount.3mf
-    format: 3mf
-    description: "3MF with embedded print settings"
-
-images:
-  - filename: preview.jpg
-    type: render
-    description: "3D render of mounted ECU"
-    primary: true
-
-  - filename: installed.jpg
-    type: photo
-    description: "Installed in engine bay"
-
-printing:
-  recommended_material: "PETG"
-  alternative_materials: ["ASA", "ABS", "Nylon"]
-  layer_height: 0.2
-  infill_percent: 40
-  wall_count: 3
-  supports_required: false
-  orientation: "Mounting holes facing up"
-  estimated_time_hours: 4.5
-  estimated_filament_grams: 85
-  notes: |
-    - Use at least 3 perimeters for strength
-    - PETG recommended for heat resistance
-    - PLA NOT recommended for engine bay use
-
-hardware:
-  - item: "M6 x 20mm Socket Head Cap Screw"
-    quantity: 4
-    notes: "For mounting to bulkhead"
-
-  - item: "M4 x 12mm Pan Head Screw"
-    quantity: 4
-    notes: "For ECU attachment"
-
-  - item: "M6 Rubber Vibration Isolator"
-    quantity: 4
-    optional: true
-    notes: "Recommended for street use"
-
-assembly:
-  difficulty: "easy"  # easy | moderate | difficult
-  steps:
-    - "Mark mounting hole positions using the bracket as a template"
-    - "Drill 4x 6.5mm holes for M6 bolts"
-    - "Install vibration isolators if using"
-    - "Mount bracket with M6 hardware"
-    - "Secure ECU to bracket with M4 screws"
-  warnings:
-    - "Ensure adequate cooling airflow around ECU"
-    - "Route wiring away from exhaust heat"
-
-metadata:
-  author: "Your Name"
-  license: "CC-BY-SA-4.0"
-  changelog:
-    - version: "1.0.0"
-      date: "2025-01-06"
-      changes:
-        - "Initial release"`,
-
-  step5: `# Install validation tool (one-time)
-npm install -g ajv-cli
-
-# Validate
-ajv validate -s schema/model.schema.json -d models/mounts/my-ecu-mount/my-ecu-mount.model.yaml`,
-
-  step6: `git checkout -b add-haltech-mount
-git add models/mounts/haltech-elite-mount/
-git commit -m "Add ECU mount for Haltech Elite 2500"
-git push origin add-haltech-mount`,
-
-  directoryStructure: `models/
-├── mounts/                    # ECU mounting brackets
-│   └── haltech-elite-mount/
-│       ├── haltech-elite-mount.model.yaml
-│       ├── haltech-elite-mount.stl
-│       ├── haltech-elite-mount.step
-│       └── images/
-│           ├── preview.jpg
-│           └── installed.jpg
-├── enclosures/                # Protective cases
-├── brackets/                  # Sensor brackets
-├── adapters/                  # Physical connector adapters
-└── accessories/               # Misc accessories`,
-};
 
 const categories = [
   {
@@ -191,6 +65,64 @@ const materials = [
     notes: "Low heat resistance - will deform in engine bay",
   },
 ];
+
+const supportedFormats = [
+  { format: "STL", required: true, description: "Print-ready mesh file" },
+  {
+    format: "STEP",
+    required: false,
+    description: "CAD source for modifications",
+  },
+  {
+    format: "3MF",
+    required: false,
+    description: "With embedded print settings",
+  },
+  { format: "OBJ", required: false, description: "Alternative mesh format" },
+  {
+    format: "F3D/F3Z",
+    required: false,
+    description: "Fusion 360 source files",
+  },
+];
+
+const uploadSteps = [
+  {
+    step: 1,
+    title: "Create an Account",
+    description: "Sign up with Google, Apple, or email to start contributing.",
+  },
+  {
+    step: 2,
+    title: "Start Upload",
+    description:
+      "Navigate to Models → Upload Model to begin the submission wizard.",
+  },
+  {
+    step: 3,
+    title: "Add Files",
+    description:
+      "Upload your STL and optional STEP/3MF files. We recommend including source files for modifications.",
+  },
+  {
+    step: 4,
+    title: "Add Images",
+    description:
+      "Upload renders, photos of your prints, and installation shots. A primary image is required.",
+  },
+  {
+    step: 5,
+    title: "Fill in Details",
+    description:
+      "Provide print settings, hardware requirements, and assembly instructions.",
+  },
+  {
+    step: 6,
+    title: "Submit for Review",
+    description:
+      "Submit your model for moderator review. You'll be notified when it's approved.",
+  },
+];
 </script>
 
 <template>
@@ -210,12 +142,40 @@ const materials = [
         <div class="flex items-center gap-3 mb-2">
           <UBadge color="warning" variant="subtle">3D Model</UBadge>
         </div>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Creating 3D Models</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">
+          Submitting 3D Models
+        </h1>
         <p class="text-lg text-muted">
-          Step-by-step guide to contributing 3D printable ECU mounts,
-          enclosures, and accessories.
+          Share your 3D printable ECU mounts, enclosures, and accessories with
+          the community.
         </p>
       </div>
+
+      <!-- Quick Start CTA -->
+      <UCard class="mb-12 bg-warning/5 border-warning/20">
+        <div
+          class="flex flex-col sm:flex-row items-start sm:items-center gap-4"
+        >
+          <div class="bg-warning/10 p-3 rounded-xl shrink-0">
+            <UIcon
+              name="i-heroicons-arrow-up-tray"
+              class="size-8 text-warning"
+            />
+          </div>
+          <div class="flex-1">
+            <h2 class="font-semibold text-lg mb-1">
+              Ready to share your design?
+            </h2>
+            <p class="text-muted text-sm">
+              Upload your 3D models directly through our website. No GitHub
+              account required.
+            </p>
+          </div>
+          <UButton to="/models/upload" color="warning" size="lg">
+            Upload Model
+          </UButton>
+        </div>
+      </UCard>
 
       <!-- Categories -->
       <section class="mb-12">
@@ -257,7 +217,7 @@ const materials = [
               />
               <div>
                 <strong>Test print your design</strong> - Verify fitment and
-                structural integrity.
+                structural integrity before submitting.
               </div>
             </li>
             <li class="flex items-start gap-3">
@@ -267,7 +227,7 @@ const materials = [
               />
               <div>
                 <strong>Take photos</strong> - Document your prints, especially
-                installed photos.
+                installed photos. These help others see the real result.
               </div>
             </li>
             <li class="flex items-start gap-3">
@@ -276,12 +236,32 @@ const materials = [
                 class="size-5 text-success shrink-0 mt-0.5"
               />
               <div>
-                <strong>Include source files</strong> - Provide STEP files for
-                modifications.
+                <strong>Include source files</strong> - Provide STEP files so
+                others can modify for their needs.
               </div>
             </li>
           </ul>
         </UCard>
+      </section>
+
+      <!-- How to Submit -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">How to Submit</h2>
+        <div class="space-y-4">
+          <UCard v-for="item in uploadSteps" :key="item.step">
+            <div class="flex items-start gap-4">
+              <div
+                class="flex items-center justify-center size-10 bg-warning text-warning-foreground rounded-full font-bold shrink-0"
+              >
+                {{ item.step }}
+              </div>
+              <div>
+                <h3 class="font-semibold mb-1">{{ item.title }}</h3>
+                <p class="text-sm text-muted">{{ item.description }}</p>
+              </div>
+            </div>
+          </UCard>
+        </div>
       </section>
 
       <!-- Material Guide -->
@@ -321,186 +301,43 @@ const materials = [
         </UCard>
       </section>
 
-      <!-- Directory Structure -->
+      <!-- Supported File Formats -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Directory Structure</h2>
-        <UCard>
-          <CodeBlock lang="text" :code="codeExamples.directoryStructure" />
-        </UCard>
-      </section>
-
-      <!-- Step by Step -->
-      <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Step-by-Step Guide</h2>
-
-        <!-- Step 1 -->
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div
-              class="flex items-center justify-center size-10 bg-warning text-warning-foreground rounded-full font-bold shrink-0"
-            >
-              1
-            </div>
-            <h3 class="text-xl font-semibold">Fork and Clone</h3>
-          </div>
-          <UCard>
-            <CodeBlock lang="bash" :code="codeExamples.step1" />
-          </UCard>
-        </div>
-
-        <!-- Step 2 -->
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div
-              class="flex items-center justify-center size-10 bg-warning text-warning-foreground rounded-full font-bold shrink-0"
-            >
-              2
-            </div>
-            <h3 class="text-xl font-semibold">Create Model Directory</h3>
-          </div>
-          <UCard>
-            <CodeBlock lang="bash" :code="codeExamples.step2" />
-            <p class="text-sm text-muted mt-3">
-              Choose the appropriate category folder:
-              <code class="bg-muted px-1 rounded">mounts</code>,
-              <code class="bg-muted px-1 rounded">enclosures</code>,
-              <code class="bg-muted px-1 rounded">brackets</code>,
-              <code class="bg-muted px-1 rounded">adapters</code>, or
-              <code class="bg-muted px-1 rounded">accessories</code>.
-            </p>
-          </UCard>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div
-              class="flex items-center justify-center size-10 bg-warning text-warning-foreground rounded-full font-bold shrink-0"
-            >
-              3
-            </div>
-            <h3 class="text-xl font-semibold">Create Model Metadata File</h3>
-          </div>
-          <UCard>
-            <CodeBlock lang="bash" :code="codeExamples.step3" />
-            <p class="text-sm text-muted mt-3">
-              Naming convention:
-              <code class="bg-muted px-1 rounded">{model-id}.model.yaml</code>
-            </p>
-          </UCard>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div
-              class="flex items-center justify-center size-10 bg-warning text-warning-foreground rounded-full font-bold shrink-0"
-            >
-              4
-            </div>
-            <h3 class="text-xl font-semibold">Write the Metadata</h3>
-          </div>
-          <UCard>
-            <CodeBlock lang="yaml" :code="codeExamples.step4" />
-          </UCard>
-        </div>
-
-        <!-- Step 5 -->
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div
-              class="flex items-center justify-center size-10 bg-warning text-warning-foreground rounded-full font-bold shrink-0"
-            >
-              5
-            </div>
-            <h3 class="text-xl font-semibold">Validate Your Model</h3>
-          </div>
-          <UCard>
-            <CodeBlock lang="bash" :code="codeExamples.step5" />
-          </UCard>
-        </div>
-
-        <!-- Step 6 -->
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-4">
-            <div
-              class="flex items-center justify-center size-10 bg-warning text-warning-foreground rounded-full font-bold shrink-0"
-            >
-              6
-            </div>
-            <h3 class="text-xl font-semibold">Submit Pull Request</h3>
-          </div>
-          <UCard>
-            <CodeBlock lang="bash" :code="codeExamples.step6" />
-            <p class="text-sm text-muted mt-3">
-              Include photos of your test prints in the PR description!
-            </p>
-          </UCard>
-        </div>
-      </section>
-
-      <!-- Required Files -->
-      <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Required Files</h2>
+        <h2 class="text-2xl font-bold mb-4">Supported File Formats</h2>
         <UCard>
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead>
                 <tr class="border-b border-default">
-                  <th class="text-left py-2 pr-4 font-semibold">File Type</th>
+                  <th class="text-left py-2 pr-4 font-semibold">Format</th>
                   <th class="text-left py-2 pr-4 font-semibold">Required</th>
                   <th class="text-left py-2 font-semibold">Purpose</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="border-b border-default">
-                  <td class="py-2 pr-4 font-medium">.model.yaml</td>
+                <tr
+                  v-for="fmt in supportedFormats"
+                  :key="fmt.format"
+                  class="border-b border-default"
+                >
+                  <td class="py-2 pr-4 font-medium">{{ fmt.format }}</td>
                   <td class="py-2 pr-4">
-                    <UBadge color="success" variant="subtle" size="sm"
-                      >Required</UBadge
+                    <UBadge
+                      :color="fmt.required ? 'success' : 'neutral'"
+                      variant="subtle"
+                      size="sm"
                     >
+                      {{ fmt.required ? "Required" : "Optional" }}
+                    </UBadge>
                   </td>
-                  <td class="py-2 text-muted">Metadata and print settings</td>
-                </tr>
-                <tr class="border-b border-default">
-                  <td class="py-2 pr-4 font-medium">.stl</td>
-                  <td class="py-2 pr-4">
-                    <UBadge color="success" variant="subtle" size="sm"
-                      >Required</UBadge
-                    >
-                  </td>
-                  <td class="py-2 text-muted">Print-ready mesh file</td>
-                </tr>
-                <tr class="border-b border-default">
-                  <td class="py-2 pr-4 font-medium">.step</td>
-                  <td class="py-2 pr-4">
-                    <UBadge color="warning" variant="subtle" size="sm"
-                      >Recommended</UBadge
-                    >
-                  </td>
-                  <td class="py-2 text-muted">CAD source for modifications</td>
-                </tr>
-                <tr class="border-b border-default">
-                  <td class="py-2 pr-4 font-medium">.3mf</td>
-                  <td class="py-2 pr-4">
-                    <UBadge color="neutral" variant="subtle" size="sm"
-                      >Optional</UBadge
-                    >
-                  </td>
-                  <td class="py-2 text-muted">With embedded print settings</td>
-                </tr>
-                <tr class="border-b border-default">
-                  <td class="py-2 pr-4 font-medium">images/</td>
-                  <td class="py-2 pr-4">
-                    <UBadge color="success" variant="subtle" size="sm"
-                      >Required</UBadge
-                    >
-                  </td>
-                  <td class="py-2 text-muted">Preview and installed photos</td>
+                  <td class="py-2 text-muted">{{ fmt.description }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
+          <p class="text-xs text-muted mt-4">
+            Maximum file size: 50MB per file, 200MB total per model.
+          </p>
         </UCard>
       </section>
 
@@ -510,10 +347,6 @@ const materials = [
         <UCard>
           <p class="text-muted mb-4">Before submitting, verify:</p>
           <ul class="space-y-2 text-sm">
-            <li class="flex items-center gap-2">
-              <UIcon name="i-heroicons-check" class="size-4 text-success" />
-              Model metadata validates against JSON Schema
-            </li>
             <li class="flex items-center gap-2">
               <UIcon name="i-heroicons-check" class="size-4 text-success" />
               STL file is watertight (no holes in mesh)
@@ -540,22 +373,66 @@ const materials = [
             </li>
             <li class="flex items-center gap-2">
               <UIcon name="i-heroicons-check" class="size-4 text-success" />
-              License is appropriate (CC-BY-SA recommended)
+              License selection is appropriate (CC-BY-SA recommended)
             </li>
           </ul>
+        </UCard>
+      </section>
+
+      <!-- Moderation Process -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Moderation Process</h2>
+        <UCard>
+          <p class="text-muted mb-4">
+            All submissions are reviewed by moderators before being published.
+            This helps maintain quality and ensures designs are safe and
+            functional.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div class="text-center p-4">
+              <div
+                class="size-12 mx-auto mb-2 rounded-full bg-warning/10 flex items-center justify-center"
+              >
+                <UIcon name="i-heroicons-clock" class="size-6 text-warning" />
+              </div>
+              <p class="font-medium">Pending</p>
+              <p class="text-xs text-muted">Awaiting review</p>
+            </div>
+            <div class="text-center p-4">
+              <div
+                class="size-12 mx-auto mb-2 rounded-full bg-success/10 flex items-center justify-center"
+              >
+                <UIcon name="i-heroicons-check" class="size-6 text-success" />
+              </div>
+              <p class="font-medium">Approved</p>
+              <p class="text-xs text-muted">Published to the community</p>
+            </div>
+            <div class="text-center p-4">
+              <div
+                class="size-12 mx-auto mb-2 rounded-full bg-error/10 flex items-center justify-center"
+              >
+                <UIcon name="i-heroicons-x-mark" class="size-6 text-error" />
+              </div>
+              <p class="font-medium">Rejected</p>
+              <p class="text-xs text-muted">Feedback provided</p>
+            </div>
+          </div>
+          <p class="text-sm text-muted mt-4">
+            You can preview your submission while it's pending and make edits if
+            needed.
+          </p>
         </UCard>
       </section>
 
       <!-- CTA -->
       <div class="flex flex-col sm:flex-row gap-4">
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs"
-          target="_blank"
-          icon="i-simple-icons-github"
+          to="/models/upload"
+          icon="i-heroicons-arrow-up-tray"
           color="warning"
           size="lg"
         >
-          View on GitHub
+          Upload Your Model
         </UButton>
         <UButton
           to="/models"
@@ -565,15 +442,6 @@ const materials = [
           size="lg"
         >
           Browse Models
-        </UButton>
-        <UButton
-          to="/spec"
-          color="neutral"
-          variant="outline"
-          icon="i-heroicons-document-text"
-          size="lg"
-        >
-          Read the Full Spec
         </UButton>
       </div>
     </UContainer>

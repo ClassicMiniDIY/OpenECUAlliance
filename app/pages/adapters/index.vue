@@ -23,7 +23,12 @@ const filteredAdapters = computed(() => {
 });
 
 const hasActiveFilters = computed(() => {
-  return search.value || selectedVendor.value || selectedCategory.value || selectedFormat.value;
+  return (
+    search.value ||
+    selectedVendor.value ||
+    selectedCategory.value ||
+    selectedFormat.value
+  );
 });
 
 function clearFilters() {
@@ -56,8 +61,8 @@ const searchAnnouncement = computed(() => {
         </h1>
 
         <p class="text-lg text-muted mb-8">
-          Browse log file format definitions for popular ECU systems.
-          Parse data from any supported format with ease.
+          Browse log file format definitions for popular ECU systems. Parse data
+          from any supported format with ease.
         </p>
 
         <!-- Search -->

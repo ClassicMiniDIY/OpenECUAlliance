@@ -31,8 +31,8 @@ const guides = [
   },
   {
     icon: "i-heroicons-cube",
-    title: "Creating 3D Models",
-    description: "Share printable mounts, enclosures, and accessories.",
+    title: "Submitting 3D Models",
+    description: "Upload printable mounts, enclosures, and accessories.",
     to: "/docs/creating-models",
     color: "warning",
   },
@@ -85,8 +85,14 @@ const resources = [
             class="cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
           >
             <div class="flex items-start gap-3">
-              <div :class="`bg-${guide.color}/10`" class="p-2 rounded-lg shrink-0">
-                <UIcon :name="guide.icon" :class="`size-5 text-${guide.color}`" />
+              <div
+                :class="`bg-${guide.color}/10`"
+                class="p-2 rounded-lg shrink-0"
+              >
+                <UIcon
+                  :name="guide.icon"
+                  :class="`size-5 text-${guide.color}`"
+                />
               </div>
               <div class="flex-1 min-w-0">
                 <h3 class="font-semibold mb-1">{{ guide.title }}</h3>
@@ -114,13 +120,20 @@ const resources = [
             class="cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
           >
             <div class="flex items-center gap-3">
-              <UIcon :name="resource.icon" class="size-5 text-primary shrink-0" />
+              <UIcon
+                :name="resource.icon"
+                class="size-5 text-primary shrink-0"
+              />
               <div class="flex-1 min-w-0">
                 <h3 class="font-semibold text-sm">{{ resource.title }}</h3>
                 <p class="text-xs text-muted">{{ resource.description }}</p>
               </div>
               <UIcon
-                :name="resource.external ? 'i-heroicons-arrow-top-right-on-square' : 'i-heroicons-chevron-right'"
+                :name="
+                  resource.external
+                    ? 'i-heroicons-arrow-top-right-on-square'
+                    : 'i-heroicons-chevron-right'
+                "
                 class="size-4 text-muted shrink-0"
               />
             </div>

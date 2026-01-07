@@ -75,8 +75,7 @@ const protocolTypeLabel = computed(() => {
       <!-- Description -->
       <p class="text-sm text-muted line-clamp-2 mb-4 flex-1">
         {{
-          protocol.description ||
-          `CAN protocol definition for ${protocol.name}`
+          protocol.description || `CAN protocol definition for ${protocol.name}`
         }}
       </p>
 

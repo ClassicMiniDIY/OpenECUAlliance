@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const NuxtLink = resolveComponent("NuxtLink");
+const { isAuthenticated } = useAuth();
 
 useSeoMeta({
   title: "Contribute - OpenECU Alliance",
@@ -21,8 +22,8 @@ const waysToContribute = [
     color: "warning" as const,
   },
   {
-    type: "Submit 3D Models",
-    description: "Share printable mounts and enclosures",
+    type: "Upload 3D Models",
+    description: "Share printable mounts via our website",
     difficulty: "Beginner",
     color: "success" as const,
   },
@@ -82,11 +83,19 @@ const contributionTypes = [
   {
     icon: "i-heroicons-cube",
     title: "3D Models",
-    description: "Printable mounts, enclosures, and accessories",
-    to: "/docs/creating-models",
+    description: "Upload printable mounts and accessories directly",
+    to: "/models/upload",
     color: "warning",
+    requiresAuth: true,
   },
 ];
+
+function getContributionLink(ct: (typeof contributionTypes)[number]) {
+  if (ct.requiresAuth && !isAuthenticated.value) {
+    return `/login?redirect=${encodeURIComponent(ct.to)}`;
+  }
+  return ct.to;
+}
 
 const adapterSteps = [
   {
@@ -271,13 +280,15 @@ done`,
 
       <!-- Quick Start Cards -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">What Would You Like to Contribute?</h2>
+        <h2 class="text-2xl font-bold mb-4">
+          What Would You Like to Contribute?
+        </h2>
         <div class="grid sm:grid-cols-3 gap-4">
           <UCard
             v-for="ct in contributionTypes"
             :key="ct.title"
             :as="NuxtLink"
-            :to="ct.to"
+            :to="getContributionLink(ct)"
             class="cursor-pointer hover:ring-2 transition-all"
             :class="`hover:ring-${ct.color}/50`"
           >
@@ -719,13 +730,13 @@ done`,
           Protocol Guide
         </UButton>
         <UButton
-          to="/docs/creating-models"
+          to="/models/upload"
           color="warning"
           variant="outline"
-          icon="i-heroicons-cube"
+          icon="i-heroicons-arrow-up-tray"
           size="lg"
         >
-          3D Model Guide
+          Upload 3D Model
         </UButton>
       </div>
     </UContainer>

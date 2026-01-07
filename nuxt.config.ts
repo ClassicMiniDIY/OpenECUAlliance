@@ -3,7 +3,36 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
-  modules: ["@nuxt/ui", "@nuxt/fonts", "@nuxt/icon", "@nuxtjs/sitemap"],
+  modules: [
+    "@nuxt/ui",
+    "@nuxt/fonts",
+    "@nuxt/icon",
+    "@nuxtjs/sitemap",
+    "@nuxtjs/supabase",
+  ],
+
+  // Supabase configuration
+  supabase: {
+    redirectOptions: {
+      login: "/login",
+      callback: "/auth/callback",
+      exclude: [
+        "/",
+        "/adapters",
+        "/adapters/*",
+        "/protocols",
+        "/protocols/*",
+        "/models",
+        "/models/*",
+        "/users/*",
+        "/docs",
+        "/docs/*",
+        "/spec",
+        "/ecosystem",
+        "/contribute",
+      ],
+    },
+  },
 
   css: ["~/assets/css/main.css"],
 

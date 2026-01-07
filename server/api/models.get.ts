@@ -1,144 +1,164 @@
-import { parse } from "yaml";
-import {
-  fetchAllModelPaths,
-  fetchGitHubFile,
-  getAssetUrl,
-  getModelImageUrl,
-} from "../utils/github";
+import { serverSupabaseClient } from "#supabase/server";
+import type { UserModel, ModelCategory } from "~/types/model";
 
-interface ModelYaml {
-  openecualliance: string;
-  type: "model";
-  id: string;
-  name: string;
-  version: string;
-  vendor?: string;
-  description: string;
-  category: "mounts" | "enclosures" | "brackets" | "adapters" | "accessories";
-  branding?: {
-    logo?: string;
-    icon?: string;
-    color_primary?: string;
-    color_secondary?: string;
-  };
-  files: Array<{
-    filename: string;
-    format: string;
-    primary?: boolean;
-  }>;
-  images?: Array<{
-    filename: string;
-    type: string;
-    primary?: boolean;
-  }>;
-  printing: {
-    recommended_material: string;
-    estimated_time_hours?: number;
-  };
-}
+export default defineEventHandler(async (event): Promise<UserModel[]> => {
+  const supabase = await serverSupabaseClient(event);
 
-interface ModelBranding {
-  logo?: string;
-  icon?: string;
-  colorPrimary?: string;
-  colorSecondary?: string;
-}
+  const query = getQuery(event);
+  const category = query.category as ModelCategory | undefined;
+  const vendor = query.vendor as string | undefined;
+  const search = query.search as string | undefined;
+  const featured = query.featured === "true";
+  const authorId = query.author as string | undefined;
+  const limit = query.limit ? parseInt(query.limit as string, 10) : undefined;
 
-interface ModelResponse {
-  id: string;
-  name: string;
-  version: string;
-  vendor?: string;
-  description?: string;
-  category: string;
-  primaryImage?: string;
-  recommendedMaterial: string;
-  estimatedTimeHours?: number;
-  fileFormats: string[];
-  branding?: ModelBranding;
-}
+  let dbQuery = supabase
+    .from("models")
+    .select(
+      `
+      id,
+      slug,
+      name,
+      version,
+      description,
+      category,
+      vendor,
+      license,
+      likes_count,
+      comments_count,
+      downloads_count,
+      average_rating,
+      ratings_count,
+      status,
+      is_published,
+      featured,
+      created_at,
+      published_at,
+      profiles:author_id (
+        id,
+        username,
+        display_name,
+        avatar_url
+      ),
+      model_images (
+        storage_path,
+        thumbnail_path,
+        is_primary
+      ),
+      model_files (
+        format
+      ),
+      printing
+    `,
+    )
+    .eq("is_published", true)
+    .eq("status", "approved");
 
-export default defineCachedEventHandler(
-  async (): Promise<ModelResponse[]> => {
-    const models: ModelResponse[] = [];
+  // Apply filters
+  if (category) {
+    dbQuery = dbQuery.eq("category", category);
+  }
 
-    try {
-      // Fetch list of all model files from GitHub
-      const modelPaths = await fetchAllModelPaths();
+  if (vendor) {
+    dbQuery = dbQuery.eq("vendor", vendor);
+  }
 
-      // Fetch and parse each model file
-      const fetchPromises = modelPaths.map(
-        async ({ category, modelId, file }) => {
-          try {
-            const path = `models/${category}/${modelId}/${file}`;
-            const content = await fetchGitHubFile(path);
-            const yaml = parse(content) as ModelYaml;
+  if (featured) {
+    dbQuery = dbQuery.eq("featured", true);
+  }
 
-            // Get primary image or first image
-            const primaryImage = yaml.images?.find((img) => img.primary);
-            const firstImage = yaml.images?.[0];
-            const imageToUse = primaryImage || firstImage;
+  if (authorId) {
+    dbQuery = dbQuery.eq("author_id", authorId);
+  }
 
-            // Get unique file formats
-            const fileFormats = [
-              ...new Set(yaml.files.map((f) => f.format.toUpperCase())),
-            ];
+  if (search) {
+    dbQuery = dbQuery.or(
+      `name.ilike.%${search}%,description.ilike.%${search}%,vendor.ilike.%${search}%`,
+    );
+  }
 
-            // Build branding with full URLs
-            const branding: ModelBranding | undefined = yaml.branding
-              ? {
-                  logo: yaml.branding.logo
-                    ? getAssetUrl("logos", yaml.branding.logo)
-                    : undefined,
-                  icon: yaml.branding.icon
-                    ? getAssetUrl("icons", yaml.branding.icon)
-                    : undefined,
-                  colorPrimary: yaml.branding.color_primary,
-                  colorSecondary: yaml.branding.color_secondary,
-                }
-              : undefined;
+  // Default ordering
+  dbQuery = dbQuery
+    .order("featured", { ascending: false })
+    .order("published_at", { ascending: false });
 
-            return {
-              id: yaml.id,
-              name: yaml.name,
-              version: yaml.version,
-              vendor: yaml.vendor,
-              description: yaml.description?.split("\n")[0].trim(), // First line only
-              category: yaml.category,
-              primaryImage: imageToUse
-                ? getModelImageUrl(category, modelId, imageToUse.filename)
-                : undefined,
-              recommendedMaterial: yaml.printing.recommended_material,
-              estimatedTimeHours: yaml.printing.estimated_time_hours,
-              fileFormats,
-              branding,
-            } as ModelResponse;
-          } catch (err) {
-            console.error(
-              `Failed to fetch model ${category}/${modelId}/${file}:`,
-              err,
-            );
-            return null;
-          }
-        },
-      );
+  if (limit) {
+    dbQuery = dbQuery.limit(limit);
+  }
 
-      const results = await Promise.all(fetchPromises);
-      models.push(...results.filter((m): m is ModelResponse => m !== null));
-    } catch (err) {
-      console.error("Failed to fetch models from GitHub:", err);
+  const { data, error } = await dbQuery;
+
+  if (error) {
+    console.error("Failed to fetch models:", error);
+    throw createError({
+      statusCode: 500,
+      message: "Failed to fetch models",
+    });
+  }
+
+  // Transform to UserModel shape
+  return (data || []).map((item: any): UserModel => {
+    const author = item.profiles;
+    const primaryImage = item.model_images?.find((img: any) => img.is_primary);
+    const firstImage = item.model_images?.[0];
+    const imageToUse = primaryImage || firstImage;
+    const printing = item.printing as any;
+
+    // Get unique file formats
+    const fileFormats = [
+      ...new Set(
+        (item.model_files || []).map((f: any) => f.format.toUpperCase()),
+      ),
+    ];
+
+    // Get image URLs from Supabase storage
+    let primaryImageUrl: string | null = null;
+    let thumbnailUrl: string | null = null;
+
+    if (imageToUse?.storage_path) {
+      const { data: urlData } = supabase.storage
+        .from("model-images")
+        .getPublicUrl(imageToUse.storage_path);
+      primaryImageUrl = urlData.publicUrl;
     }
 
-    // Sort by category, then by name
-    return models.sort((a, b) => {
-      const categoryCmp = a.category.localeCompare(b.category);
-      if (categoryCmp !== 0) return categoryCmp;
-      return a.name.localeCompare(b.name);
-    });
-  },
-  {
-    maxAge: 60 * 5, // Cache for 5 minutes
-    name: "models-list",
-    getKey: () => "all",
-  },
-);
+    if (imageToUse?.thumbnail_path) {
+      const { data: thumbData } = supabase.storage
+        .from("model-images")
+        .getPublicUrl(imageToUse.thumbnail_path);
+      thumbnailUrl = thumbData.publicUrl;
+    }
+
+    return {
+      id: item.id,
+      slug: item.slug,
+      name: item.name,
+      version: item.version,
+      description: item.description,
+      category: item.category,
+      vendor: item.vendor,
+      author: {
+        id: author?.id,
+        username: author?.username,
+        displayName: author?.display_name,
+        avatarUrl: author?.avatar_url,
+      },
+      primaryImage: primaryImageUrl,
+      primaryImageThumbnail: thumbnailUrl,
+      recommendedMaterial: printing?.recommended_material || "PLA",
+      estimatedTimeHours: printing?.estimated_time_hours || null,
+      fileFormats,
+      license: item.license,
+      likesCount: item.likes_count,
+      commentsCount: item.comments_count,
+      downloadsCount: item.downloads_count,
+      averageRating: item.average_rating,
+      ratingsCount: item.ratings_count,
+      status: item.status,
+      isPublished: item.is_published,
+      featured: item.featured,
+      createdAt: item.created_at,
+      publishedAt: item.published_at,
+    };
+  });
+});

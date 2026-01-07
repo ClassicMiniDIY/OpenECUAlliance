@@ -37,7 +37,8 @@ const sortOrder = ref<"asc" | "desc">("asc");
 
 // Filtered content based on selected type
 const filteredAdapters = computed(() => {
-  if (selectedType.value !== "all" && selectedType.value !== "adapter") return [];
+  if (selectedType.value !== "all" && selectedType.value !== "adapter")
+    return [];
   return filterAdapters({
     search: search.value,
     vendor: selectedVendor.value,
@@ -45,7 +46,8 @@ const filteredAdapters = computed(() => {
 });
 
 const filteredProtocols = computed(() => {
-  if (selectedType.value !== "all" && selectedType.value !== "protocol") return [];
+  if (selectedType.value !== "all" && selectedType.value !== "protocol")
+    return [];
   return filterProtocols({
     search: search.value,
     vendor: selectedVendor.value,
@@ -62,7 +64,11 @@ const filteredModels = computed(() => {
 
 // Combined count for display
 const totalFiltered = computed(() => {
-  return filteredAdapters.value.length + filteredProtocols.value.length + filteredModels.value.length;
+  return (
+    filteredAdapters.value.length +
+    filteredProtocols.value.length +
+    filteredModels.value.length
+  );
 });
 
 const totalItems = computed(() => {
@@ -257,7 +263,9 @@ const compatibleApps = [
               <span
                 class="px-1.5 py-0.5 rounded text-xs"
                 :class="[
-                  selectedType === tab.key ? `bg-${tab.color}/20` : 'bg-muted/50',
+                  selectedType === tab.key
+                    ? `bg-${tab.color}/20`
+                    : 'bg-muted/50',
                 ]"
               >
                 {{ tab.count }}
@@ -278,7 +286,9 @@ const compatibleApps = [
               :variant="selectedVendor === vendor ? 'subtle' : 'outline'"
               :class="selectedVendor === vendor ? 'ring-2 ring-primary' : ''"
               size="sm"
-              @click="selectedVendor = selectedVendor === vendor ? undefined : vendor"
+              @click="
+                selectedVendor = selectedVendor === vendor ? undefined : vendor
+              "
             />
           </div>
 
@@ -437,7 +447,9 @@ const compatibleApps = [
                 View all
               </NuxtLink>
             </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div
+              class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+            >
               <ModelCard
                 v-for="model in selectedType === 'all'
                   ? filteredModels.slice(0, 8)
@@ -549,9 +561,7 @@ const compatibleApps = [
     <section class="py-16 px-4">
       <UContainer>
         <div class="text-center mb-12">
-          <h2 class="text-2xl sm:text-3xl font-bold mb-4">
-            What We Share
-          </h2>
+          <h2 class="text-2xl sm:text-3xl font-bold mb-4">What We Share</h2>
           <p class="text-muted max-w-2xl mx-auto">
             Free, community-maintained resources for ECU enthusiasts, tuners,
             and developers.

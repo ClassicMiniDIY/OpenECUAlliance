@@ -10,7 +10,10 @@ export type ContentType = "adapter" | "protocol" | "model";
 /**
  * Common branding interface shared by all content types
  */
-export type ContentBranding = AdapterBranding | ProtocolBranding | ModelBranding;
+export type ContentBranding =
+  | AdapterBranding
+  | ProtocolBranding
+  | ModelBranding;
 
 /**
  * Common metadata interface

@@ -5,8 +5,14 @@ useSeoMeta({
     "Browse CAN Bus protocol definitions for popular ECU systems. Download DBC files for CANalyzer, PCAN-View, SavvyCAN, and more.",
 });
 
-const { protocols, vendors, protocolTypes, filterProtocols, loading, formatBaudrate } =
-  useProtocols();
+const {
+  protocols,
+  vendors,
+  protocolTypes,
+  filterProtocols,
+  loading,
+  formatBaudrate,
+} = useProtocols();
 
 const search = ref("");
 const selectedVendor = ref<string>();

@@ -5,7 +5,12 @@ export interface ModelBranding {
   colorSecondary?: string;
 }
 
-export type ModelCategory = "mounts" | "enclosures" | "brackets" | "adapters" | "accessories";
+export type ModelCategory =
+  | "mounts"
+  | "enclosures"
+  | "brackets"
+  | "adapters"
+  | "accessories";
 
 export interface ModelCompatibility {
   ecus?: Array<{
@@ -25,7 +30,16 @@ export interface ModelCompatibility {
 
 export interface ModelFile {
   filename: string;
-  format: "stl" | "step" | "3mf" | "obj" | "iges" | "f3d" | "f3z" | "stp" | "igs";
+  format:
+    | "stl"
+    | "step"
+    | "3mf"
+    | "obj"
+    | "iges"
+    | "f3d"
+    | "f3z"
+    | "stp"
+    | "igs";
   description?: string;
   primary?: boolean;
   variant?: string;
@@ -88,6 +102,160 @@ export interface ModelMetadata {
     date: string;
     changes: string[];
   }>;
+}
+
+export type ModelStatus =
+  | "draft"
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "flagged"
+  | "archived";
+
+/**
+ * Author info for user-submitted models
+ */
+export interface ModelAuthor {
+  id: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+}
+
+/**
+ * User-submitted model for list views
+ */
+export interface UserModel {
+  id: string;
+  slug: string;
+  name: string;
+  version: string;
+  description: string;
+  category: ModelCategory;
+  vendor: string | null;
+  author: ModelAuthor;
+  primaryImage: string | null;
+  primaryImageThumbnail: string | null;
+  recommendedMaterial: string;
+  estimatedTimeHours: number | null;
+  fileFormats: string[];
+  license: string;
+  likesCount: number;
+  commentsCount: number;
+  downloadsCount: number;
+  averageRating: number;
+  ratingsCount: number;
+  status: ModelStatus;
+  isPublished: boolean;
+  featured: boolean;
+  createdAt: string;
+  publishedAt: string | null;
+}
+
+/**
+ * Full user-submitted model detail
+ */
+export interface UserModelDetail
+  extends Omit<
+    UserModel,
+    | "fileFormats"
+    | "primaryImage"
+    | "primaryImageThumbnail"
+    | "recommendedMaterial"
+    | "estimatedTimeHours"
+  > {
+  compatibility: ModelCompatibility | null;
+  files: UserModelFile[];
+  images: UserModelImage[];
+  printing: PrintSettings;
+  hardware: HardwareItem[];
+  assembly: AssemblyInstructions | null;
+  sourceUrl: string | null;
+  remixOf: string | null;
+  remixesAllowed: boolean;
+  commercialUseAllowed: boolean;
+  isLikedByUser?: boolean;
+  userRating?: number | null;
+}
+
+/**
+ * Model file with storage info
+ */
+export interface UserModelFile {
+  id: string;
+  filename: string;
+  originalFilename: string;
+  format: string;
+  downloadUrl: string;
+  sizeBytes: number;
+  isPrimary: boolean;
+}
+
+/**
+ * Model image with storage info
+ */
+export interface UserModelImage {
+  id: string;
+  filename: string;
+  type: "render" | "photo" | "diagram" | "screenshot";
+  url: string;
+  thumbnailUrl: string | null;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
+/**
+ * Form data for creating/updating a model
+ */
+export interface ModelFormData {
+  name: string;
+  description: string;
+  category: ModelCategory;
+  vendor?: string;
+  compatibility?: ModelCompatibility;
+  printing: PrintSettings;
+  hardware?: HardwareItem[];
+  assembly?: AssemblyInstructions;
+  license: string;
+  sourceUrl?: string;
+  remixOf?: string;
+  remixesAllowed: boolean;
+  commercialUseAllowed: boolean;
+}
+
+/**
+ * Pending file upload (before model is saved)
+ */
+export interface PendingFileUpload {
+  id: string;
+  file: File;
+  filename: string;
+  format: string;
+  sizeBytes: number;
+  description?: string;
+  variant?: string;
+  isPrimary: boolean;
+  progress: number;
+  status: "pending" | "uploading" | "complete" | "error";
+  error?: string;
+}
+
+/**
+ * Pending image upload (before model is saved)
+ */
+export interface PendingImageUpload {
+  id: string;
+  file: File;
+  filename: string;
+  type: "render" | "photo" | "diagram" | "screenshot";
+  description?: string;
+  previewUrl: string;
+  sizeBytes: number;
+  isPrimary: boolean;
+  sortOrder: number;
+  progress: number;
+  status: "pending" | "uploading" | "complete" | "error";
+  error?: string;
 }
 
 /**
