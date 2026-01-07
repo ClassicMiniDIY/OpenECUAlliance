@@ -22,9 +22,18 @@ const isUnpublished = computed(() => !model.value?.isPublished);
 useSeoMeta({
   title: () =>
     model.value
-      ? `${model.value.name} - OpenECU Alliance`
-      : "Model - OpenECU Alliance",
-  description: () => model.value?.description || "3D printable ECU accessory",
+      ? `${model.value.name} - 3D Print - OpenECU Alliance`
+      : "3D Model - OpenECU Alliance",
+  description: () =>
+    model.value?.description ||
+    "Free 3D printable ECU mount or accessory. Download STL, STEP, and 3MF files.",
+  ogTitle: () =>
+    model.value ? `${model.value.name} - 3D Printable` : "3D Printable Model",
+  ogDescription: () =>
+    model.value?.description ||
+    "Free 3D printable ECU mount or accessory. Download STL, STEP, and 3MF files.",
+  ogType: "article",
+  twitterCard: "summary_large_image",
 });
 
 const fallbackIcon = computed(() =>

@@ -8,6 +8,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "My Models - OpenECU Alliance",
+  description: "Manage your uploaded 3D models and track their status.",
+  robots: "noindex, nofollow",
 });
 
 const supabase = useSupabaseClient();

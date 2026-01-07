@@ -7,9 +7,10 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Upload Model - OpenECU Alliance",
+  title: "Upload 3D Model - OpenECU Alliance",
   description:
-    "Share your 3D printable model with the OpenECU Alliance community.",
+    "Share your 3D printable ECU mounts, enclosures, and accessories with the OpenECU Alliance community.",
+  robots: "noindex, nofollow",
 });
 
 const toast = useToast();

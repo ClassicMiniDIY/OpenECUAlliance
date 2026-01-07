@@ -5,7 +5,11 @@ const { isAuthenticated } = useAuth();
 useSeoMeta({
   title: "Contribute - OpenECU Alliance",
   description:
-    "Learn how to contribute adapters, CAN protocols, 3D models, and more to the OpenECU Alliance.",
+    "Learn how to contribute ECU log adapters, CAN Bus protocols, and 3D printable models to the OpenECU Alliance.",
+  ogTitle: "Contribute to OpenECU Alliance",
+  ogDescription:
+    "Join the community and contribute ECU log adapters, CAN protocols, and 3D printable accessories.",
+  twitterCard: "summary_large_image",
 });
 
 const waysToContribute = [

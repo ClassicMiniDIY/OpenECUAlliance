@@ -63,7 +63,7 @@ export default defineNuxtConfig({
         lang: "en",
       },
       title: "OpenECU Alliance - Open ECU Log Data Specification",
-      titleTemplate: "%s | OpenECU Alliance",
+      titleTemplate: "%s",
       meta: [
         // Primary Meta Tags
         {

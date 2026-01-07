@@ -1,8 +1,12 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: "Ecosystem - OpenECU Alliance",
+  title: "Ecosystem - Apps & Tools - OpenECU Alliance",
   description:
-    "Discover spec-compatible applications and tools built on the OpenECU Spec.",
+    "Discover applications and tools compatible with the OpenECU Spec, including log viewers, tuning software, and analysis tools.",
+  ogTitle: "OpenECU Alliance Ecosystem",
+  ogDescription:
+    "Applications and tools compatible with the OpenECU Spec for ECU data logging, analysis, and tuning.",
+  twitterCard: "summary_large_image",
 });
 
 const compatibleApps = [

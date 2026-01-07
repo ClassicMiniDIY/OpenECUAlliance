@@ -1,8 +1,12 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: "CAN Protocols - OpenECU Alliance",
+  title: "CAN Bus Protocols - OpenECU Alliance",
   description:
-    "Browse CAN Bus protocol definitions for popular ECU systems. Download DBC files for CANalyzer, PCAN-View, SavvyCAN, and more.",
+    "Browse CAN Bus protocol definitions for ECU systems. Download DBC files for CANalyzer, PCAN-View, SavvyCAN, and more.",
+  ogTitle: "CAN Bus Protocol Definitions - OpenECU Alliance",
+  ogDescription:
+    "Open source CAN Bus protocol definitions with DBC export for Haltech, ECUMaster, Link, and other ECU systems.",
+  twitterCard: "summary_large_image",
 });
 
 const {

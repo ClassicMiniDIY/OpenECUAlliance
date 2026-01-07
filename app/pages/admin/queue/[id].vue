@@ -41,7 +41,9 @@ useSeoMeta({
   title: () =>
     model.value
       ? `Review: ${model.value.name} - OpenECU Alliance`
-      : "Review Model",
+      : "Review Model - OpenECU Alliance",
+  description: "Review and moderate a model submission.",
+  robots: "noindex, nofollow",
 });
 
 async function fetchData() {

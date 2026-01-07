@@ -8,6 +8,9 @@ definePageMeta({
 
 useSeoMeta({
   title: "Admin Dashboard - OpenECU Alliance",
+  description:
+    "OpenECU Alliance admin dashboard for managing content, users, and moderation queue.",
+  robots: "noindex, nofollow",
 });
 
 const { fetchQueue, fetchStats, loading } = useModeration();

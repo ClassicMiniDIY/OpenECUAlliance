@@ -2,9 +2,13 @@
 import type { ModelCategory } from "~/types/model";
 
 useSeoMeta({
-  title: "3D Models - OpenECU Alliance",
+  title: "3D Printable ECU Mounts & Accessories - OpenECU Alliance",
   description:
     "Browse 3D printable ECU mounts, enclosures, brackets, and accessories. Download STL, STEP, and 3MF files with print settings.",
+  ogTitle: "3D Printable ECU Mounts & Accessories",
+  ogDescription:
+    "Free 3D printable mounts, enclosures, and brackets for ECU installations. Download STL, STEP, and 3MF files.",
+  twitterCard: "summary_large_image",
 });
 
 const {

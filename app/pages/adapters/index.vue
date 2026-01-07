@@ -1,8 +1,12 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: "Adapters - OpenECU Alliance",
+  title: "ECU Log Adapters - OpenECU Alliance",
   description:
-    "Browse log file adapters for popular ECU systems. Parse data from Haltech, ECUMaster, Link, AiM, and more.",
+    "Browse log file adapters for popular ECU systems. Parse data from Haltech, ECUMaster, Link, AiM, MoTeC, Speeduino, and more.",
+  ogTitle: "ECU Log Adapters - OpenECU Alliance",
+  ogDescription:
+    "Open source log file adapters for Haltech, ECUMaster, Link, AiM, MoTeC, Speeduino, and other popular ECU systems.",
+  twitterCard: "summary_large_image",
 });
 
 const { adapters, vendors, categories, fileFormats, filterAdapters, loading } =

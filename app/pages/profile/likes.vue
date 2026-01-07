@@ -8,6 +8,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "Liked Models - OpenECU Alliance",
+  description: "View your collection of liked 3D models.",
+  robots: "noindex, nofollow",
 });
 
 const supabase = useSupabaseClient();

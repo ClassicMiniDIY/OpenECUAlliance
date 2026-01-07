@@ -8,6 +8,11 @@ useSeoMeta({
   title: "OpenECU Alliance - Adapters, Protocols & 3D Models",
   description:
     "An open community for ECU resources. Browse log adapters, CAN protocols, and 3D printable mounts - all free and open source.",
+  ogTitle: "OpenECU Alliance - Open ECU Log Data Specification",
+  ogDescription:
+    "The OpenECU Alliance publishes open specifications for ECU log adapters, CAN protocols, and 3D printable accessories. One spec, every manufacturer.",
+  ogType: "website",
+  twitterCard: "summary_large_image",
 });
 
 // Content composables

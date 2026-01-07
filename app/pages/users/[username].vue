@@ -19,7 +19,16 @@ useSeoMeta({
       : "User Profile - OpenECU Alliance",
   description: () =>
     userProfile.value?.bio ||
-    `View ${username.value}'s profile on OpenECU Alliance`,
+    `View ${username.value}'s 3D models and contributions on OpenECU Alliance.`,
+  ogTitle: () =>
+    userProfile.value
+      ? `${userProfile.value.displayName || userProfile.value.username}'s Profile`
+      : "User Profile",
+  ogDescription: () =>
+    userProfile.value?.bio ||
+    `View ${username.value}'s 3D models and contributions on OpenECU Alliance.`,
+  ogType: "profile",
+  twitterCard: "summary",
 });
 
 const stats = computed(() => {

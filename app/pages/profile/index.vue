@@ -6,6 +6,9 @@ definePageMeta({
 
 useSeoMeta({
   title: "Profile - OpenECU Alliance",
+  description:
+    "View your OpenECU Alliance profile, uploaded models, and community stats.",
+  robots: "noindex, nofollow",
 });
 
 const { currentUser, profile, profileLoading, isAdmin, isModerator } =

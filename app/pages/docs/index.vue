@@ -4,7 +4,11 @@ const NuxtLink = resolveComponent("NuxtLink");
 useSeoMeta({
   title: "Documentation - OpenECU Alliance",
   description:
-    "Learn how to create adapters, CAN protocols, and 3D models for the OpenECU Alliance.",
+    "Learn how to create ECU log adapters, CAN Bus protocols, and 3D printable models for the OpenECU Alliance.",
+  ogTitle: "OpenECU Alliance Documentation",
+  ogDescription:
+    "Guides and tutorials for creating ECU log adapters, CAN Bus protocols, and 3D printable accessories.",
+  twitterCard: "summary_large_image",
 });
 
 const guides = [

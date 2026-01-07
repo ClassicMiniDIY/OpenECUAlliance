@@ -5,6 +5,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "Signing in... - OpenECU Alliance",
+  description: "Completing your sign-in to OpenECU Alliance.",
+  robots: "noindex, nofollow",
 });
 
 const { isAuthenticated, profile, fetchProfile } = useAuth();

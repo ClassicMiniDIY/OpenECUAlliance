@@ -2,9 +2,13 @@
 const NuxtLink = resolveComponent("NuxtLink");
 
 useSeoMeta({
-  title: "Specification - OpenECU Alliance",
+  title: "OpenECU Spec - Technical Specification - OpenECU Alliance",
   description:
-    "Technical specification for OpenECU Alliance adapters and protocols.",
+    "YAML-based technical specification for ECU log adapters and CAN Bus protocols. Open source standard for ECU data.",
+  ogTitle: "OpenECU Spec - Technical Specification",
+  ogDescription:
+    "Open source YAML-based specification for standardizing ECU log adapters and CAN Bus protocols.",
+  twitterCard: "summary_large_image",
 });
 
 const specTypes = [

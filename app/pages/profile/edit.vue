@@ -8,6 +8,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "Edit Profile - OpenECU Alliance",
+  description: "Update your OpenECU Alliance profile information.",
+  robots: "noindex, nofollow",
 });
 
 const { profile, updateProfile, checkUsernameAvailable, uploadAvatar } =

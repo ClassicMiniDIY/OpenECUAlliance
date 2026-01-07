@@ -6,6 +6,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "Content Reports - OpenECU Alliance",
+  description: "Review and manage user-submitted content reports.",
+  robots: "noindex, nofollow",
 });
 
 const { fetchReports, resolveReport, loading, error } = useModeration();

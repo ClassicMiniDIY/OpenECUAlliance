@@ -29,9 +29,20 @@ const categories = computed(() => Object.keys(channelsByCategory.value).sort());
 useSeoMeta({
   title: () =>
     adapter.value
-      ? `${adapter.value.name} - OpenECU Alliance`
+      ? `${adapter.value.name} Adapter - OpenECU Alliance`
       : "Adapter - OpenECU Alliance",
-  description: () => adapter.value?.description || "OpenECU Spec adapter",
+  description: () =>
+    adapter.value?.description ||
+    "Open source ECU log adapter specification for data parsing and analysis.",
+  ogTitle: () =>
+    adapter.value
+      ? `${adapter.value.name} - ECU Log Adapter`
+      : "ECU Log Adapter",
+  ogDescription: () =>
+    adapter.value?.description ||
+    "Open source ECU log adapter specification for data parsing and analysis.",
+  ogType: "article",
+  twitterCard: "summary_large_image",
 });
 
 const fallbackIcon = computed(() => getVendorIcon(vendor));

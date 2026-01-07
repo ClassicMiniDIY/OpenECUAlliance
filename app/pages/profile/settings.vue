@@ -6,6 +6,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "Settings - OpenECU Alliance",
+  description: "Manage your OpenECU Alliance account settings and preferences.",
+  robots: "noindex, nofollow",
 });
 
 const { profile, updateProfile, currentUser, signOut } = useAuth();

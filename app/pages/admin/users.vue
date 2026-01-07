@@ -6,6 +6,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "User Management - OpenECU Alliance",
+  description: "Manage user accounts, roles, and permissions.",
+  robots: "noindex, nofollow",
 });
 
 const supabase = useSupabaseClient();

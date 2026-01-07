@@ -6,6 +6,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "Complete Your Profile - OpenECU Alliance",
+  description: "Set up your OpenECU Alliance profile to start contributing.",
+  robots: "noindex, nofollow",
 });
 
 const { createProfile, checkUsernameAvailable, profile } = useAuth();

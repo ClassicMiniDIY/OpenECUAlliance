@@ -8,6 +8,8 @@ definePageMeta({
 
 useSeoMeta({
   title: "Moderation Queue - OpenECU Alliance",
+  description: "Review and moderate pending model submissions.",
+  robots: "noindex, nofollow",
 });
 
 const route = useRoute();

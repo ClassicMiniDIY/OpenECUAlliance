@@ -18,11 +18,20 @@ const { formatBaudrate } = useProtocols();
 useSeoMeta({
   title: () =>
     protocol.value
-      ? `${protocol.value.name} - OpenECU Alliance`
+      ? `${protocol.value.name} CAN Protocol - OpenECU Alliance`
       : "Protocol - OpenECU Alliance",
   description: () =>
     protocol.value?.description ||
-    "CAN Bus protocol definition for ECU communication",
+    "Open source CAN Bus protocol definition with DBC export for ECU communication.",
+  ogTitle: () =>
+    protocol.value
+      ? `${protocol.value.name} - CAN Bus Protocol`
+      : "CAN Bus Protocol",
+  ogDescription: () =>
+    protocol.value?.description ||
+    "Open source CAN Bus protocol definition with DBC export for ECU communication.",
+  ogType: "article",
+  twitterCard: "summary_large_image",
 });
 
 const fallbackIcon = computed(() => getVendorIcon(vendor));
