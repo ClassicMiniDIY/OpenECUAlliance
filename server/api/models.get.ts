@@ -1,5 +1,5 @@
-import { serverSupabaseClient } from "#supabase/server";
-import type { UserModel, ModelCategory } from "~/types/model";
+import { serverSupabaseClient } from '#supabase/server';
+import type { UserModel, ModelCategory } from '~/types/model';
 
 export default defineEventHandler(async (event): Promise<UserModel[]> => {
   const supabase = await serverSupabaseClient(event);
@@ -8,13 +8,13 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
   const category = query.category as ModelCategory | undefined;
   const vendor = query.vendor as string | undefined;
   const search = query.search as string | undefined;
-  const featured = query.featured === "true";
+  const featured = query.featured === 'true';
   const authorId = query.author as string | undefined;
   const limit = query.limit ? parseInt(query.limit as string, 10) : undefined;
   const linked = query.linked as string | undefined;
 
   let dbQuery = supabase
-    .from("models")
+    .from('models')
     .select(
       `
       id,
@@ -53,44 +53,40 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
       is_linked,
       external_platform,
       external_url
-    `,
+    `
     )
-    .eq("is_published", true)
-    .eq("status", "approved");
+    .eq('is_published', true)
+    .eq('status', 'approved');
 
   // Apply filters
   if (category) {
-    dbQuery = dbQuery.eq("category", category);
+    dbQuery = dbQuery.eq('category', category);
   }
 
   if (vendor) {
-    dbQuery = dbQuery.eq("vendor", vendor);
+    dbQuery = dbQuery.eq('vendor', vendor);
   }
 
   if (featured) {
-    dbQuery = dbQuery.eq("featured", true);
+    dbQuery = dbQuery.eq('featured', true);
   }
 
   if (authorId) {
-    dbQuery = dbQuery.eq("author_id", authorId);
+    dbQuery = dbQuery.eq('author_id', authorId);
   }
 
   if (search) {
-    dbQuery = dbQuery.or(
-      `name.ilike.%${search}%,description.ilike.%${search}%,vendor.ilike.%${search}%`,
-    );
+    dbQuery = dbQuery.or(`name.ilike.%${search}%,description.ilike.%${search}%,vendor.ilike.%${search}%`);
   }
 
-  if (linked === "true") {
-    dbQuery = dbQuery.eq("is_linked", true);
-  } else if (linked === "false") {
-    dbQuery = dbQuery.eq("is_linked", false);
+  if (linked === 'true') {
+    dbQuery = dbQuery.eq('is_linked', true);
+  } else if (linked === 'false') {
+    dbQuery = dbQuery.eq('is_linked', false);
   }
 
   // Default ordering
-  dbQuery = dbQuery
-    .order("featured", { ascending: false })
-    .order("published_at", { ascending: false });
+  dbQuery = dbQuery.order('featured', { ascending: false }).order('published_at', { ascending: false });
 
   if (limit) {
     dbQuery = dbQuery.limit(limit);
@@ -99,10 +95,10 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
   const { data, error } = await dbQuery;
 
   if (error) {
-    console.error("Failed to fetch models:", error);
+    console.error('Failed to fetch models:', error);
     throw createError({
       statusCode: 500,
-      message: "Failed to fetch models",
+      message: 'Failed to fetch models',
     });
   }
 
@@ -115,27 +111,19 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
     const printing = item.printing as any;
 
     // Get unique file formats
-    const fileFormats = [
-      ...new Set(
-        (item.model_files || []).map((f: any) => f.format.toUpperCase()),
-      ),
-    ];
+    const fileFormats = [...new Set((item.model_files || []).map((f: any) => f.format.toUpperCase()))];
 
     // Get image URLs from Supabase storage
     let primaryImageUrl: string | null = null;
     let thumbnailUrl: string | null = null;
 
     if (imageToUse?.storage_path) {
-      const { data: urlData } = supabase.storage
-        .from("model-images")
-        .getPublicUrl(imageToUse.storage_path);
+      const { data: urlData } = supabase.storage.from('model-images').getPublicUrl(imageToUse.storage_path);
       primaryImageUrl = urlData.publicUrl;
     }
 
     if (imageToUse?.thumbnail_path) {
-      const { data: thumbData } = supabase.storage
-        .from("model-images")
-        .getPublicUrl(imageToUse.thumbnail_path);
+      const { data: thumbData } = supabase.storage.from('model-images').getPublicUrl(imageToUse.thumbnail_path);
       thumbnailUrl = thumbData.publicUrl;
     }
 
@@ -155,7 +143,7 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
       },
       primaryImage: primaryImageUrl,
       primaryImageThumbnail: thumbnailUrl,
-      recommendedMaterial: printing?.recommended_material || "PLA",
+      recommendedMaterial: printing?.recommended_material || 'PLA',
       estimatedTimeHours: printing?.estimated_time_hours || null,
       fileFormats,
       license: item.license,

@@ -1,4 +1,4 @@
-import type { Adapter } from "~/types/adapter";
+import type { Adapter } from '~/types/adapter';
 
 export function useAdapters() {
   // Use useFetch with a unique key to ensure proper caching and SSR hydration
@@ -7,8 +7,8 @@ export function useAdapters() {
     status,
     refresh,
     error,
-  } = useFetch<Adapter[]>("/api/adapters", {
-    key: "adapters-list",
+  } = useFetch<Adapter[]>('/api/adapters', {
+    key: 'adapters-list',
     default: () => [],
     // Ensure data is cached and shared across navigation
     getCachedData(key, nuxtApp) {
@@ -17,7 +17,7 @@ export function useAdapters() {
     },
   });
 
-  const loading = computed(() => status.value === "pending");
+  const loading = computed(() => status.value === 'pending');
 
   const vendors = computed(() => {
     const vendorSet = new Set((adapters.value ?? []).map((a) => a.vendor));
@@ -25,9 +25,7 @@ export function useAdapters() {
   });
 
   const categories = computed(() => {
-    const categorySet = new Set(
-      (adapters.value ?? []).flatMap((a) => a.categories),
-    );
+    const categorySet = new Set((adapters.value ?? []).flatMap((a) => a.categories));
     return Array.from(categorySet).sort();
   });
 
@@ -36,12 +34,7 @@ export function useAdapters() {
     return Array.from(formatSet).sort();
   });
 
-  function filterAdapters(options: {
-    search?: string;
-    vendor?: string;
-    category?: string;
-    fileFormat?: string;
-  }) {
+  function filterAdapters(options: { search?: string; vendor?: string; category?: string; fileFormat?: string }) {
     return (adapters.value ?? []).filter((adapter) => {
       // Search filter
       if (options.search) {

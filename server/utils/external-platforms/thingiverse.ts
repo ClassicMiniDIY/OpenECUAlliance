@@ -1,6 +1,6 @@
-import type { ExternalPlatform } from "~~/app/types/model";
-import type { PlatformParser, ExternalModelMetadata } from "./types";
-import { PlatformFetchError } from "./types";
+import type { ExternalPlatform } from '~~/app/types/model';
+import type { PlatformParser, ExternalModelMetadata } from './types';
+import { PlatformFetchError } from './types';
 
 const URL_PATTERN = /thingiverse\.com\/thing:(\d+)/i;
 
@@ -19,7 +19,7 @@ interface MicrolinkResponse {
 }
 
 export const thingiverseParser: PlatformParser = {
-  platform: "thingiverse" as ExternalPlatform,
+  platform: 'thingiverse' as ExternalPlatform,
 
   canParse(url: string): boolean {
     return URL_PATTERN.test(url);
@@ -33,7 +33,7 @@ export const thingiverseParser: PlatformParser = {
   async fetchMetadata(url: string): Promise<ExternalModelMetadata> {
     const thingId = this.extractId(url);
     if (!thingId) {
-      throw new PlatformFetchError("Invalid Thingiverse URL", this.platform);
+      throw new PlatformFetchError('Invalid Thingiverse URL', this.platform);
     }
 
     // Use microlink for fast metadata extraction
@@ -41,7 +41,7 @@ export const thingiverseParser: PlatformParser = {
 
     const response = await fetch(microlinkUrl, {
       headers: {
-        Accept: "application/json",
+        Accept: 'application/json',
       },
     });
 
@@ -49,43 +49,34 @@ export const thingiverseParser: PlatformParser = {
       throw new PlatformFetchError(
         `Failed to fetch from Thingiverse: ${response.statusText}`,
         this.platform,
-        response.status,
+        response.status
       );
     }
 
     const result = (await response.json()) as MicrolinkResponse;
 
-    if (result.status !== "success" || !result.data) {
-      throw new PlatformFetchError(
-        "Failed to extract metadata from Thingiverse",
-        this.platform,
-      );
+    if (result.status !== 'success' || !result.data) {
+      throw new PlatformFetchError('Failed to extract metadata from Thingiverse', this.platform);
     }
 
     // Check if the page was a 404
     if (result.statusCode === 404) {
-      throw new PlatformFetchError(
-        "Model not found on Thingiverse",
-        this.platform,
-        404,
-      );
+      throw new PlatformFetchError('Model not found on Thingiverse', this.platform, 404);
     }
 
     const data = result.data;
 
     // Parse title - format is "Model Name by AuthorName - Thingiverse"
-    let title = data.title || "Untitled";
-    let authorName = "Unknown";
+    let title = data.title || 'Untitled';
+    let authorName = 'Unknown';
 
-    const titleMatch = title.match(
-      /^(.+?)\s+by\s+(.+?)(?:\s*-\s*Thingiverse)?$/i,
-    );
+    const titleMatch = title.match(/^(.+?)\s+by\s+(.+?)(?:\s*-\s*Thingiverse)?$/i);
     if (titleMatch) {
       title = titleMatch[1].trim();
       authorName = titleMatch[2].trim();
     } else {
       // Fallback: just remove the suffix
-      title = title.replace(/\s*-\s*Thingiverse$/i, "").trim();
+      title = title.replace(/\s*-\s*Thingiverse$/i, '').trim();
       if (data.author) {
         authorName = data.author;
       }
@@ -104,13 +95,13 @@ export const thingiverseParser: PlatformParser = {
       authorName,
       authorUrl: `https://www.thingiverse.com/${authorName}`,
       images,
-      license: "CC-BY-SA", // Thingiverse common default
+      license: 'CC-BY-SA', // Thingiverse common default
       tags: [],
       remixesAllowed: true,
       commercialUseAllowed: true, // CC-BY-SA allows commercial
       externalId: thingId,
       printSettings: {
-        recommendedMaterial: "PLA",
+        recommendedMaterial: 'PLA',
       },
     };
   },

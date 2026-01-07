@@ -1,9 +1,4 @@
-import type {
-  ModelCategory,
-  ModelCompatibility,
-  ExternalPlatform,
-  EcuVendor,
-} from "~/types/model";
+import type { ModelCategory, ModelCompatibility, ExternalPlatform, EcuVendor } from '~/types/model';
 
 export interface FetchedPrintSettings {
   recommendedMaterial?: string;
@@ -39,16 +34,16 @@ export function useLinkedModelUpload() {
   const error = ref<string | null>(null);
 
   // Step 1: URL and fetched metadata
-  const externalUrl = ref("");
+  const externalUrl = ref('');
   const fetchedMetadata = ref<FetchedMetadata | null>(null);
 
   // Editable fields from metadata (name and description only)
-  const name = ref("");
-  const description = ref("");
+  const name = ref('');
+  const description = ref('');
 
   // Step 2: ECU-specific fields
-  const category = ref<ModelCategory>("mounts");
-  const vendor = ref<EcuVendor | "">("");
+  const category = ref<ModelCategory>('mounts');
+  const vendor = ref<EcuVendor | ''>('');
   const compatibility = ref<ModelCompatibility>({});
 
   // Computed
@@ -63,18 +58,13 @@ export function useLinkedModelUpload() {
   });
 
   const canProceedStep1 = computed(
-    () =>
-      fetchedMetadata.value !== null &&
-      name.value.trim().length >= 3 &&
-      description.value.trim().length >= 10,
+    () => fetchedMetadata.value !== null && name.value.trim().length >= 3 && description.value.trim().length >= 10
   );
 
   const canProceedStep2 = computed(() => category.value !== undefined);
 
   // Can submit when step 1 and 2 requirements are met
-  const canSubmit = computed(
-    () => canProceedStep1.value && canProceedStep2.value,
-  );
+  const canSubmit = computed(() => canProceedStep1.value && canProceedStep2.value);
 
   // Fetch metadata from external URL
   async function fetchMetadata() {
@@ -87,8 +77,8 @@ export function useLinkedModelUpload() {
       const response = await $fetch<{
         success: boolean;
         data: FetchedMetadata;
-      }>("/api/models/external/fetch", {
-        method: "POST",
+      }>('/api/models/external/fetch', {
+        method: 'POST',
         body: { url: externalUrl.value },
       });
 
@@ -101,8 +91,7 @@ export function useLinkedModelUpload() {
         description.value = response.data.description;
       }
     } catch (err: any) {
-      error.value =
-        err.data?.message || err.message || "Failed to fetch model information";
+      error.value = err.data?.message || err.message || 'Failed to fetch model information';
       fetchedMetadata.value = null;
     } finally {
       fetching.value = false;
@@ -124,8 +113,8 @@ export function useLinkedModelUpload() {
       const response = await $fetch<{
         success: boolean;
         data: { modelId: string; slug: string; category: ModelCategory };
-      }>("/api/models/external/submit", {
-        method: "POST",
+      }>('/api/models/external/submit', {
+        method: 'POST',
         body: {
           url: fetchedMetadata.value.normalizedUrl,
           name: name.value.trim(),
@@ -133,10 +122,7 @@ export function useLinkedModelUpload() {
           category: category.value,
           vendor: vendor.value.trim() || undefined,
           // Note: license/remixes/commercial/printing are NOT sent - server fetches fresh from source
-          compatibility:
-            Object.keys(compatibility.value).length > 0
-              ? compatibility.value
-              : undefined,
+          compatibility: Object.keys(compatibility.value).length > 0 ? compatibility.value : undefined,
         },
       });
 
@@ -145,8 +131,7 @@ export function useLinkedModelUpload() {
       }
       return null;
     } catch (err: any) {
-      error.value =
-        err.data?.message || err.message || "Failed to submit model";
+      error.value = err.data?.message || err.message || 'Failed to submit model';
       return null;
     } finally {
       saving.value = false;
@@ -156,12 +141,12 @@ export function useLinkedModelUpload() {
   // Reset form
   function resetForm() {
     currentStep.value = 1;
-    externalUrl.value = "";
+    externalUrl.value = '';
     fetchedMetadata.value = null;
-    name.value = "";
-    description.value = "";
-    category.value = "mounts";
-    vendor.value = "";
+    name.value = '';
+    description.value = '';
+    category.value = 'mounts';
+    vendor.value = '';
     compatibility.value = {};
     error.value = null;
   }

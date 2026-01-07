@@ -9,14 +9,14 @@ export function useLikes() {
     if (!currentUser.value) return false;
 
     const { data, error } = await supabase
-      .from("model_likes")
-      .select("user_id")
-      .eq("model_id", modelId)
-      .eq("user_id", currentUser.value.id)
+      .from('model_likes')
+      .select('user_id')
+      .eq('model_id', modelId)
+      .eq('user_id', currentUser.value.id)
       .maybeSingle();
 
     if (error) {
-      console.error("Failed to check like:", error);
+      console.error('Failed to check like:', error);
       return false;
     }
 
@@ -27,11 +27,9 @@ export function useLikes() {
    * Toggle like status for a model
    * Returns the new like state
    */
-  async function toggleLike(
-    modelId: string,
-  ): Promise<{ liked: boolean; error?: string }> {
+  async function toggleLike(modelId: string): Promise<{ liked: boolean; error?: string }> {
     if (!currentUser.value) {
-      return { liked: false, error: "Not authenticated" };
+      return { liked: false, error: 'Not authenticated' };
     }
 
     // Check current state
@@ -40,10 +38,10 @@ export function useLikes() {
     if (isLiked) {
       // Unlike
       const { error } = await supabase
-        .from("model_likes")
+        .from('model_likes')
         .delete()
-        .eq("model_id", modelId)
-        .eq("user_id", currentUser.value.id);
+        .eq('model_id', modelId)
+        .eq('user_id', currentUser.value.id);
 
       if (error) {
         return { liked: true, error: error.message };
@@ -51,7 +49,7 @@ export function useLikes() {
       return { liked: false };
     } else {
       // Like
-      const { error } = await supabase.from("model_likes").insert({
+      const { error } = await supabase.from('model_likes').insert({
         model_id: modelId,
         user_id: currentUser.value.id,
       });
@@ -68,12 +66,12 @@ export function useLikes() {
    */
   async function getLikeCount(modelId: string): Promise<number> {
     const { count, error } = await supabase
-      .from("model_likes")
-      .select("*", { count: "exact", head: true })
-      .eq("model_id", modelId);
+      .from('model_likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('model_id', modelId);
 
     if (error) {
-      console.error("Failed to get like count:", error);
+      console.error('Failed to get like count:', error);
       return 0;
     }
 
@@ -85,7 +83,7 @@ export function useLikes() {
    */
   async function getLikers(modelId: string, limit = 10) {
     const { data, error } = await supabase
-      .from("model_likes")
+      .from('model_likes')
       .select(
         `
         created_at,
@@ -95,14 +93,14 @@ export function useLikes() {
           display_name,
           avatar_url
         )
-      `,
+      `
       )
-      .eq("model_id", modelId)
-      .order("created_at", { ascending: false })
+      .eq('model_id', modelId)
+      .order('created_at', { ascending: false })
       .limit(limit);
 
     if (error) {
-      console.error("Failed to get likers:", error);
+      console.error('Failed to get likers:', error);
       return [];
     }
 

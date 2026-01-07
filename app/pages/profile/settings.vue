@@ -1,99 +1,94 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: "default",
-  middleware: "auth",
-});
+  definePageMeta({
+    layout: 'default',
+    middleware: 'auth',
+  });
 
-useSeoMeta({
-  title: "Settings - OpenECU Alliance",
-  description: "Manage your OpenECU Alliance account settings and preferences.",
-  robots: "noindex, nofollow",
-});
+  useSeoMeta({
+    title: 'Settings - OpenECU Alliance',
+    description: 'Manage your OpenECU Alliance account settings and preferences.',
+    robots: 'noindex, nofollow',
+  });
 
-const { profile, updateProfile, currentUser, signOut } = useAuth();
-const supabase = useSupabaseClient();
-const toast = useToast();
+  const { profile, updateProfile, currentUser, signOut } = useAuth();
+  const supabase = useSupabaseClient();
+  const toast = useToast();
 
-const saving = ref(false);
-const showDeleteModal = ref(false);
-const deleteConfirmation = ref("");
-const deleting = ref(false);
+  const saving = ref(false);
+  const showDeleteModal = ref(false);
+  const deleteConfirmation = ref('');
+  const deleting = ref(false);
 
-// Notification settings
-const emailNotifications = ref(true);
+  // Notification settings
+  const emailNotifications = ref(true);
 
-watch(
-  profile,
-  (p) => {
-    if (p) {
-      emailNotifications.value = p.email_notifications;
+  watch(
+    profile,
+    (p) => {
+      if (p) {
+        emailNotifications.value = p.email_notifications;
+      }
+    },
+    { immediate: true }
+  );
+
+  async function saveNotificationSettings() {
+    saving.value = true;
+    try {
+      await updateProfile({ emailNotifications: emailNotifications.value });
+      toast.add({
+        title: 'Settings saved',
+        color: 'success',
+      });
+    } catch (err) {
+      toast.add({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Failed to save settings',
+        color: 'error',
+      });
+    } finally {
+      saving.value = false;
     }
-  },
-  { immediate: true },
-);
-
-async function saveNotificationSettings() {
-  saving.value = true;
-  try {
-    await updateProfile({ emailNotifications: emailNotifications.value });
-    toast.add({
-      title: "Settings saved",
-      color: "success",
-    });
-  } catch (err) {
-    toast.add({
-      title: "Error",
-      description:
-        err instanceof Error ? err.message : "Failed to save settings",
-      color: "error",
-    });
-  } finally {
-    saving.value = false;
   }
-}
 
-async function handleDeleteAccount() {
-  if (deleteConfirmation.value !== profile.value?.username) return;
+  async function handleDeleteAccount() {
+    if (deleteConfirmation.value !== profile.value?.username) return;
 
-  deleting.value = true;
-  try {
-    // Get user ID directly from Supabase auth
-    const {
-      data: { user: authUser },
-      error: authError,
-    } = await supabase.auth.getUser();
+    deleting.value = true;
+    try {
+      // Get user ID directly from Supabase auth
+      const {
+        data: { user: authUser },
+        error: authError,
+      } = await supabase.auth.getUser();
 
-    if (authError || !authUser) {
-      throw new Error("Not authenticated");
+      if (authError || !authUser) {
+        throw new Error('Not authenticated');
+      }
+
+      // Delete profile (cascades to related data via foreign keys)
+      const { error: profileError } = await supabase.from('profiles').delete().eq('id', authUser.id);
+
+      if (profileError) throw profileError;
+
+      // Sign out and redirect
+      await signOut();
+      toast.add({
+        title: 'Account deleted',
+        description: 'Your account has been permanently deleted.',
+        color: 'success',
+      });
+    } catch (err) {
+      toast.add({
+        title: 'Error',
+        description: err instanceof Error ? err.message : 'Failed to delete account',
+        color: 'error',
+      });
+    } finally {
+      deleting.value = false;
+      showDeleteModal.value = false;
     }
-
-    // Delete profile (cascades to related data via foreign keys)
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .delete()
-      .eq("id", authUser.id);
-
-    if (profileError) throw profileError;
-
-    // Sign out and redirect
-    await signOut();
-    toast.add({
-      title: "Account deleted",
-      description: "Your account has been permanently deleted.",
-      color: "success",
-    });
-  } catch (err) {
-    toast.add({
-      title: "Error",
-      description:
-        err instanceof Error ? err.message : "Failed to delete account",
-      color: "error",
-    });
-  } finally {
-    deleting.value = false;
-    showDeleteModal.value = false;
   }
-}
 </script>
 
 <template>
@@ -101,12 +96,7 @@ async function handleDeleteAccount() {
     <UContainer class="py-12 max-w-2xl">
       <!-- Header -->
       <div class="flex items-center gap-4 mb-8">
-        <UButton
-          to="/profile"
-          variant="ghost"
-          icon="i-heroicons-arrow-left"
-          size="sm"
-        />
+        <UButton to="/profile" variant="ghost" icon="i-heroicons-arrow-left" size="sm" />
         <h1 class="text-2xl font-bold">Settings</h1>
       </div>
 
@@ -124,11 +114,7 @@ async function handleDeleteAccount() {
           <div>
             <p class="text-sm text-muted">Member since</p>
             <p class="font-medium">
-              {{
-                profile?.created_at
-                  ? new Date(profile.created_at).toLocaleDateString()
-                  : "-"
-              }}
+              {{ profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : '-' }}
             </p>
           </div>
         </div>
@@ -144,10 +130,7 @@ async function handleDeleteAccount() {
           <div class="flex items-center justify-between">
             <div class="flex-1 min-w-0">
               <p class="font-medium">Email notifications</p>
-              <p class="text-sm text-muted">
-                Receive emails about comments, likes, and updates to your
-                models.
-              </p>
+              <p class="text-sm text-muted">Receive emails about comments, likes, and updates to your models.</p>
             </div>
             <div class="shrink-0 ml-3">
               <USwitch v-model="emailNotifications" />
@@ -177,17 +160,9 @@ async function handleDeleteAccount() {
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">Delete account</p>
-            <p class="text-sm text-muted">
-              Permanently delete your account and all associated data.
-            </p>
+            <p class="text-sm text-muted">Permanently delete your account and all associated data.</p>
           </div>
-          <UButton
-            color="error"
-            variant="outline"
-            @click="showDeleteModal = true"
-          >
-            Delete Account
-          </UButton>
+          <UButton color="error" variant="outline" @click="showDeleteModal = true"> Delete Account </UButton>
         </div>
       </UCard>
 
@@ -197,13 +172,8 @@ async function handleDeleteAccount() {
           <UCard>
             <template #header>
               <div class="flex items-center gap-3">
-                <div
-                  class="size-10 rounded-full bg-error/10 flex items-center justify-center"
-                >
-                  <UIcon
-                    name="i-heroicons-exclamation-triangle"
-                    class="size-5 text-error"
-                  />
+                <div class="size-10 rounded-full bg-error/10 flex items-center justify-center">
+                  <UIcon name="i-heroicons-exclamation-triangle" class="size-5 text-error" />
                 </div>
                 <h3 class="font-semibold">Delete Account</h3>
               </div>
@@ -211,23 +181,18 @@ async function handleDeleteAccount() {
 
             <div class="space-y-4">
               <p class="text-muted">
-                This action cannot be undone. This will permanently delete your
-                account, all your models, comments, and other associated data.
+                This action cannot be undone. This will permanently delete your account, all your models, comments, and
+                other associated data.
               </p>
 
               <UFormField :label="`Type '${profile?.username}' to confirm`">
-                <UInput
-                  v-model="deleteConfirmation"
-                  :placeholder="profile?.username"
-                />
+                <UInput v-model="deleteConfirmation" :placeholder="profile?.username" />
               </UFormField>
             </div>
 
             <template #footer>
               <div class="flex justify-end gap-2">
-                <UButton variant="ghost" @click="showDeleteModal = false">
-                  Cancel
-                </UButton>
+                <UButton variant="ghost" @click="showDeleteModal = false"> Cancel </UButton>
                 <UButton
                   color="error"
                   :loading="deleting"

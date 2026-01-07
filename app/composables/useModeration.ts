@@ -1,12 +1,12 @@
-import type { Tables } from "~/types/database.types";
+import type { Tables } from '~/types/database.types';
 
 export interface QueueItem {
   id: string;
   modelId: string;
-  actionType: "new_submission" | "update" | "report" | "appeal";
+  actionType: 'new_submission' | 'update' | 'report' | 'appeal';
   priority: number;
-  status: "pending" | "in_progress" | "resolved";
-  resolution: "approved" | "rejected" | "needs_changes" | "escalated" | null;
+  status: 'pending' | 'in_progress' | 'resolved';
+  resolution: 'approved' | 'rejected' | 'needs_changes' | 'escalated' | null;
   resolutionNotes: string | null;
   assignedTo: string | null;
   resolvedBy: string | null;
@@ -51,8 +51,8 @@ export function useModeration() {
    * Fetch moderation queue items
    */
   async function fetchQueue(options?: {
-    status?: "pending" | "in_progress" | "resolved";
-    actionType?: "new_submission" | "update" | "report" | "appeal";
+    status?: 'pending' | 'in_progress' | 'resolved';
+    actionType?: 'new_submission' | 'update' | 'report' | 'appeal';
     assignedToMe?: boolean;
     limit?: number;
   }): Promise<QueueItem[]> {
@@ -61,7 +61,7 @@ export function useModeration() {
 
     try {
       let query = supabase
-        .from("moderation_queue")
+        .from('moderation_queue')
         .select(
           `
           id,
@@ -95,21 +95,21 @@ export function useModeration() {
               is_primary
             )
           )
-        `,
+        `
         )
-        .order("priority", { ascending: false })
-        .order("created_at", { ascending: true });
+        .order('priority', { ascending: false })
+        .order('created_at', { ascending: true });
 
       if (options?.status) {
-        query = query.eq("status", options.status);
+        query = query.eq('status', options.status);
       }
 
       if (options?.actionType) {
-        query = query.eq("action_type", options.actionType);
+        query = query.eq('action_type', options.actionType);
       }
 
       if (options?.assignedToMe && currentUser.value) {
-        query = query.eq("assigned_to", currentUser.value.id);
+        query = query.eq('assigned_to', currentUser.value.id);
       }
 
       if (options?.limit) {
@@ -123,9 +123,7 @@ export function useModeration() {
       return (data || []).map((item: any) => {
         const model = item.models;
         const author = model?.profiles;
-        const primaryImage = model?.model_images?.find(
-          (i: any) => i.is_primary,
-        );
+        const primaryImage = model?.model_images?.find((i: any) => i.is_primary);
 
         return {
           id: item.id,
@@ -154,17 +152,14 @@ export function useModeration() {
               avatarUrl: author?.avatar_url,
             },
             primaryImage: primaryImage?.storage_path
-              ? supabase.storage
-                  .from("model-images")
-                  .getPublicUrl(primaryImage.storage_path).data.publicUrl
+              ? supabase.storage.from('model-images').getPublicUrl(primaryImage.storage_path).data.publicUrl
               : null,
             createdAt: model?.created_at,
           },
         } as QueueItem;
       });
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to fetch queue";
+      error.value = err instanceof Error ? err.message : 'Failed to fetch queue';
       return [];
     } finally {
       loading.value = false;
@@ -179,31 +174,18 @@ export function useModeration() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const [queueStats, modelCount, userCount, reportCount] =
-        await Promise.all([
-          supabase
-            .from("moderation_queue")
-            .select("status, resolved_at", { count: "exact" }),
-          supabase.from("models").select("*", { count: "exact", head: true }),
-          supabase.from("profiles").select("*", { count: "exact", head: true }),
-          supabase
-            .from("model_reports")
-            .select("*", { count: "exact", head: true })
-            .eq("status", "pending"),
-        ]);
+      const [queueStats, modelCount, userCount, reportCount] = await Promise.all([
+        supabase.from('moderation_queue').select('status, resolved_at', { count: 'exact' }),
+        supabase.from('models').select('*', { count: 'exact', head: true }),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }),
+        supabase.from('model_reports').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+      ]);
 
       const queueData = queueStats.data || [];
-      const pending = queueData.filter(
-        (q: any) => q.status === "pending",
-      ).length;
-      const inProgress = queueData.filter(
-        (q: any) => q.status === "in_progress",
-      ).length;
+      const pending = queueData.filter((q: any) => q.status === 'pending').length;
+      const inProgress = queueData.filter((q: any) => q.status === 'in_progress').length;
       const resolvedToday = queueData.filter(
-        (q: any) =>
-          q.status === "resolved" &&
-          q.resolved_at &&
-          new Date(q.resolved_at) >= today,
+        (q: any) => q.status === 'resolved' && q.resolved_at && new Date(q.resolved_at) >= today
       ).length;
 
       return {
@@ -215,7 +197,7 @@ export function useModeration() {
         pendingReports: reportCount.count || 0,
       };
     } catch (err) {
-      console.error("Failed to fetch stats:", err);
+      console.error('Failed to fetch stats:', err);
       return {
         pending: 0,
         inProgress: 0,
@@ -235,18 +217,18 @@ export function useModeration() {
 
     try {
       const { error: updateError } = await supabase
-        .from("moderation_queue")
+        .from('moderation_queue')
         .update({
           assigned_to: currentUser.value.id,
           assigned_at: new Date().toISOString(),
-          status: "in_progress",
+          status: 'in_progress',
         })
-        .eq("id", queueId);
+        .eq('id', queueId);
 
       if (updateError) throw updateError;
       return true;
     } catch (err) {
-      error.value = err instanceof Error ? err.message : "Failed to assign";
+      error.value = err instanceof Error ? err.message : 'Failed to assign';
       return false;
     }
   }
@@ -257,18 +239,18 @@ export function useModeration() {
   async function unassign(queueId: string): Promise<boolean> {
     try {
       const { error: updateError } = await supabase
-        .from("moderation_queue")
+        .from('moderation_queue')
         .update({
           assigned_to: null,
           assigned_at: null,
-          status: "pending",
+          status: 'pending',
         })
-        .eq("id", queueId);
+        .eq('id', queueId);
 
       if (updateError) throw updateError;
       return true;
     } catch (err) {
-      error.value = err instanceof Error ? err.message : "Failed to unassign";
+      error.value = err instanceof Error ? err.message : 'Failed to unassign';
       return false;
     }
   }
@@ -276,46 +258,42 @@ export function useModeration() {
   /**
    * Approve a model
    */
-  async function approveModel(
-    queueId: string,
-    modelId: string,
-    notes?: string,
-  ): Promise<boolean> {
+  async function approveModel(queueId: string, modelId: string, notes?: string): Promise<boolean> {
     if (!currentUser.value) return false;
 
     try {
       // Update the model status
       const { error: modelError } = await supabase
-        .from("models")
+        .from('models')
         .update({
-          status: "approved",
+          status: 'approved',
           is_published: true,
           published_at: new Date().toISOString(),
           moderated_by: currentUser.value.id,
           moderated_at: new Date().toISOString(),
           moderation_notes: notes || null,
         })
-        .eq("id", modelId);
+        .eq('id', modelId);
 
       if (modelError) throw modelError;
 
       // Update the queue item
       const { error: queueError } = await supabase
-        .from("moderation_queue")
+        .from('moderation_queue')
         .update({
-          status: "resolved",
-          resolution: "approved",
+          status: 'resolved',
+          resolution: 'approved',
           resolution_notes: notes || null,
           resolved_by: currentUser.value.id,
           resolved_at: new Date().toISOString(),
         })
-        .eq("id", queueId);
+        .eq('id', queueId);
 
       if (queueError) throw queueError;
 
       return true;
     } catch (err) {
-      error.value = err instanceof Error ? err.message : "Failed to approve";
+      error.value = err instanceof Error ? err.message : 'Failed to approve';
       return false;
     }
   }
@@ -323,45 +301,41 @@ export function useModeration() {
   /**
    * Reject a model
    */
-  async function rejectModel(
-    queueId: string,
-    modelId: string,
-    reason: string,
-  ): Promise<boolean> {
+  async function rejectModel(queueId: string, modelId: string, reason: string): Promise<boolean> {
     if (!currentUser.value || !reason) return false;
 
     try {
       // Update the model status
       const { error: modelError } = await supabase
-        .from("models")
+        .from('models')
         .update({
-          status: "rejected",
+          status: 'rejected',
           is_published: false,
           moderated_by: currentUser.value.id,
           moderated_at: new Date().toISOString(),
           moderation_notes: reason,
         })
-        .eq("id", modelId);
+        .eq('id', modelId);
 
       if (modelError) throw modelError;
 
       // Update the queue item
       const { error: queueError } = await supabase
-        .from("moderation_queue")
+        .from('moderation_queue')
         .update({
-          status: "resolved",
-          resolution: "rejected",
+          status: 'resolved',
+          resolution: 'rejected',
           resolution_notes: reason,
           resolved_by: currentUser.value.id,
           resolved_at: new Date().toISOString(),
         })
-        .eq("id", queueId);
+        .eq('id', queueId);
 
       if (queueError) throw queueError;
 
       return true;
     } catch (err) {
-      error.value = err instanceof Error ? err.message : "Failed to reject";
+      error.value = err instanceof Error ? err.message : 'Failed to reject';
       return false;
     }
   }
@@ -369,45 +343,40 @@ export function useModeration() {
   /**
    * Request changes to a model
    */
-  async function requestChanges(
-    queueId: string,
-    modelId: string,
-    feedback: string,
-  ): Promise<boolean> {
+  async function requestChanges(queueId: string, modelId: string, feedback: string): Promise<boolean> {
     if (!currentUser.value || !feedback) return false;
 
     try {
       // Update the model status
       const { error: modelError } = await supabase
-        .from("models")
+        .from('models')
         .update({
-          status: "rejected",
+          status: 'rejected',
           moderated_by: currentUser.value.id,
           moderated_at: new Date().toISOString(),
           moderation_notes: feedback,
         })
-        .eq("id", modelId);
+        .eq('id', modelId);
 
       if (modelError) throw modelError;
 
       // Update the queue item
       const { error: queueError } = await supabase
-        .from("moderation_queue")
+        .from('moderation_queue')
         .update({
-          status: "resolved",
-          resolution: "needs_changes",
+          status: 'resolved',
+          resolution: 'needs_changes',
           resolution_notes: feedback,
           resolved_by: currentUser.value.id,
           resolved_at: new Date().toISOString(),
         })
-        .eq("id", queueId);
+        .eq('id', queueId);
 
       if (queueError) throw queueError;
 
       return true;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to request changes";
+      error.value = err instanceof Error ? err.message : 'Failed to request changes';
       return false;
     }
   }
@@ -415,12 +384,10 @@ export function useModeration() {
   /**
    * Fetch pending reports
    */
-  async function fetchReports(
-    status?: "pending" | "reviewed" | "resolved" | "dismissed",
-  ) {
+  async function fetchReports(status?: 'pending' | 'reviewed' | 'resolved' | 'dismissed') {
     try {
       let query = supabase
-        .from("model_reports")
+        .from('model_reports')
         .select(
           `
           id,
@@ -442,12 +409,12 @@ export function useModeration() {
             name,
             category
           )
-        `,
+        `
         )
-        .order("created_at", { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (status) {
-        query = query.eq("status", status);
+        query = query.eq('status', status);
       }
 
       const { data, error: fetchError } = await query;
@@ -456,8 +423,7 @@ export function useModeration() {
 
       return data || [];
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to fetch reports";
+      error.value = err instanceof Error ? err.message : 'Failed to fetch reports';
       return [];
     }
   }
@@ -467,27 +433,26 @@ export function useModeration() {
    */
   async function resolveReport(
     reportId: string,
-    resolution: "reviewed" | "resolved" | "dismissed",
-    notes?: string,
+    resolution: 'reviewed' | 'resolved' | 'dismissed',
+    notes?: string
   ): Promise<boolean> {
     if (!currentUser.value) return false;
 
     try {
       const { error: updateError } = await supabase
-        .from("model_reports")
+        .from('model_reports')
         .update({
           status: resolution,
           resolution_notes: notes || null,
           resolved_by: currentUser.value.id,
           resolved_at: new Date().toISOString(),
         })
-        .eq("id", reportId);
+        .eq('id', reportId);
 
       if (updateError) throw updateError;
       return true;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to resolve report";
+      error.value = err instanceof Error ? err.message : 'Failed to resolve report';
       return false;
     }
   }

@@ -7,7 +7,7 @@ export interface ProtocolBranding {
 }
 
 export interface ProtocolSpec {
-  type: "can" | "canfd" | "lin" | "k-line";
+  type: 'can' | 'canfd' | 'lin' | 'k-line';
   baudrate: number;
   extendedId?: boolean;
   dataBaudrate?: number;
@@ -25,8 +25,8 @@ export interface ProtocolSignal {
   description?: string;
   startBit: number;
   length: number;
-  byteOrder: "little_endian" | "big_endian";
-  dataType: "unsigned" | "signed" | "float" | "double";
+  byteOrder: 'little_endian' | 'big_endian';
+  dataType: 'unsigned' | 'signed' | 'float' | 'double';
   scale?: number;
   offset?: number;
   unit?: string;
@@ -83,7 +83,7 @@ export interface Protocol {
   vendor: string;
   description?: string;
   website?: string;
-  protocolType: "can" | "canfd" | "lin" | "k-line";
+  protocolType: 'can' | 'canfd' | 'lin' | 'k-line';
   baudrate: number;
   messageCount: number;
   signalCount: number;
@@ -95,7 +95,7 @@ export interface Protocol {
  */
 export interface ProtocolDetail {
   openecualliance: string;
-  type: "protocol";
+  type: 'protocol';
   id: string;
   name: string;
   version: string;

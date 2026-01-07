@@ -1,113 +1,108 @@
 <script setup lang="ts">
-const NuxtLink = resolveComponent("NuxtLink");
+  const NuxtLink = resolveComponent('NuxtLink');
 
-useSeoMeta({
-  title: "OpenECU Spec - Technical Specification - OpenECU Alliance",
-  description:
-    "YAML-based technical specification for ECU log adapters and CAN Bus protocols. Open source standard for ECU data.",
-  ogTitle: "OpenECU Spec - Technical Specification",
-  ogDescription:
-    "Open source YAML-based specification for standardizing ECU log adapters and CAN Bus protocols.",
-  twitterCard: "summary_large_image",
-});
-
-const specTypes = [
-  {
-    id: "adapter",
-    name: "Adapters",
+  useSeoMeta({
+    title: 'OpenECU Spec - Technical Specification - OpenECU Alliance',
     description:
-      "Log file format definitions that map vendor-specific channels to canonical identifiers.",
-    icon: "i-heroicons-document-text",
-    color: "primary",
-    fileExtension: ".adapter.yaml",
-    schemaUrl:
-      "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/adapter.schema.json",
-    docsUrl: "/docs/creating-adapters",
-  },
-  {
-    id: "protocol",
-    name: "Protocols",
-    description:
-      "CAN Bus message and signal definitions with DBC export support.",
-    icon: "i-heroicons-signal",
-    color: "success",
-    fileExtension: ".protocol.yaml",
-    schemaUrl:
-      "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/protocol.schema.json",
-    docsUrl: "/docs/creating-protocols",
-  },
-];
+      'YAML-based technical specification for ECU log adapters and CAN Bus protocols. Open source standard for ECU data.',
+    ogTitle: 'OpenECU Spec - Technical Specification',
+    ogDescription: 'Open source YAML-based specification for standardizing ECU log adapters and CAN Bus protocols.',
+    twitterCard: 'summary_large_image',
+  });
 
-const commonFields = [
-  {
-    field: "openecualliance",
-    description: 'Spec version (currently "1.0")',
-    required: true,
-  },
-  {
-    field: "type",
-    description: "Content type: adapter or protocol",
-    required: true,
-  },
-  {
-    field: "id",
-    description: "Unique identifier (lowercase, hyphens)",
-    required: true,
-  },
-  { field: "name", description: "Human-readable display name", required: true },
-  {
-    field: "version",
-    description: "Semantic version (e.g., 1.0.0)",
-    required: true,
-  },
-  {
-    field: "vendor",
-    description: "ECU vendor or manufacturer",
-    required: true,
-  },
-  {
-    field: "description",
-    description: "Detailed description",
-    required: false,
-  },
-  {
-    field: "website",
-    description: "URL for more information",
-    required: false,
-  },
-  { field: "branding", description: "Logo, icon, colors", required: false },
-  {
-    field: "metadata",
-    description: "Author, license, changelog",
-    required: false,
-  },
-];
+  const specTypes = [
+    {
+      id: 'adapter',
+      name: 'Adapters',
+      description: 'Log file format definitions that map vendor-specific channels to canonical identifiers.',
+      icon: 'i-heroicons-document-text',
+      color: 'primary',
+      fileExtension: '.adapter.yaml',
+      schemaUrl: 'https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/adapter.schema.json',
+      docsUrl: '/docs/creating-adapters',
+    },
+    {
+      id: 'protocol',
+      name: 'Protocols',
+      description: 'CAN Bus message and signal definitions with DBC export support.',
+      icon: 'i-heroicons-signal',
+      color: 'success',
+      fileExtension: '.protocol.yaml',
+      schemaUrl: 'https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/protocol.schema.json',
+      docsUrl: '/docs/creating-protocols',
+    },
+  ];
 
-const canonicalChannels = [
-  { id: "rpm", name: "Engine RPM", category: "engine" },
-  { id: "tps", name: "Throttle Position", category: "engine" },
-  { id: "map", name: "Manifold Absolute Pressure", category: "pressure" },
-  { id: "coolant_temp", name: "Coolant Temperature", category: "temperature" },
-  { id: "iat", name: "Intake Air Temperature", category: "temperature" },
-  { id: "afr", name: "Air-Fuel Ratio", category: "fuel" },
-  { id: "lambda", name: "Lambda", category: "fuel" },
-  { id: "boost", name: "Boost Pressure", category: "pressure" },
-  { id: "battery_voltage", name: "Battery Voltage", category: "electrical" },
-  { id: "vehicle_speed", name: "Vehicle Speed", category: "speed" },
-  { id: "ignition_advance", name: "Ignition Timing", category: "ignition" },
-  { id: "duty_cycle", name: "Injector Duty Cycle", category: "fuel" },
-];
+  const commonFields = [
+    {
+      field: 'openecualliance',
+      description: 'Spec version (currently "1.0")',
+      required: true,
+    },
+    {
+      field: 'type',
+      description: 'Content type: adapter or protocol',
+      required: true,
+    },
+    {
+      field: 'id',
+      description: 'Unique identifier (lowercase, hyphens)',
+      required: true,
+    },
+    { field: 'name', description: 'Human-readable display name', required: true },
+    {
+      field: 'version',
+      description: 'Semantic version (e.g., 1.0.0)',
+      required: true,
+    },
+    {
+      field: 'vendor',
+      description: 'ECU vendor or manufacturer',
+      required: true,
+    },
+    {
+      field: 'description',
+      description: 'Detailed description',
+      required: false,
+    },
+    {
+      field: 'website',
+      description: 'URL for more information',
+      required: false,
+    },
+    { field: 'branding', description: 'Logo, icon, colors', required: false },
+    {
+      field: 'metadata',
+      description: 'Author, license, changelog',
+      required: false,
+    },
+  ];
 
-const unitCategories = [
-  { category: "Temperature", units: ["celsius", "fahrenheit", "kelvin"] },
-  { category: "Pressure", units: ["kpa", "psi", "bar", "mbar"] },
-  { category: "Speed", units: ["rpm", "kph", "mph"] },
-  { category: "Ratio", units: ["afr", "lambda", "percent"] },
-  { category: "Time", units: ["seconds", "milliseconds"] },
-  { category: "Electrical", units: ["volts", "amps"] },
-];
+  const canonicalChannels = [
+    { id: 'rpm', name: 'Engine RPM', category: 'engine' },
+    { id: 'tps', name: 'Throttle Position', category: 'engine' },
+    { id: 'map', name: 'Manifold Absolute Pressure', category: 'pressure' },
+    { id: 'coolant_temp', name: 'Coolant Temperature', category: 'temperature' },
+    { id: 'iat', name: 'Intake Air Temperature', category: 'temperature' },
+    { id: 'afr', name: 'Air-Fuel Ratio', category: 'fuel' },
+    { id: 'lambda', name: 'Lambda', category: 'fuel' },
+    { id: 'boost', name: 'Boost Pressure', category: 'pressure' },
+    { id: 'battery_voltage', name: 'Battery Voltage', category: 'electrical' },
+    { id: 'vehicle_speed', name: 'Vehicle Speed', category: 'speed' },
+    { id: 'ignition_advance', name: 'Ignition Timing', category: 'ignition' },
+    { id: 'duty_cycle', name: 'Injector Duty Cycle', category: 'fuel' },
+  ];
 
-const codeExample = `openecualliance: "1.0"
+  const unitCategories = [
+    { category: 'Temperature', units: ['celsius', 'fahrenheit', 'kelvin'] },
+    { category: 'Pressure', units: ['kpa', 'psi', 'bar', 'mbar'] },
+    { category: 'Speed', units: ['rpm', 'kph', 'mph'] },
+    { category: 'Ratio', units: ['afr', 'lambda', 'percent'] },
+    { category: 'Time', units: ['seconds', 'milliseconds'] },
+    { category: 'Electrical', units: ['volts', 'amps'] },
+  ];
+
+  const codeExample = `openecualliance: "1.0"
 type: adapter
 id: haltech-nsp
 name: "Haltech NSP"
@@ -142,15 +137,9 @@ channels:
     <UContainer>
       <!-- Header -->
       <div class="mb-12">
-        <UBadge color="primary" variant="subtle" class="mb-4">
-          Version 1.0
-        </UBadge>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2">
-          OpenECU Specification
-        </h1>
-        <p class="text-lg text-muted">
-          YAML-based specifications for ECU adapters and CAN protocols.
-        </p>
+        <UBadge color="primary" variant="subtle" class="mb-4"> Version 1.0 </UBadge>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">OpenECU Specification</h1>
+        <p class="text-lg text-muted">YAML-based specifications for ECU adapters and CAN protocols.</p>
       </div>
 
       <!-- Spec Types -->
@@ -161,39 +150,21 @@ channels:
             <div class="flex flex-col h-full">
               <div class="flex items-center gap-3 mb-3">
                 <div :class="`bg-${spec.color}/10`" class="p-2 rounded-lg">
-                  <UIcon
-                    :name="spec.icon"
-                    :class="`size-5 text-${spec.color}`"
-                  />
+                  <UIcon :name="spec.icon" :class="`size-5 text-${spec.color}`" />
                 </div>
                 <div>
                   <h3 class="font-semibold">{{ spec.name }}</h3>
-                  <code class="text-xs text-muted">{{
-                    spec.fileExtension
-                  }}</code>
+                  <code class="text-xs text-muted">{{ spec.fileExtension }}</code>
                 </div>
               </div>
               <p class="text-sm text-muted mb-4 flex-1">
                 {{ spec.description }}
               </p>
               <div class="flex gap-2">
-                <UButton
-                  :to="spec.schemaUrl"
-                  target="_blank"
-                  size="xs"
-                  color="neutral"
-                  variant="outline"
-                >
+                <UButton :to="spec.schemaUrl" target="_blank" size="xs" color="neutral" variant="outline">
                   Schema
                 </UButton>
-                <UButton
-                  :to="spec.docsUrl"
-                  size="xs"
-                  color="neutral"
-                  variant="ghost"
-                >
-                  Guide
-                </UButton>
+                <UButton :to="spec.docsUrl" size="xs" color="neutral" variant="ghost"> Guide </UButton>
               </div>
             </div>
           </UCard>
@@ -203,9 +174,7 @@ channels:
       <!-- Common Structure -->
       <section class="mb-12">
         <h2 class="text-xl font-semibold mb-4">Common Structure</h2>
-        <p class="text-muted mb-4">
-          All content types share these root-level fields:
-        </p>
+        <p class="text-muted mb-4">All content types share these root-level fields:</p>
         <UCard>
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -217,25 +186,15 @@ channels:
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="field in commonFields"
-                  :key="field.field"
-                  class="border-b border-default last:border-0"
-                >
+                <tr v-for="field in commonFields" :key="field.field" class="border-b border-default last:border-0">
                   <td class="py-2 pr-4">
-                    <code
-                      class="bg-muted px-1.5 py-0.5 rounded text-primary text-xs"
-                    >
+                    <code class="bg-muted px-1.5 py-0.5 rounded text-primary text-xs">
                       {{ field.field }}
                     </code>
                   </td>
                   <td class="py-2 pr-4 text-muted">{{ field.description }}</td>
                   <td class="py-2">
-                    <UIcon
-                      v-if="field.required"
-                      name="i-heroicons-check"
-                      class="size-4 text-success"
-                    />
+                    <UIcon v-if="field.required" name="i-heroicons-check" class="size-4 text-success" />
                   </td>
                 </tr>
               </tbody>
@@ -256,29 +215,17 @@ channels:
       <section class="mb-12">
         <h2 class="text-xl font-semibold mb-4">Canonical Channel IDs</h2>
         <p class="text-muted mb-4">
-          Standardized identifiers for common ECU channels. Use these in
-          adapters for cross-format compatibility.
+          Standardized identifiers for common ECU channels. Use these in adapters for cross-format compatibility.
         </p>
         <UCard>
-          <div
-            class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1 text-sm"
-          >
-            <div
-              v-for="channel in canonicalChannels"
-              :key="channel.id"
-              class="flex items-center gap-2 py-1"
-            >
-              <code class="bg-muted px-1.5 py-0.5 rounded text-xs">{{
-                channel.id
-              }}</code>
+          <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1 text-sm">
+            <div v-for="channel in canonicalChannels" :key="channel.id" class="flex items-center gap-2 py-1">
+              <code class="bg-muted px-1.5 py-0.5 rounded text-xs">{{ channel.id }}</code>
               <span class="text-muted">{{ channel.name }}</span>
             </div>
           </div>
           <p class="text-xs text-muted mt-4">
-            <NuxtLink
-              to="/docs/creating-adapters#channels"
-              class="text-primary hover:underline"
-            >
+            <NuxtLink to="/docs/creating-adapters#channels" class="text-primary hover:underline">
               View full list
             </NuxtLink>
           </p>
@@ -292,13 +239,7 @@ channels:
           <UCard v-for="cat in unitCategories" :key="cat.category" class="p-4">
             <h4 class="font-semibold text-sm mb-2">{{ cat.category }}</h4>
             <div class="flex flex-wrap gap-1">
-              <UBadge
-                v-for="unit in cat.units"
-                :key="unit"
-                color="neutral"
-                variant="outline"
-                size="xs"
-              >
+              <UBadge v-for="unit in cat.units" :key="unit" color="neutral" variant="outline" size="xs">
                 {{ unit }}
               </UBadge>
             </div>
@@ -310,9 +251,7 @@ channels:
       <section class="mb-12">
         <h2 class="text-xl font-semibold mb-4">Validation</h2>
         <UCard>
-          <p class="text-sm text-muted mb-3">
-            Validate your YAML files against the JSON Schema:
-          </p>
+          <p class="text-sm text-muted mb-3">Validate your YAML files against the JSON Schema:</p>
           <CodeBlock
             lang="bash"
             code="# Using ajv-cli (Node.js)
@@ -346,13 +285,7 @@ check-jsonschema --schemafile schema/adapter.schema.json your-adapter.yaml"
         >
           All Schemas
         </UButton>
-        <UButton
-          to="/docs"
-          icon="i-heroicons-book-open"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-        >
+        <UButton to="/docs" icon="i-heroicons-book-open" color="neutral" variant="ghost" size="sm">
           Documentation
         </UButton>
       </div>

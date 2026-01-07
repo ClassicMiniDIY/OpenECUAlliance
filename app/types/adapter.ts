@@ -15,7 +15,7 @@ export interface Adapter {
   website?: string;
   channelCount: number;
   categories: string[];
-  fileFormat: "csv" | "binary";
+  fileFormat: 'csv' | 'binary';
   extensions: string[];
   branding?: AdapterBranding;
 }
@@ -25,7 +25,7 @@ export interface AdapterChannel {
   name: string;
   description?: string;
   category: string;
-  dataType: "float" | "int" | "bool" | "string" | "enum";
+  dataType: 'float' | 'int' | 'bool' | 'string' | 'enum';
   unit: string;
   min?: number;
   max?: number;
@@ -34,7 +34,7 @@ export interface AdapterChannel {
 }
 
 export interface AdapterFileFormat {
-  type: "csv" | "binary";
+  type: 'csv' | 'binary';
   extensions: string[];
   delimiter?: string;
   endianness?: string;

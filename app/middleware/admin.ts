@@ -3,11 +3,11 @@ export default defineNuxtRouteMiddleware(async () => {
 
   // Wait for auth to be ready
   if (!isAuthenticated.value) {
-    return navigateTo("/login");
+    return navigateTo('/login');
   }
 
   // Check if user has moderator or admin role
   if (!isModerator.value) {
-    return navigateTo("/");
+    return navigateTo('/');
   }
 });

@@ -1,6 +1,6 @@
-import type { ExternalPlatform } from "~~/app/types/model";
-import type { PlatformParser, ExternalModelMetadata } from "./types";
-import { PlatformFetchError } from "./types";
+import type { ExternalPlatform } from '~~/app/types/model';
+import type { PlatformParser, ExternalModelMetadata } from './types';
+import { PlatformFetchError } from './types';
 
 const URL_PATTERN = /printables\.com\/model\/(\d+)/i;
 
@@ -18,7 +18,7 @@ interface MicrolinkResponse {
 }
 
 export const printablesParser: PlatformParser = {
-  platform: "printables" as ExternalPlatform,
+  platform: 'printables' as ExternalPlatform,
 
   canParse(url: string): boolean {
     return URL_PATTERN.test(url);
@@ -32,7 +32,7 @@ export const printablesParser: PlatformParser = {
   async fetchMetadata(url: string): Promise<ExternalModelMetadata> {
     const modelId = this.extractId(url);
     if (!modelId) {
-      throw new PlatformFetchError("Invalid Printables URL", this.platform);
+      throw new PlatformFetchError('Invalid Printables URL', this.platform);
     }
 
     // Use microlink for fast metadata extraction
@@ -40,7 +40,7 @@ export const printablesParser: PlatformParser = {
 
     const response = await fetch(microlinkUrl, {
       headers: {
-        Accept: "application/json",
+        Accept: 'application/json',
       },
     });
 
@@ -48,24 +48,21 @@ export const printablesParser: PlatformParser = {
       throw new PlatformFetchError(
         `Failed to fetch from Printables: ${response.statusText}`,
         this.platform,
-        response.status,
+        response.status
       );
     }
 
     const result = (await response.json()) as MicrolinkResponse;
 
-    if (result.status !== "success" || !result.data) {
-      throw new PlatformFetchError(
-        "Failed to extract metadata from Printables",
-        this.platform,
-      );
+    if (result.status !== 'success' || !result.data) {
+      throw new PlatformFetchError('Failed to extract metadata from Printables', this.platform);
     }
 
     const data = result.data;
 
     // Parse title - format is "Model Name by AuthorName | Download free STL model | Printables.com"
-    let title = data.title || "Untitled";
-    let authorName = "Unknown";
+    let title = data.title || 'Untitled';
+    let authorName = 'Unknown';
 
     const titleMatch = title.match(/^(.+?)\s+by\s+(.+?)\s*\|/i);
     if (titleMatch) {
@@ -73,9 +70,7 @@ export const printablesParser: PlatformParser = {
       authorName = titleMatch[2].trim();
     } else {
       // Fallback: just remove the suffix
-      title = title
-        .replace(/\s*\|\s*Download free STL model\s*\|\s*Printables\.com$/i, "")
-        .trim();
+      title = title.replace(/\s*\|\s*Download free STL model\s*\|\s*Printables\.com$/i, '').trim();
       if (data.author) {
         authorName = data.author;
       }
@@ -94,13 +89,13 @@ export const printablesParser: PlatformParser = {
       authorName,
       authorUrl: `https://www.printables.com/@${authorName}`,
       images,
-      license: "CC-BY-NC-SA", // Printables default
+      license: 'CC-BY-NC-SA', // Printables default
       tags: [],
       remixesAllowed: true,
       commercialUseAllowed: false,
       externalId: modelId,
       printSettings: {
-        recommendedMaterial: "PLA",
+        recommendedMaterial: 'PLA',
       },
     };
   },

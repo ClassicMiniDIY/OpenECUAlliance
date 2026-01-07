@@ -1,41 +1,35 @@
 <script setup lang="ts">
-import type { UserModel } from "~/types/model";
+  import type { UserModel } from '~/types/model';
 
-const NuxtLink = resolveComponent("NuxtLink");
+  const NuxtLink = resolveComponent('NuxtLink');
 
-const props = defineProps<{
-  model: UserModel;
-}>();
+  const props = defineProps<{
+    model: UserModel;
+  }>();
 
-const { getVendorIcon } = useVendorIcons();
-const { getCategoryLabel, getCategoryIcon } = useModels();
+  const { getVendorIcon } = useVendorIcons();
+  const { getCategoryLabel, getCategoryIcon } = useModels();
 
-const fallbackIcon = computed(() =>
-  props.model.vendor
-    ? getVendorIcon(props.model.vendor)
-    : getCategoryIcon(props.model.category),
-);
+  const fallbackIcon = computed(() =>
+    props.model.vendor ? getVendorIcon(props.model.vendor) : getCategoryIcon(props.model.category)
+  );
 
-const accessibleDescription = computed(() => {
-  const desc = props.model.description || `3D model for ${props.model.name}`;
-  const time = props.model.estimatedTimeHours
-    ? `${props.model.estimatedTimeHours} hour print time.`
-    : "";
-  return `${props.model.name}. ${desc} ${props.model.recommendedMaterial} material. ${time} Version ${props.model.version}.`;
-});
+  const accessibleDescription = computed(() => {
+    const desc = props.model.description || `3D model for ${props.model.name}`;
+    const time = props.model.estimatedTimeHours ? `${props.model.estimatedTimeHours} hour print time.` : '';
+    return `${props.model.name}. ${desc} ${props.model.recommendedMaterial} material. ${time} Version ${props.model.version}.`;
+  });
 
-const formattedPrintTime = computed(() => {
-  if (!props.model.estimatedTimeHours) return null;
-  const hours = Math.floor(props.model.estimatedTimeHours);
-  const minutes = Math.round((props.model.estimatedTimeHours - hours) * 60);
-  if (hours === 0) return `${minutes}m`;
-  if (minutes === 0) return `${hours}h`;
-  return `${hours}h ${minutes}m`;
-});
+  const formattedPrintTime = computed(() => {
+    if (!props.model.estimatedTimeHours) return null;
+    const hours = Math.floor(props.model.estimatedTimeHours);
+    const minutes = Math.round((props.model.estimatedTimeHours - hours) * 60);
+    if (hours === 0) return `${minutes}m`;
+    if (minutes === 0) return `${hours}h`;
+    return `${hours}h ${minutes}m`;
+  });
 
-const modelUrl = computed(
-  () => `/models/${props.model.category}/${props.model.slug}`,
-);
+  const modelUrl = computed(() => `/models/${props.model.category}/${props.model.slug}`);
 </script>
 
 <template>
@@ -47,9 +41,7 @@ const modelUrl = computed(
   >
     <div class="flex flex-col h-full">
       <!-- Image Preview -->
-      <div
-        class="relative aspect-video bg-muted/30 rounded-lg mb-3 overflow-hidden"
-      >
+      <div class="relative aspect-video bg-muted/30 rounded-lg mb-3 overflow-hidden">
         <img
           v-if="model.primaryImage || model.primaryImageThumbnail"
           :src="model.primaryImageThumbnail || model.primaryImage || ''"
@@ -57,28 +49,13 @@ const modelUrl = computed(
           class="w-full h-full object-cover"
         />
         <div v-else class="w-full h-full flex items-center justify-center">
-          <UIcon
-            :name="getCategoryIcon(model.category)"
-            class="size-12 text-muted"
-            aria-hidden="true"
-          />
+          <UIcon :name="getCategoryIcon(model.category)" class="size-12 text-muted" aria-hidden="true" />
         </div>
-        <UBadge
-          color="warning"
-          variant="solid"
-          size="sm"
-          class="absolute top-2 right-2"
-        >
+        <UBadge color="warning" variant="solid" size="sm" class="absolute top-2 right-2">
           {{ getCategoryLabel(model.category) }}
         </UBadge>
         <!-- Featured badge -->
-        <UBadge
-          v-if="model.featured"
-          color="primary"
-          variant="solid"
-          size="sm"
-          class="absolute top-2 left-2"
-        >
+        <UBadge v-if="model.featured" color="primary" variant="solid" size="sm" class="absolute top-2 left-2">
           Featured
         </UBadge>
         <!-- Linked model badge -->
@@ -92,36 +69,21 @@ const modelUrl = computed(
 
       <!-- Header -->
       <div class="flex items-start gap-3 mb-2">
-        <div
-          class="bg-warning/10 p-2 rounded-lg shrink-0 flex items-center justify-center size-8"
-          aria-hidden="true"
-        >
-          <UIcon
-            :name="fallbackIcon"
-            class="size-4 text-warning"
-            aria-hidden="true"
-          />
+        <div class="bg-warning/10 p-2 rounded-lg shrink-0 flex items-center justify-center size-8" aria-hidden="true">
+          <UIcon :name="fallbackIcon" class="size-4 text-warning" aria-hidden="true" />
         </div>
         <div class="min-w-0 flex-1">
           <h3 class="font-semibold truncate text-sm">{{ model.name }}</h3>
           <p class="text-xs text-muted truncate">
             <span v-if="model.vendor">{{ model.vendor }} · </span>
-            <span
-              >by
-              {{
-                model.author?.displayName || model.author?.username || "Unknown"
-              }}</span
-            >
+            <span>by {{ model.author?.displayName || model.author?.username || 'Unknown' }}</span>
           </p>
         </div>
       </div>
 
       <!-- Description -->
       <p class="text-xs text-muted line-clamp-2 mb-3 flex-1">
-        {{
-          model.description ||
-          `3D printable ${getCategoryLabel(model.category).toLowerCase()}`
-        }}
+        {{ model.description || `3D printable ${getCategoryLabel(model.category).toLowerCase()}` }}
       </p>
 
       <!-- Stats Row -->
@@ -145,9 +107,7 @@ const modelUrl = computed(
       </div>
 
       <!-- Footer -->
-      <div
-        class="flex items-center justify-between text-xs text-muted pt-2 border-t border-default"
-      >
+      <div class="flex items-center justify-between text-xs text-muted pt-2 border-t border-default">
         <div class="flex items-center gap-2">
           <UBadge color="neutral" variant="outline" size="sm">
             {{ model.recommendedMaterial }}

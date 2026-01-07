@@ -1,10 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
   public: {
@@ -22,7 +16,7 @@ export type Database = {
           email_notifications: boolean;
           models_count: number;
           likes_received: number;
-          role: "user" | "moderator" | "admin";
+          role: 'user' | 'moderator' | 'admin';
           is_banned: boolean;
           banned_reason: string | null;
           banned_until: string | null;
@@ -41,7 +35,7 @@ export type Database = {
           email_notifications?: boolean;
           models_count?: number;
           likes_received?: number;
-          role?: "user" | "moderator" | "admin";
+          role?: 'user' | 'moderator' | 'admin';
           is_banned?: boolean;
           banned_reason?: string | null;
           banned_until?: string | null;
@@ -60,7 +54,7 @@ export type Database = {
           email_notifications?: boolean;
           models_count?: number;
           likes_received?: number;
-          role?: "user" | "moderator" | "admin";
+          role?: 'user' | 'moderator' | 'admin';
           is_banned?: boolean;
           banned_reason?: string | null;
           banned_until?: string | null;
@@ -75,12 +69,7 @@ export type Database = {
           name: string;
           version: string;
           description: string;
-          category:
-            | "mounts"
-            | "enclosures"
-            | "brackets"
-            | "adapters"
-            | "accessories";
+          category: 'mounts' | 'enclosures' | 'brackets' | 'adapters' | 'accessories';
           vendor: string | null;
           compatibility: Json | null;
           printing: Json;
@@ -96,7 +85,7 @@ export type Database = {
           downloads_count: number;
           average_rating: number;
           ratings_count: number;
-          status: "pending" | "approved" | "rejected" | "flagged" | "archived";
+          status: 'pending' | 'approved' | 'rejected' | 'flagged' | 'archived';
           moderation_notes: string | null;
           moderated_by: string | null;
           moderated_at: string | null;
@@ -121,12 +110,7 @@ export type Database = {
           name: string;
           version?: string;
           description: string;
-          category:
-            | "mounts"
-            | "enclosures"
-            | "brackets"
-            | "adapters"
-            | "accessories";
+          category: 'mounts' | 'enclosures' | 'brackets' | 'adapters' | 'accessories';
           vendor?: string | null;
           compatibility?: Json | null;
           printing: Json;
@@ -142,7 +126,7 @@ export type Database = {
           downloads_count?: number;
           average_rating?: number;
           ratings_count?: number;
-          status?: "pending" | "approved" | "rejected" | "flagged" | "archived";
+          status?: 'pending' | 'approved' | 'rejected' | 'flagged' | 'archived';
           moderation_notes?: string | null;
           moderated_by?: string | null;
           moderated_at?: string | null;
@@ -166,12 +150,7 @@ export type Database = {
           name?: string;
           version?: string;
           description?: string;
-          category?:
-            | "mounts"
-            | "enclosures"
-            | "brackets"
-            | "adapters"
-            | "accessories";
+          category?: 'mounts' | 'enclosures' | 'brackets' | 'adapters' | 'accessories';
           vendor?: string | null;
           compatibility?: Json | null;
           printing?: Json;
@@ -187,7 +166,7 @@ export type Database = {
           downloads_count?: number;
           average_rating?: number;
           ratings_count?: number;
-          status?: "pending" | "approved" | "rejected" | "flagged" | "archived";
+          status?: 'pending' | 'approved' | 'rejected' | 'flagged' | 'archived';
           moderation_notes?: string | null;
           moderated_by?: string | null;
           moderated_at?: string | null;
@@ -250,7 +229,7 @@ export type Database = {
           model_id: string;
           filename: string;
           original_filename: string;
-          type: "render" | "photo" | "diagram" | "screenshot";
+          type: 'render' | 'photo' | 'diagram' | 'screenshot';
           description: string | null;
           storage_path: string;
           thumbnail_path: string | null;
@@ -266,7 +245,7 @@ export type Database = {
           model_id: string;
           filename: string;
           original_filename: string;
-          type: "render" | "photo" | "diagram" | "screenshot";
+          type: 'render' | 'photo' | 'diagram' | 'screenshot';
           description?: string | null;
           storage_path: string;
           thumbnail_path?: string | null;
@@ -281,7 +260,7 @@ export type Database = {
           model_id?: string;
           filename?: string;
           original_filename?: string;
-          type?: "render" | "photo" | "diagram" | "screenshot";
+          type?: 'render' | 'photo' | 'diagram' | 'screenshot';
           description?: string | null;
           storage_path?: string;
           thumbnail_path?: string | null;
@@ -404,17 +383,12 @@ export type Database = {
         Row: {
           id: string;
           model_id: string;
-          action_type: "new_submission" | "update" | "report" | "appeal";
+          action_type: 'new_submission' | 'update' | 'report' | 'appeal';
           priority: number;
           assigned_to: string | null;
           assigned_at: string | null;
-          status: "pending" | "in_progress" | "resolved";
-          resolution:
-            | "approved"
-            | "rejected"
-            | "needs_changes"
-            | "escalated"
-            | null;
+          status: 'pending' | 'in_progress' | 'resolved';
+          resolution: 'approved' | 'rejected' | 'needs_changes' | 'escalated' | null;
           resolution_notes: string | null;
           resolved_by: string | null;
           resolved_at: string | null;
@@ -424,17 +398,12 @@ export type Database = {
         Insert: {
           id?: string;
           model_id: string;
-          action_type: "new_submission" | "update" | "report" | "appeal";
+          action_type: 'new_submission' | 'update' | 'report' | 'appeal';
           priority?: number;
           assigned_to?: string | null;
           assigned_at?: string | null;
-          status?: "pending" | "in_progress" | "resolved";
-          resolution?:
-            | "approved"
-            | "rejected"
-            | "needs_changes"
-            | "escalated"
-            | null;
+          status?: 'pending' | 'in_progress' | 'resolved';
+          resolution?: 'approved' | 'rejected' | 'needs_changes' | 'escalated' | null;
           resolution_notes?: string | null;
           resolved_by?: string | null;
           resolved_at?: string | null;
@@ -443,17 +412,12 @@ export type Database = {
         };
         Update: {
           model_id?: string;
-          action_type?: "new_submission" | "update" | "report" | "appeal";
+          action_type?: 'new_submission' | 'update' | 'report' | 'appeal';
           priority?: number;
           assigned_to?: string | null;
           assigned_at?: string | null;
-          status?: "pending" | "in_progress" | "resolved";
-          resolution?:
-            | "approved"
-            | "rejected"
-            | "needs_changes"
-            | "escalated"
-            | null;
+          status?: 'pending' | 'in_progress' | 'resolved';
+          resolution?: 'approved' | 'rejected' | 'needs_changes' | 'escalated' | null;
           resolution_notes?: string | null;
           resolved_by?: string | null;
           resolved_at?: string | null;
@@ -465,16 +429,9 @@ export type Database = {
           id: string;
           model_id: string;
           reporter_id: string;
-          reason:
-            | "spam"
-            | "inappropriate"
-            | "copyright"
-            | "incorrect_info"
-            | "broken_files"
-            | "duplicate"
-            | "other";
+          reason: 'spam' | 'inappropriate' | 'copyright' | 'incorrect_info' | 'broken_files' | 'duplicate' | 'other';
           details: string | null;
-          status: "pending" | "reviewed" | "resolved" | "dismissed";
+          status: 'pending' | 'reviewed' | 'resolved' | 'dismissed';
           resolution_notes: string | null;
           resolved_by: string | null;
           resolved_at: string | null;
@@ -484,16 +441,9 @@ export type Database = {
           id?: string;
           model_id: string;
           reporter_id: string;
-          reason:
-            | "spam"
-            | "inappropriate"
-            | "copyright"
-            | "incorrect_info"
-            | "broken_files"
-            | "duplicate"
-            | "other";
+          reason: 'spam' | 'inappropriate' | 'copyright' | 'incorrect_info' | 'broken_files' | 'duplicate' | 'other';
           details?: string | null;
-          status?: "pending" | "reviewed" | "resolved" | "dismissed";
+          status?: 'pending' | 'reviewed' | 'resolved' | 'dismissed';
           resolution_notes?: string | null;
           resolved_by?: string | null;
           resolved_at?: string | null;
@@ -502,16 +452,9 @@ export type Database = {
         Update: {
           model_id?: string;
           reporter_id?: string;
-          reason?:
-            | "spam"
-            | "inappropriate"
-            | "copyright"
-            | "incorrect_info"
-            | "broken_files"
-            | "duplicate"
-            | "other";
+          reason?: 'spam' | 'inappropriate' | 'copyright' | 'incorrect_info' | 'broken_files' | 'duplicate' | 'other';
           details?: string | null;
-          status?: "pending" | "reviewed" | "resolved" | "dismissed";
+          status?: 'pending' | 'reviewed' | 'resolved' | 'dismissed';
           resolution_notes?: string | null;
           resolved_by?: string | null;
           resolved_at?: string | null;
@@ -521,50 +464,21 @@ export type Database = {
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: {
-      model_category:
-        | "mounts"
-        | "enclosures"
-        | "brackets"
-        | "adapters"
-        | "accessories";
-      model_status:
-        | "pending"
-        | "approved"
-        | "rejected"
-        | "flagged"
-        | "archived";
-      user_role: "user" | "moderator" | "admin";
-      image_type: "render" | "photo" | "diagram" | "screenshot";
-      moderation_action: "new_submission" | "update" | "report" | "appeal";
-      moderation_resolution:
-        | "approved"
-        | "rejected"
-        | "needs_changes"
-        | "escalated";
-      report_reason:
-        | "spam"
-        | "inappropriate"
-        | "copyright"
-        | "incorrect_info"
-        | "broken_files"
-        | "duplicate"
-        | "other";
-      report_status: "pending" | "reviewed" | "resolved" | "dismissed";
-      external_platform:
-        | "makerworld"
-        | "printables"
-        | "thingiverse"
-        | "cults3d";
+      model_category: 'mounts' | 'enclosures' | 'brackets' | 'adapters' | 'accessories';
+      model_status: 'pending' | 'approved' | 'rejected' | 'flagged' | 'archived';
+      user_role: 'user' | 'moderator' | 'admin';
+      image_type: 'render' | 'photo' | 'diagram' | 'screenshot';
+      moderation_action: 'new_submission' | 'update' | 'report' | 'appeal';
+      moderation_resolution: 'approved' | 'rejected' | 'needs_changes' | 'escalated';
+      report_reason: 'spam' | 'inappropriate' | 'copyright' | 'incorrect_info' | 'broken_files' | 'duplicate' | 'other';
+      report_status: 'pending' | 'reviewed' | 'resolved' | 'dismissed';
+      external_platform: 'makerworld' | 'printables' | 'thingiverse' | 'cults3d';
     };
   };
 };
 
 // Helper types for easier usage
-export type Tables<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Row"];
-export type InsertTables<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Insert"];
-export type UpdateTables<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Update"];
-export type Enums<T extends keyof Database["public"]["Enums"]> =
-  Database["public"]["Enums"][T];
+export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+export type InsertTables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert'];
+export type UpdateTables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update'];
+export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];

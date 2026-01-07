@@ -1,19 +1,16 @@
-import type { Adapter, AdapterDetail, AdapterBranding } from "./adapter";
-import type { Protocol, ProtocolDetail, ProtocolBranding } from "./protocol";
-import type { Model, ModelDetail, ModelBranding } from "./model";
+import type { Adapter, AdapterDetail, AdapterBranding } from './adapter';
+import type { Protocol, ProtocolDetail, ProtocolBranding } from './protocol';
+import type { Model, ModelDetail, ModelBranding } from './model';
 
 /**
  * Content types available in the marketplace
  */
-export type ContentType = "adapter" | "protocol" | "model";
+export type ContentType = 'adapter' | 'protocol' | 'model';
 
 /**
  * Common branding interface shared by all content types
  */
-export type ContentBranding =
-  | AdapterBranding
-  | ProtocolBranding
-  | ModelBranding;
+export type ContentBranding = AdapterBranding | ProtocolBranding | ModelBranding;
 
 /**
  * Common metadata interface
@@ -44,9 +41,9 @@ export interface BaseContent {
  * Union type for any content list item
  */
 export type AnyContent =
-  | (Adapter & { type: "adapter" })
-  | (Protocol & { type: "protocol" })
-  | (Model & { type: "model" });
+  | (Adapter & { type: 'adapter' })
+  | (Protocol & { type: 'protocol' })
+  | (Model & { type: 'model' });
 
 /**
  * Union type for any content detail
@@ -71,7 +68,7 @@ export interface ContentListItem extends BaseContent {
  * Content filter options for marketplace
  */
 export interface ContentFilters {
-  type?: ContentType | "all";
+  type?: ContentType | 'all';
   vendor?: string;
   search?: string;
   category?: string; // For models
@@ -82,8 +79,8 @@ export interface ContentFilters {
 /**
  * Sort options for content lists
  */
-export type ContentSortField = "name" | "vendor" | "version" | "type";
-export type ContentSortOrder = "asc" | "desc";
+export type ContentSortField = 'name' | 'vendor' | 'version' | 'type';
+export type ContentSortOrder = 'asc' | 'desc';
 
 export interface ContentSort {
   field: ContentSortField;
@@ -91,6 +88,6 @@ export interface ContentSort {
 }
 
 // Re-export individual types for convenience
-export type { Adapter, AdapterDetail, AdapterBranding } from "./adapter";
-export type { Protocol, ProtocolDetail, ProtocolBranding } from "./protocol";
-export type { Model, ModelDetail, ModelBranding, ModelCategory } from "./model";
+export type { Adapter, AdapterDetail, AdapterBranding } from './adapter';
+export type { Protocol, ProtocolDetail, ProtocolBranding } from './protocol';
+export type { Model, ModelDetail, ModelBranding, ModelCategory } from './model';

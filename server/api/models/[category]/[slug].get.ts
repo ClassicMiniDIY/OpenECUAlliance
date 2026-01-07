@@ -1,9 +1,5 @@
-import { serverSupabaseClient } from "#supabase/server";
-import type {
-  UserModelDetail,
-  UserModelFile,
-  UserModelImage,
-} from "~/types/model";
+import { serverSupabaseClient } from '#supabase/server';
+import type { UserModelDetail, UserModelFile, UserModelImage } from '~/types/model';
 
 export default defineEventHandler(async (event): Promise<UserModelDetail> => {
   const supabase = await serverSupabaseClient(event);
@@ -13,21 +9,21 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("[Model API] User:", user?.id || "not authenticated");
+  console.log('[Model API] User:', user?.id || 'not authenticated');
 
-  const category = getRouterParam(event, "category");
-  const slug = getRouterParam(event, "slug");
+  const category = getRouterParam(event, 'category');
+  const slug = getRouterParam(event, 'slug');
 
   if (!category || !slug) {
     throw createError({
       statusCode: 400,
-      message: "Missing category or slug parameter",
+      message: 'Missing category or slug parameter',
     });
   }
 
   // Fetch the model with all related data
   const { data: model, error } = await supabase
-    .from("models")
+    .from('models')
     .select(
       `
       id,
@@ -87,17 +83,14 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
         is_primary,
         sort_order
       )
-    `,
+    `
     )
-    .eq("category", category)
-    .eq("slug", slug)
+    .eq('category', category)
+    .eq('slug', slug)
     .single();
 
   if (error || !model) {
-    console.error(
-      `[Model API] Failed to fetch model ${category}/${slug}:`,
-      error,
-    );
+    console.error(`[Model API] Failed to fetch model ${category}/${slug}:`, error);
     console.error(`[Model API] Query returned:`, {
       hasError: !!error,
       hasModel: !!model,
@@ -108,19 +101,12 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
     });
   }
 
-  console.log(
-    `[Model API] Found model:`,
-    model.id,
-    "status:",
-    model.status,
-    "is_published:",
-    model.is_published,
-  );
+  console.log(`[Model API] Found model:`, model.id, 'status:', model.status, 'is_published:', model.is_published);
 
   // Check access: model must be published OR user must be the author
   const author = model.profiles as any;
   const isAuthor = user && author?.id === user.id;
-  const isPublished = model.is_published && model.status === "approved";
+  const isPublished = model.is_published && model.status === 'approved';
 
   if (!isPublished && !isAuthor) {
     throw createError({
@@ -135,37 +121,29 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
   const compatibility = model.compatibility as any;
 
   // Transform files with download URLs
-  const files: UserModelFile[] = ((model.model_files as any[]) || []).map(
-    (f) => {
-      const { data: urlData } = supabase.storage
-        .from("model-files")
-        .getPublicUrl(f.storage_path);
+  const files: UserModelFile[] = ((model.model_files as any[]) || []).map((f) => {
+    const { data: urlData } = supabase.storage.from('model-files').getPublicUrl(f.storage_path);
 
-      return {
-        id: f.id,
-        filename: f.filename,
-        originalFilename: f.original_filename,
-        format: f.format,
-        downloadUrl: urlData.publicUrl,
-        sizeBytes: f.size_bytes,
-        isPrimary: f.is_primary,
-      };
-    },
-  );
+    return {
+      id: f.id,
+      filename: f.filename,
+      originalFilename: f.original_filename,
+      format: f.format,
+      downloadUrl: urlData.publicUrl,
+      sizeBytes: f.size_bytes,
+      isPrimary: f.is_primary,
+    };
+  });
 
   // Transform images with URLs
   const images: UserModelImage[] = ((model.model_images as any[]) || [])
     .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
     .map((img) => {
-      const { data: urlData } = supabase.storage
-        .from("model-images")
-        .getPublicUrl(img.storage_path);
+      const { data: urlData } = supabase.storage.from('model-images').getPublicUrl(img.storage_path);
 
       let thumbnailUrl: string | null = null;
       if (img.thumbnail_path) {
-        const { data: thumbData } = supabase.storage
-          .from("model-images")
-          .getPublicUrl(img.thumbnail_path);
+        const { data: thumbData } = supabase.storage.from('model-images').getPublicUrl(img.thumbnail_path);
         thumbnailUrl = thumbData.publicUrl;
       }
 
@@ -186,18 +164,8 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
 
   if (user) {
     const [likeResult, ratingResult] = await Promise.all([
-      supabase
-        .from("model_likes")
-        .select("user_id")
-        .eq("model_id", model.id)
-        .eq("user_id", user.id)
-        .maybeSingle(),
-      supabase
-        .from("model_ratings")
-        .select("rating")
-        .eq("model_id", model.id)
-        .eq("user_id", user.id)
-        .maybeSingle(),
+      supabase.from('model_likes').select('user_id').eq('model_id', model.id).eq('user_id', user.id).maybeSingle(),
+      supabase.from('model_ratings').select('rating').eq('model_id', model.id).eq('user_id', user.id).maybeSingle(),
     ]);
 
     isLikedByUser = !!likeResult.data;
@@ -224,7 +192,7 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
     images,
     printing: printing
       ? {
-          recommendedMaterial: printing.recommended_material || "PLA",
+          recommendedMaterial: printing.recommended_material || 'PLA',
           alternativeMaterials: printing.alternative_materials,
           notRecommendedMaterials: printing.not_recommended_materials,
           layerHeight: printing.layer_height,
@@ -243,7 +211,7 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
           notes: printing.notes,
         }
       : {
-          recommendedMaterial: "PLA",
+          recommendedMaterial: 'PLA',
         },
     hardware: (hardware || []).map((h: any) => ({
       item: h.item,

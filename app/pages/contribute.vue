@@ -1,214 +1,207 @@
 <script setup lang="ts">
-const NuxtLink = resolveComponent("NuxtLink");
-const { isAuthenticated } = useAuth();
+  const NuxtLink = resolveComponent('NuxtLink');
+  const { isAuthenticated } = useAuth();
 
-useSeoMeta({
-  title: "Contribute - OpenECU Alliance",
-  description:
-    "Learn how to contribute ECU log adapters, CAN Bus protocols, and 3D printable models to the OpenECU Alliance.",
-  ogTitle: "Contribute to OpenECU Alliance",
-  ogDescription:
-    "Join the community and contribute ECU log adapters, CAN protocols, and 3D printable accessories.",
-  twitterCard: "summary_large_image",
-});
+  useSeoMeta({
+    title: 'Contribute - OpenECU Alliance',
+    description:
+      'Learn how to contribute ECU log adapters, CAN Bus protocols, and 3D printable models to the OpenECU Alliance.',
+    ogTitle: 'Contribute to OpenECU Alliance',
+    ogDescription: 'Join the community and contribute ECU log adapters, CAN protocols, and 3D printable accessories.',
+    twitterCard: 'summary_large_image',
+  });
 
-const waysToContribute = [
-  {
-    type: "Submit Adapters",
-    description: "Add support for new ECU log formats",
-    difficulty: "Beginner",
-    color: "success" as const,
-  },
-  {
-    type: "Submit Protocols",
-    description: "Define CAN Bus messages and signals",
-    difficulty: "Intermediate",
-    color: "warning" as const,
-  },
-  {
-    type: "Upload 3D Models",
-    description: "Share printable mounts via our website",
-    difficulty: "Beginner",
-    color: "success" as const,
-  },
-  {
-    type: "Improve Content",
-    description: "Add source_names, fix issues",
-    difficulty: "Beginner",
-    color: "success" as const,
-  },
-  {
-    type: "Report Issues",
-    description: "Report bugs or missing features",
-    difficulty: "Beginner",
-    color: "success" as const,
-  },
-  {
-    type: "Documentation",
-    description: "Improve docs, add examples",
-    difficulty: "Beginner",
-    color: "success" as const,
-  },
-  {
-    type: "Review PRs",
-    description: "Help review submissions",
-    difficulty: "Intermediate",
-    color: "warning" as const,
-  },
-  {
-    type: "Propose RFC",
-    description: "Suggest specification changes",
-    difficulty: "Advanced",
-    color: "error" as const,
-  },
-  {
-    type: "Build Tools",
-    description: "Validation tools, SDKs",
-    difficulty: "Advanced",
-    color: "error" as const,
-  },
-];
+  const waysToContribute = [
+    {
+      type: 'Submit Adapters',
+      description: 'Add support for new ECU log formats',
+      difficulty: 'Beginner',
+      color: 'success' as const,
+    },
+    {
+      type: 'Submit Protocols',
+      description: 'Define CAN Bus messages and signals',
+      difficulty: 'Intermediate',
+      color: 'warning' as const,
+    },
+    {
+      type: 'Upload 3D Models',
+      description: 'Share printable mounts via our website',
+      difficulty: 'Beginner',
+      color: 'success' as const,
+    },
+    {
+      type: 'Improve Content',
+      description: 'Add source_names, fix issues',
+      difficulty: 'Beginner',
+      color: 'success' as const,
+    },
+    {
+      type: 'Report Issues',
+      description: 'Report bugs or missing features',
+      difficulty: 'Beginner',
+      color: 'success' as const,
+    },
+    {
+      type: 'Documentation',
+      description: 'Improve docs, add examples',
+      difficulty: 'Beginner',
+      color: 'success' as const,
+    },
+    {
+      type: 'Review PRs',
+      description: 'Help review submissions',
+      difficulty: 'Intermediate',
+      color: 'warning' as const,
+    },
+    {
+      type: 'Propose RFC',
+      description: 'Suggest specification changes',
+      difficulty: 'Advanced',
+      color: 'error' as const,
+    },
+    {
+      type: 'Build Tools',
+      description: 'Validation tools, SDKs',
+      difficulty: 'Advanced',
+      color: 'error' as const,
+    },
+  ];
 
-const contributionTypes = [
-  {
-    icon: "i-heroicons-document-text",
-    title: "Adapters",
-    description: "Log file format definitions for ECU data parsing",
-    to: "/docs/creating-adapters",
-    color: "primary",
-  },
-  {
-    icon: "i-heroicons-signal",
-    title: "Protocols",
-    description: "CAN Bus message definitions with DBC export",
-    to: "/docs/creating-protocols",
-    color: "success",
-  },
-  {
-    icon: "i-heroicons-cube",
-    title: "3D Models",
-    description: "Upload printable mounts and accessories directly",
-    to: "/models/upload",
-    color: "warning",
-    requiresAuth: true,
-  },
-];
+  const contributionTypes = [
+    {
+      icon: 'i-heroicons-document-text',
+      title: 'Adapters',
+      description: 'Log file format definitions for ECU data parsing',
+      to: '/docs/creating-adapters',
+      color: 'primary',
+    },
+    {
+      icon: 'i-heroicons-signal',
+      title: 'Protocols',
+      description: 'CAN Bus message definitions with DBC export',
+      to: '/docs/creating-protocols',
+      color: 'success',
+    },
+    {
+      icon: 'i-heroicons-cube',
+      title: '3D Models',
+      description: 'Upload printable mounts and accessories directly',
+      to: '/models/upload',
+      color: 'warning',
+      requiresAuth: true,
+    },
+  ];
 
-function getContributionLink(ct: (typeof contributionTypes)[number]) {
-  if (ct.requiresAuth && !isAuthenticated.value) {
-    return `/login?redirect=${encodeURIComponent(ct.to)}`;
+  function getContributionLink(ct: (typeof contributionTypes)[number]) {
+    if (ct.requiresAuth && !isAuthenticated.value) {
+      return `/login?redirect=${encodeURIComponent(ct.to)}`;
+    }
+    return ct.to;
   }
-  return ct.to;
-}
 
-const adapterSteps = [
-  {
-    step: 1,
-    title: "Fork and Clone",
-    description: "Fork the OECUASpecs repository and clone it locally.",
-    code: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
+  const adapterSteps = [
+    {
+      step: 1,
+      title: 'Fork and Clone',
+      description: 'Fork the OECUASpecs repository and clone it locally.',
+      code: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
 cd OECUASpecs`,
-  },
-  {
-    step: 2,
-    title: "Create Vendor Directory",
-    description:
-      "Create a directory for your vendor if it doesn't exist. Use lowercase names.",
-    code: "mkdir -p adapters/vendorname",
-  },
-  {
-    step: 3,
-    title: "Create Adapter File",
-    description:
-      "Create your adapter file following the naming convention: {vendor}-{format}.adapter.yaml",
-    code: "touch adapters/vendorname/vendorname-format.adapter.yaml",
-  },
-  {
-    step: 4,
-    title: "Write the Adapter",
-    description: "Fill in the adapter with your ECU's channel mappings.",
-  },
-  {
-    step: 5,
-    title: "Validate",
-    description: "Validate your adapter against the JSON Schema.",
-    code: `# Install validation tool (one-time)
+    },
+    {
+      step: 2,
+      title: 'Create Vendor Directory',
+      description: "Create a directory for your vendor if it doesn't exist. Use lowercase names.",
+      code: 'mkdir -p adapters/vendorname',
+    },
+    {
+      step: 3,
+      title: 'Create Adapter File',
+      description: 'Create your adapter file following the naming convention: {vendor}-{format}.adapter.yaml',
+      code: 'touch adapters/vendorname/vendorname-format.adapter.yaml',
+    },
+    {
+      step: 4,
+      title: 'Write the Adapter',
+      description: "Fill in the adapter with your ECU's channel mappings.",
+    },
+    {
+      step: 5,
+      title: 'Validate',
+      description: 'Validate your adapter against the JSON Schema.',
+      code: `# Install validation tool (one-time)
 npm install -g ajv-cli
 
 # Validate
 ajv validate -s schema/adapter.schema.json -d adapters/vendorname/vendorname-format.adapter.yaml`,
-  },
-  {
-    step: 6,
-    title: "Submit Pull Request",
-    description: "Push your changes and create a pull request on GitHub.",
-    code: `git checkout -b add-vendorname-adapter
+    },
+    {
+      step: 6,
+      title: 'Submit Pull Request',
+      description: 'Push your changes and create a pull request on GitHub.',
+      code: `git checkout -b add-vendorname-adapter
 git add adapters/vendorname/
 git commit -m "Add adapter for VendorName Format"
 git push origin add-vendorname-adapter`,
-  },
-];
+    },
+  ];
 
-const qualityChecklist = [
-  "Adapter validates against JSON Schema",
-  "All required fields are present",
-  "ID follows naming convention (vendor-format)",
-  "Version follows semver (start with 1.0.0)",
-  "Each channel has at least one source_name",
-  "Channel IDs use canonical names where applicable",
-  "metadata.tested_with lists ECU models tested",
-  "Description explains what log files this adapter supports",
-];
+  const qualityChecklist = [
+    'Adapter validates against JSON Schema',
+    'All required fields are present',
+    'ID follows naming convention (vendor-format)',
+    'Version follows semver (start with 1.0.0)',
+    'Each channel has at least one source_name',
+    'Channel IDs use canonical names where applicable',
+    'metadata.tested_with lists ECU models tested',
+    'Description explains what log files this adapter supports',
+  ];
 
-const assetRequirements = [
-  { type: "Logo", format: "SVG (preferred) or PNG", size: "Min 400px wide" },
-  { type: "Icon", format: "SVG (preferred) or PNG", size: "256x256px" },
-  { type: "Banner", format: "PNG or JPG", size: "1200x630px" },
-];
+  const assetRequirements = [
+    { type: 'Logo', format: 'SVG (preferred) or PNG', size: 'Min 400px wide' },
+    { type: 'Icon', format: 'SVG (preferred) or PNG', size: '256x256px' },
+    { type: 'Banner', format: 'PNG or JPG', size: '1200x630px' },
+  ];
 
-const rfcCriteria = {
-  needsRfc: [
-    "New fields in the adapter schema",
-    "New channel categories",
-    "Changes to existing field definitions",
-    "New canonical channel IDs",
-    "Breaking changes of any kind",
-  ],
-  noRfc: [
-    "Typo fixes",
-    "Clarifications that don't change meaning",
-    "Adding adapter examples",
-  ],
-};
+  const rfcCriteria = {
+    needsRfc: [
+      'New fields in the adapter schema',
+      'New channel categories',
+      'Changes to existing field definitions',
+      'New canonical channel IDs',
+      'Breaking changes of any kind',
+    ],
+    noRfc: ['Typo fixes', "Clarifications that don't change meaning", 'Adding adapter examples'],
+  };
 
-const rfcSteps = [
-  {
-    step: "Discuss First",
-    description: "Open a GitHub Discussion to gauge interest",
-  },
-  {
-    step: "Write RFC",
-    description: "Create rfcs/0000-your-proposal.md using the template",
-  },
-  { step: "Submit PR", description: "Open PR for community review" },
-  { step: "Iterate", description: "Incorporate feedback" },
-  { step: "FCP", description: "Final Comment Period (14 days)" },
-  { step: "Decision", description: "Steering Committee accepts or rejects" },
-];
+  const rfcSteps = [
+    {
+      step: 'Discuss First',
+      description: 'Open a GitHub Discussion to gauge interest',
+    },
+    {
+      step: 'Write RFC',
+      description: 'Create rfcs/0000-your-proposal.md using the template',
+    },
+    { step: 'Submit PR', description: 'Open PR for community review' },
+    { step: 'Iterate', description: 'Incorporate feedback' },
+    { step: 'FCP', description: 'Final Comment Period (14 days)' },
+    { step: 'Decision', description: 'Steering Committee accepts or rejects' },
+  ];
 
-const commitTypes = [
-  { type: "adapter:", description: "Adding or updating adapters" },
-  { type: "protocol:", description: "Adding or updating CAN protocols" },
-  { type: "model:", description: "Adding or updating 3D models" },
-  { type: "spec:", description: "Specification changes" },
-  { type: "docs:", description: "Documentation only" },
-  { type: "schema:", description: "JSON Schema changes" },
-  { type: "chore:", description: "Maintenance, tooling" },
-];
+  const commitTypes = [
+    { type: 'adapter:', description: 'Adding or updating adapters' },
+    { type: 'protocol:', description: 'Adding or updating CAN protocols' },
+    { type: 'model:', description: 'Adding or updating 3D models' },
+    { type: 'spec:', description: 'Specification changes' },
+    { type: 'docs:', description: 'Documentation only' },
+    { type: 'schema:', description: 'JSON Schema changes' },
+    { type: 'chore:', description: 'Maintenance, tooling' },
+  ];
 
-// Code examples for syntax highlighting
-const codeExamples = {
-  adapterTemplate: `openecualliance: "1.0"
+  // Code examples for syntax highlighting
+  const codeExamples = {
+    adapterTemplate: `openecualliance: "1.0"
 id: vendorname-format
 name: "Vendor Name Format Description"
 version: "1.0.0"
@@ -258,17 +251,17 @@ metadata:
       changes:
         - "Initial release"`,
 
-  installValidation: `# Option 1: ajv-cli (Node.js)
+    installValidation: `# Option 1: ajv-cli (Node.js)
 npm install -g ajv-cli
 
 # Option 2: check-jsonschema (Python)
 pip install check-jsonschema`,
 
-  validateAll: `# Using ajv-cli
+    validateAll: `# Using ajv-cli
 for f in adapters/**/*.adapter.yaml; do
   ajv validate -s schema/adapter.schema.json -d "$f"
 done`,
-};
+  };
 </script>
 
 <template>
@@ -277,16 +270,14 @@ done`,
       <div class="mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">Contribute</h1>
         <p class="text-lg text-muted">
-          Thank you for your interest in contributing to the OpenECU Alliance!
-          Learn how to contribute adapters, protocols, 3D models, and more.
+          Thank you for your interest in contributing to the OpenECU Alliance! Learn how to contribute adapters,
+          protocols, 3D models, and more.
         </p>
       </div>
 
       <!-- Quick Start Cards -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">
-          What Would You Like to Contribute?
-        </h2>
+        <h2 class="text-2xl font-bold mb-4">What Would You Like to Contribute?</h2>
         <div class="grid sm:grid-cols-3 gap-4">
           <UCard
             v-for="ct in contributionTypes"
@@ -304,10 +295,7 @@ done`,
                 <h3 class="font-semibold mb-1">{{ ct.title }}</h3>
                 <p class="text-sm text-muted">{{ ct.description }}</p>
               </div>
-              <UIcon
-                name="i-heroicons-chevron-right"
-                class="size-5 text-muted shrink-0"
-              />
+              <UIcon name="i-heroicons-chevron-right" class="size-5 text-muted shrink-0" />
             </div>
           </UCard>
         </div>
@@ -321,19 +309,13 @@ done`,
             <table class="w-full text-sm">
               <thead>
                 <tr class="border-b border-default">
-                  <th class="text-left py-2 pr-4 font-semibold">
-                    Contribution Type
-                  </th>
+                  <th class="text-left py-2 pr-4 font-semibold">Contribution Type</th>
                   <th class="text-left py-2 pr-4 font-semibold">Description</th>
                   <th class="text-left py-2 font-semibold">Difficulty</th>
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="way in waysToContribute"
-                  :key="way.type"
-                  class="border-b border-default"
-                >
+                <tr v-for="way in waysToContribute" :key="way.type" class="border-b border-default">
                   <td class="py-2 pr-4 font-medium">{{ way.type }}</td>
                   <td class="py-2 pr-4 text-muted">{{ way.description }}</td>
                   <td class="py-2">
@@ -351,46 +333,27 @@ done`,
       <!-- Contributing Adapters -->
       <section class="mb-12">
         <h2 class="text-2xl font-bold mb-4">Contributing Adapters</h2>
-        <p class="text-muted mb-6">
-          Adapters are the primary way the community expands OpenECU Spec
-          coverage.
-        </p>
+        <p class="text-muted mb-6">Adapters are the primary way the community expands OpenECU Spec coverage.</p>
 
         <!-- Before You Start -->
         <UCard class="mb-6">
           <h3 class="font-semibold mb-3">Before You Start</h3>
           <ul class="space-y-2">
             <li class="flex items-start gap-2 text-sm">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
               <div>
-                <strong>Check existing adapters</strong> - Ensure an adapter
-                doesn't already exist for your format
+                <strong>Check existing adapters</strong> - Ensure an adapter doesn't already exist for your format
               </div>
             </li>
             <li class="flex items-start gap-2 text-sm">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
-              <div>
-                <strong>Gather sample files</strong> - You'll need real log
-                files to test against
-              </div>
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
+              <div><strong>Gather sample files</strong> - You'll need real log files to test against</div>
             </li>
             <li class="flex items-start gap-2 text-sm">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
               <div>
-                <strong>Read the specification</strong> - Familiarize yourself
-                with the
-                <NuxtLink to="/spec" class="text-primary hover:underline"
-                  >full specification</NuxtLink
-                >
+                <strong>Read the specification</strong> - Familiarize yourself with the
+                <NuxtLink to="/spec" class="text-primary hover:underline">full specification</NuxtLink>
               </div>
             </li>
           </ul>
@@ -425,15 +388,8 @@ done`,
           <h3 class="font-semibold mb-3">Quality Checklist</h3>
           <p class="text-sm text-muted mb-3">Before submitting, verify:</p>
           <ul class="grid sm:grid-cols-2 gap-2">
-            <li
-              v-for="item in qualityChecklist"
-              :key="item"
-              class="flex items-start gap-2 text-sm"
-            >
-              <UIcon
-                name="i-heroicons-check"
-                class="size-4 text-success shrink-0 mt-0.5"
-              />
+            <li v-for="item in qualityChecklist" :key="item" class="flex items-start gap-2 text-sm">
+              <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
               {{ item }}
             </li>
           </ul>
@@ -444,8 +400,7 @@ done`,
       <section class="mb-12">
         <h2 class="text-2xl font-bold mb-4">Contributing Brand Assets</h2>
         <p class="text-muted mb-4">
-          Help make the OpenECU Alliance visually cohesive by contributing
-          vendor logos, icons, and brand assets.
+          Help make the OpenECU Alliance visually cohesive by contributing vendor logos, icons, and brand assets.
         </p>
         <UCard class="mb-4">
           <h3 class="font-semibold mb-3">Asset Requirements</h3>
@@ -459,11 +414,7 @@ done`,
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="req in assetRequirements"
-                  :key="req.type"
-                  class="border-b border-default"
-                >
+                <tr v-for="req in assetRequirements" :key="req.type" class="border-b border-default">
                   <td class="py-2 pr-4 font-medium">{{ req.type }}</td>
                   <td class="py-2 pr-4 text-muted">{{ req.format }}</td>
                   <td class="py-2 text-muted">{{ req.size }}</td>
@@ -515,23 +466,15 @@ done`,
       <section class="mb-12">
         <h2 class="text-2xl font-bold mb-4">Proposing Specification Changes</h2>
         <p class="text-muted mb-4">
-          For changes to the OpenECU Spec itself, use the RFC (Request for
-          Comments) process.
+          For changes to the OpenECU Spec itself, use the RFC (Request for Comments) process.
         </p>
 
         <div class="grid sm:grid-cols-2 gap-4 mb-6">
           <UCard>
             <h4 class="font-semibold mb-2">Needs RFC</h4>
             <ul class="space-y-1 text-sm">
-              <li
-                v-for="item in rfcCriteria.needsRfc"
-                :key="item"
-                class="flex items-center gap-2 text-muted"
-              >
-                <UIcon
-                  name="i-heroicons-document-text"
-                  class="size-4 text-primary"
-                />
+              <li v-for="item in rfcCriteria.needsRfc" :key="item" class="flex items-center gap-2 text-muted">
+                <UIcon name="i-heroicons-document-text" class="size-4 text-primary" />
                 {{ item }}
               </li>
             </ul>
@@ -539,11 +482,7 @@ done`,
           <UCard>
             <h4 class="font-semibold mb-2">No RFC Needed</h4>
             <ul class="space-y-1 text-sm">
-              <li
-                v-for="item in rfcCriteria.noRfc"
-                :key="item"
-                class="flex items-center gap-2 text-muted"
-              >
+              <li v-for="item in rfcCriteria.noRfc" :key="item" class="flex items-center gap-2 text-muted">
                 <UIcon name="i-heroicons-check" class="size-4 text-success" />
                 {{ item }}
               </li>
@@ -554,11 +493,7 @@ done`,
         <UCard>
           <h3 class="font-semibold mb-3">RFC Process</h3>
           <div class="space-y-2">
-            <div
-              v-for="(item, index) in rfcSteps"
-              :key="item.step"
-              class="flex items-center gap-3"
-            >
+            <div v-for="(item, index) in rfcSteps" :key="item.step" class="flex items-center gap-3">
               <div
                 class="flex items-center justify-center size-6 bg-primary/10 text-primary rounded-full text-sm font-bold shrink-0"
               >
@@ -580,8 +515,7 @@ done`,
           <UCard>
             <h3 class="font-semibold mb-3">Bug Reports</h3>
             <p class="text-sm text-muted mb-3">
-              For incorrect adapters, schema validation problems, or
-              documentation errors. Include:
+              For incorrect adapters, schema validation problems, or documentation errors. Include:
             </p>
             <ul class="space-y-1 text-sm text-muted">
               <li>1. Which adapter/file is affected</li>
@@ -649,11 +583,7 @@ done`,
           <UCard>
             <h3 class="font-semibold mb-3">Commit Message Types</h3>
             <ul class="space-y-1 text-sm">
-              <li
-                v-for="ct in commitTypes"
-                :key="ct.type"
-                class="flex items-start gap-2"
-              >
+              <li v-for="ct in commitTypes" :key="ct.type" class="flex items-start gap-2">
                 <code class="bg-muted px-1 rounded text-sm">{{ ct.type }}</code>
                 <span class="text-muted">{{ ct.description }}</span>
               </li>
@@ -724,22 +654,10 @@ done`,
         >
           Adapter Guide
         </UButton>
-        <UButton
-          to="/docs/creating-protocols"
-          color="success"
-          variant="outline"
-          icon="i-heroicons-signal"
-          size="lg"
-        >
+        <UButton to="/docs/creating-protocols" color="success" variant="outline" icon="i-heroicons-signal" size="lg">
           Protocol Guide
         </UButton>
-        <UButton
-          to="/models/upload"
-          color="warning"
-          variant="outline"
-          icon="i-heroicons-arrow-up-tray"
-          size="lg"
-        >
+        <UButton to="/models/upload" color="warning" variant="outline" icon="i-heroicons-arrow-up-tray" size="lg">
           Upload 3D Model
         </UButton>
       </div>

@@ -1,4 +1,4 @@
-import type { ExternalPlatform } from "~~/app/types/model";
+import type { ExternalPlatform } from '~~/app/types/model';
 
 export interface ExternalModelImage {
   url: string;
@@ -39,9 +39,9 @@ export class PlatformFetchError extends Error {
   constructor(
     message: string,
     public platform: ExternalPlatform,
-    public statusCode?: number,
+    public statusCode?: number
   ) {
     super(message);
-    this.name = "PlatformFetchError";
+    this.name = 'PlatformFetchError';
   }
 }

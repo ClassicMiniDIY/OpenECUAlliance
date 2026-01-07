@@ -1,67 +1,65 @@
 <script setup lang="ts">
-import type { PendingFileUpload } from "~/types/model";
+  import type { PendingFileUpload } from '~/types/model';
 
-const props = defineProps<{
-  files: PendingFileUpload[];
-  allowedFormats: string[];
-  maxFileSize: number;
-  maxTotalSize: number;
-  totalSize: number;
-}>();
+  const props = defineProps<{
+    files: PendingFileUpload[];
+    allowedFormats: string[];
+    maxFileSize: number;
+    maxTotalSize: number;
+    totalSize: number;
+  }>();
 
-const emit = defineEmits<{
-  add: [files: FileList];
-  remove: [id: string];
-  setPrimary: [id: string];
-  updateDescription: [id: string, description: string];
-  updateVariant: [id: string, variant: string];
-}>();
+  const emit = defineEmits<{
+    add: [files: FileList];
+    remove: [id: string];
+    setPrimary: [id: string];
+    updateDescription: [id: string, description: string];
+    updateVariant: [id: string, variant: string];
+  }>();
 
-const dropZone = ref<HTMLElement | null>(null);
-const isDragging = ref(false);
-const fileInput = ref<HTMLInputElement | null>(null);
+  const dropZone = ref<HTMLElement | null>(null);
+  const isDragging = ref(false);
+  const fileInput = ref<HTMLInputElement | null>(null);
 
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-}
-
-function handleDragOver(e: DragEvent) {
-  e.preventDefault();
-  isDragging.value = true;
-}
-
-function handleDragLeave() {
-  isDragging.value = false;
-}
-
-function handleDrop(e: DragEvent) {
-  e.preventDefault();
-  isDragging.value = false;
-  if (e.dataTransfer?.files) {
-    emit("add", e.dataTransfer.files);
+  function formatBytes(bytes: number): string {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
   }
-}
 
-function handleFileSelect(e: Event) {
-  const input = e.target as HTMLInputElement;
-  if (input.files) {
-    emit("add", input.files);
-    input.value = "";
+  function handleDragOver(e: DragEvent) {
+    e.preventDefault();
+    isDragging.value = true;
   }
-}
 
-function openFilePicker() {
-  fileInput.value?.click();
-}
+  function handleDragLeave() {
+    isDragging.value = false;
+  }
 
-const remainingSpace = computed(() => props.maxTotalSize - props.totalSize);
-const usagePercent = computed(
-  () => (props.totalSize / props.maxTotalSize) * 100,
-);
+  function handleDrop(e: DragEvent) {
+    e.preventDefault();
+    isDragging.value = false;
+    if (e.dataTransfer?.files) {
+      emit('add', e.dataTransfer.files);
+    }
+  }
+
+  function handleFileSelect(e: Event) {
+    const input = e.target as HTMLInputElement;
+    if (input.files) {
+      emit('add', input.files);
+      input.value = '';
+    }
+  }
+
+  function openFilePicker() {
+    fileInput.value?.click();
+  }
+
+  const remainingSpace = computed(() => props.maxTotalSize - props.totalSize);
+  const usagePercent = computed(() => (props.totalSize / props.maxTotalSize) * 100);
 </script>
 
 <template>
@@ -71,9 +69,7 @@ const usagePercent = computed(
       ref="dropZone"
       :class="[
         'border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer',
-        isDragging
-          ? 'border-primary bg-primary/5'
-          : 'border-default hover:border-primary/50',
+        isDragging ? 'border-primary bg-primary/5' : 'border-default hover:border-primary/50',
       ]"
       @dragover="handleDragOver"
       @dragleave="handleDragLeave"
@@ -91,18 +87,12 @@ const usagePercent = computed(
 
       <UIcon
         name="i-heroicons-cloud-arrow-up"
-        :class="[
-          'size-12 mx-auto mb-4',
-          isDragging ? 'text-primary' : 'text-muted',
-        ]"
+        :class="['size-12 mx-auto mb-4', isDragging ? 'text-primary' : 'text-muted']"
       />
       <p class="font-medium mb-1">Drop files here or click to browse</p>
-      <p class="text-sm text-muted">
-        Supported: {{ allowedFormats.join(", ").toUpperCase() }}
-      </p>
+      <p class="text-sm text-muted">Supported: {{ allowedFormats.join(', ').toUpperCase() }}</p>
       <p class="text-xs text-muted mt-1">
-        Max {{ formatBytes(maxFileSize) }} per file,
-        {{ formatBytes(maxTotalSize) }} total
+        Max {{ formatBytes(maxFileSize) }} per file, {{ formatBytes(maxTotalSize) }} total
       </p>
     </div>
 
@@ -124,9 +114,7 @@ const usagePercent = computed(
         class="flex items-start gap-3 p-3 rounded-lg bg-elevated border border-default"
       >
         <!-- File Icon -->
-        <div
-          class="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"
-        >
+        <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
           <UIcon name="i-heroicons-document" class="size-5 text-primary" />
         </div>
 
@@ -134,14 +122,7 @@ const usagePercent = computed(
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1">
             <p class="font-medium truncate">{{ file.filename }}</p>
-            <UBadge
-              v-if="file.isPrimary"
-              color="primary"
-              variant="subtle"
-              size="xs"
-            >
-              Primary
-            </UBadge>
+            <UBadge v-if="file.isPrimary" color="primary" variant="subtle" size="xs"> Primary </UBadge>
             <UBadge color="neutral" variant="outline" size="xs">
               {{ file.format.toUpperCase() }}
             </UBadge>

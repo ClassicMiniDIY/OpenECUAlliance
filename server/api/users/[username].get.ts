@@ -1,4 +1,4 @@
-import { serverSupabaseClient } from "#supabase/server";
+import { serverSupabaseClient } from '#supabase/server';
 
 interface PublicProfile {
   id: string;
@@ -9,26 +9,26 @@ interface PublicProfile {
   website: string | null;
   location: string | null;
   githubUsername: string | null;
-  role: "user" | "moderator" | "admin";
+  role: 'user' | 'moderator' | 'admin';
   modelsCount: number;
   likesReceived: number;
   createdAt: string;
 }
 
 export default defineEventHandler(async (event): Promise<PublicProfile> => {
-  const username = getRouterParam(event, "username");
+  const username = getRouterParam(event, 'username');
 
   if (!username) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Username is required",
+      statusMessage: 'Username is required',
     });
   }
 
   const supabase = await serverSupabaseClient(event);
 
   const { data, error } = await supabase
-    .from("profiles")
+    .from('profiles')
     .select(
       `
       id,
@@ -43,16 +43,16 @@ export default defineEventHandler(async (event): Promise<PublicProfile> => {
       models_count,
       likes_received,
       created_at
-    `,
+    `
     )
-    .eq("username", username.toLowerCase())
-    .eq("is_banned", false)
+    .eq('username', username.toLowerCase())
+    .eq('is_banned', false)
     .single();
 
   if (error || !data) {
     throw createError({
       statusCode: 404,
-      statusMessage: "User not found",
+      statusMessage: 'User not found',
     });
   }
 
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event): Promise<PublicProfile> => {
     website: data.website,
     location: data.location,
     githubUsername: data.github_username,
-    role: data.role ?? "user",
+    role: data.role ?? 'user',
     modelsCount: data.models_count,
     likesReceived: data.likes_received,
     createdAt: data.created_at,

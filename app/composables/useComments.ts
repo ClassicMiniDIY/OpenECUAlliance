@@ -27,9 +27,7 @@ export function useComments(modelId: Ref<string> | string) {
   const error = ref<string | null>(null);
   const submitting = ref(false);
 
-  const modelIdValue = computed(() =>
-    typeof modelId === "string" ? modelId : modelId.value,
-  );
+  const modelIdValue = computed(() => (typeof modelId === 'string' ? modelId : modelId.value));
 
   /**
    * Fetch all comments for the model
@@ -40,7 +38,7 @@ export function useComments(modelId: Ref<string> | string) {
 
     try {
       const { data, error: fetchError } = await supabase
-        .from("model_comments")
+        .from('model_comments')
         .select(
           `
           id,
@@ -57,11 +55,11 @@ export function useComments(modelId: Ref<string> | string) {
             display_name,
             avatar_url
           )
-        `,
+        `
         )
-        .eq("model_id", modelIdValue.value)
-        .eq("is_hidden", false)
-        .order("created_at", { ascending: true });
+        .eq('model_id', modelIdValue.value)
+        .eq('is_hidden', false)
+        .order('created_at', { ascending: true });
 
       if (fetchError) throw fetchError;
 
@@ -102,8 +100,7 @@ export function useComments(modelId: Ref<string> | string) {
 
       comments.value = rootComments;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to load comments";
+      error.value = err instanceof Error ? err.message : 'Failed to load comments';
     } finally {
       loading.value = false;
     }
@@ -112,17 +109,14 @@ export function useComments(modelId: Ref<string> | string) {
   /**
    * Add a new comment
    */
-  async function addComment(
-    content: string,
-    parentId?: string,
-  ): Promise<Comment | null> {
+  async function addComment(content: string, parentId?: string): Promise<Comment | null> {
     if (!currentUser.value) {
-      error.value = "Not authenticated";
+      error.value = 'Not authenticated';
       return null;
     }
 
     if (!content.trim()) {
-      error.value = "Comment cannot be empty";
+      error.value = 'Comment cannot be empty';
       return null;
     }
 
@@ -131,7 +125,7 @@ export function useComments(modelId: Ref<string> | string) {
 
     try {
       const { data, error: insertError } = await supabase
-        .from("model_comments")
+        .from('model_comments')
         .insert({
           model_id: modelIdValue.value,
           author_id: currentUser.value.id,
@@ -148,7 +142,7 @@ export function useComments(modelId: Ref<string> | string) {
           is_edited,
           created_at,
           updated_at
-        `,
+        `
         )
         .single();
 
@@ -159,7 +153,7 @@ export function useComments(modelId: Ref<string> | string) {
         modelId: data.model_id,
         author: {
           id: currentUser.value.id,
-          username: currentUser.value.profile?.username || "",
+          username: currentUser.value.profile?.username || '',
           displayName: currentUser.value.profile?.display_name || null,
           avatarUrl: currentUser.value.profile?.avatar_url || null,
         },
@@ -184,8 +178,7 @@ export function useComments(modelId: Ref<string> | string) {
 
       return newComment;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to add comment";
+      error.value = err instanceof Error ? err.message : 'Failed to add comment';
       return null;
     } finally {
       submitting.value = false;
@@ -195,22 +188,19 @@ export function useComments(modelId: Ref<string> | string) {
   /**
    * Edit a comment
    */
-  async function editComment(
-    commentId: string,
-    content: string,
-  ): Promise<boolean> {
+  async function editComment(commentId: string, content: string): Promise<boolean> {
     if (!currentUser.value) return false;
 
     try {
       const { error: updateError } = await supabase
-        .from("model_comments")
+        .from('model_comments')
         .update({
           content: content.trim(),
           is_edited: true,
           edited_at: new Date().toISOString(),
         })
-        .eq("id", commentId)
-        .eq("author_id", currentUser.value.id);
+        .eq('id', commentId)
+        .eq('author_id', currentUser.value.id);
 
       if (updateError) throw updateError;
 
@@ -223,8 +213,7 @@ export function useComments(modelId: Ref<string> | string) {
 
       return true;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to edit comment";
+      error.value = err instanceof Error ? err.message : 'Failed to edit comment';
       return false;
     }
   }
@@ -237,10 +226,10 @@ export function useComments(modelId: Ref<string> | string) {
 
     try {
       const { error: deleteError } = await supabase
-        .from("model_comments")
+        .from('model_comments')
         .delete()
-        .eq("id", commentId)
-        .eq("author_id", currentUser.value.id);
+        .eq('id', commentId)
+        .eq('author_id', currentUser.value.id);
 
       if (deleteError) throw deleteError;
 
@@ -249,8 +238,7 @@ export function useComments(modelId: Ref<string> | string) {
 
       return true;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to delete comment";
+      error.value = err instanceof Error ? err.message : 'Failed to delete comment';
       return false;
     }
   }

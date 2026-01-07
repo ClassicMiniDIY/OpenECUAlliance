@@ -1,26 +1,17 @@
-import { z } from "zod";
-import {
-  serverSupabaseServiceRole,
-  serverSupabaseClient,
-} from "#supabase/server";
+import { z } from 'zod';
+import { serverSupabaseServiceRole, serverSupabaseClient } from '#supabase/server';
 import {
   fetchExternalModel,
   isValidExternalUrl,
   normalizeExternalUrl,
   PlatformFetchError,
-} from "../../../utils/external-platforms";
+} from '../../../utils/external-platforms';
 
 const bodySchema = z.object({
-  url: z.string().url("Invalid URL format"),
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  category: z.enum([
-    "mounts",
-    "enclosures",
-    "brackets",
-    "adapters",
-    "accessories",
-  ]),
+  url: z.string().url('Invalid URL format'),
+  name: z.string().min(3, 'Name must be at least 3 characters'),
+  description: z.string().min(10, 'Description must be at least 10 characters'),
+  category: z.enum(['mounts', 'enclosures', 'brackets', 'adapters', 'accessories']),
   vendor: z.string().optional(),
   // Note: license, remixesAllowed, commercialUseAllowed, and print settings are NOT accepted from client
   // They are always taken from the fetched metadata to match the source
@@ -30,9 +21,9 @@ const bodySchema = z.object({
 function generateSlug(name: string): string {
   return name
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
     .substring(0, 100);
 }
 
@@ -47,7 +38,7 @@ export default defineEventHandler(async (event) => {
   if (authError || !user?.id) {
     throw createError({
       statusCode: 401,
-      message: "Authentication required",
+      message: 'Authentication required',
     });
   }
 
@@ -66,8 +57,7 @@ export default defineEventHandler(async (event) => {
   if (!isValidExternalUrl(normalizedUrl)) {
     throw createError({
       statusCode: 400,
-      message:
-        "Unsupported platform. Please use a URL from MakerWorld, Printables, Thingiverse, or Cults3D.",
+      message: 'Unsupported platform. Please use a URL from MakerWorld, Printables, Thingiverse, or Cults3D.',
     });
   }
 
@@ -76,9 +66,9 @@ export default defineEventHandler(async (event) => {
 
   // Check for duplicate external URL
   const { data: existingModel } = await supabase
-    .from("models")
-    .select("id, slug, name")
-    .eq("external_url", normalizedUrl)
+    .from('models')
+    .select('id, slug, name')
+    .eq('external_url', normalizedUrl)
     .single();
 
   if (existingModel) {
@@ -99,7 +89,7 @@ export default defineEventHandler(async (event) => {
     const imageRecords: Array<{
       model_id: string;
       filename: string;
-      type: "render";
+      type: 'render';
       storage_path: string;
       is_primary: boolean;
       sort_order: number;
@@ -111,29 +101,22 @@ export default defineEventHandler(async (event) => {
         const response = await fetch(img.url);
         if (!response.ok) continue;
 
-        const contentType =
-          response.headers.get("content-type") || "image/jpeg";
-        const ext = contentType.includes("png")
-          ? "png"
-          : contentType.includes("webp")
-            ? "webp"
-            : "jpg";
+        const contentType = response.headers.get('content-type') || 'image/jpeg';
+        const ext = contentType.includes('png') ? 'png' : contentType.includes('webp') ? 'webp' : 'jpg';
         const buffer = await response.arrayBuffer();
         const filename = `${crypto.randomUUID()}.${ext}`;
         const storagePath = `${modelId}/${filename}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from("model-images")
-          .upload(storagePath, buffer, {
-            contentType,
-            upsert: false,
-          });
+        const { error: uploadError } = await supabase.storage.from('model-images').upload(storagePath, buffer, {
+          contentType,
+          upsert: false,
+        });
 
         if (!uploadError) {
           imageRecords.push({
             model_id: modelId,
             filename,
-            type: "render",
+            type: 'render',
             storage_path: storagePath,
             is_primary: img.isPrimary || i === 0,
             sort_order: i,
@@ -147,14 +130,14 @@ export default defineEventHandler(async (event) => {
     if (imageRecords.length === 0) {
       throw createError({
         statusCode: 400,
-        message: "Could not download any images from the external platform",
+        message: 'Could not download any images from the external platform',
       });
     }
 
     // Create the model record using print settings from source metadata
     const sourcePrintSettings = metadata.printSettings || {};
 
-    const { error: modelError } = await supabase.from("models").insert({
+    const { error: modelError } = await supabase.from('models').insert({
       id: modelId,
       slug,
       author_id: user.id,
@@ -164,20 +147,20 @@ export default defineEventHandler(async (event) => {
       vendor: parsed.data.vendor || null,
       // License and rights always come from source metadata
       // Default to "Unknown" if platform doesn't specify
-      license: metadata.license || "Unknown",
+      license: metadata.license || 'Unknown',
       remixes_allowed: metadata.remixesAllowed,
       commercial_use_allowed: metadata.commercialUseAllowed,
       compatibility: parsed.data.compatibility || null,
       // Print settings from source metadata with sensible defaults
       printing: {
-        recommended_material: sourcePrintSettings.recommendedMaterial || "PLA",
+        recommended_material: sourcePrintSettings.recommendedMaterial || 'PLA',
         layer_height: sourcePrintSettings.layerHeight,
         infill_percent: sourcePrintSettings.infillPercent,
         wall_count: sourcePrintSettings.wallCount,
         supports_required: sourcePrintSettings.supportsRequired,
         estimated_time_hours: sourcePrintSettings.estimatedTimeHours,
       },
-      status: "pending",
+      status: 'pending',
       is_linked: true,
       external_platform: metadata.platform,
       external_url: normalizedUrl,
@@ -190,7 +173,7 @@ export default defineEventHandler(async (event) => {
     if (modelError) {
       // Clean up uploaded images on failure
       for (const img of imageRecords) {
-        await supabase.storage.from("model-images").remove([img.storage_path]);
+        await supabase.storage.from('model-images').remove([img.storage_path]);
       }
       throw createError({
         statusCode: 500,
@@ -200,19 +183,17 @@ export default defineEventHandler(async (event) => {
 
     // Create image records
     if (imageRecords.length > 0) {
-      const { error: imageError } = await supabase
-        .from("model_images")
-        .insert(imageRecords);
+      const { error: imageError } = await supabase.from('model_images').insert(imageRecords);
       if (imageError) {
-        console.error("Failed to create image records:", imageError);
+        console.error('Failed to create image records:', imageError);
       }
     }
 
     // Create moderation queue entry
-    await supabase.from("moderation_queue").insert({
+    await supabase.from('moderation_queue').insert({
       model_id: modelId,
-      action_type: "new_submission",
-      status: "pending",
+      action_type: 'new_submission',
+      status: 'pending',
     });
 
     return {

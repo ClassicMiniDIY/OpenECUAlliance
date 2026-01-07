@@ -1,70 +1,66 @@
 <script setup lang="ts">
-import type { PublicProfile } from "~/types/user";
+  import type { PublicProfile } from '~/types/user';
 
-const route = useRoute();
-const username = computed(() => route.params.username as string);
+  const route = useRoute();
+  const username = computed(() => route.params.username as string);
 
-const {
-  data: userProfile,
-  status,
-  error,
-} = await useFetch<PublicProfile>(() => `/api/users/${username.value}`, {
-  key: `user-${username.value}`,
-});
-
-useSeoMeta({
-  title: () =>
-    userProfile.value
-      ? `${userProfile.value.displayName || userProfile.value.username} - OpenECU Alliance`
-      : "User Profile - OpenECU Alliance",
-  description: () =>
-    userProfile.value?.bio ||
-    `View ${username.value}'s 3D models and contributions on OpenECU Alliance.`,
-  ogTitle: () =>
-    userProfile.value
-      ? `${userProfile.value.displayName || userProfile.value.username}'s Profile`
-      : "User Profile",
-  ogDescription: () =>
-    userProfile.value?.bio ||
-    `View ${username.value}'s 3D models and contributions on OpenECU Alliance.`,
-  ogType: "profile",
-  twitterCard: "summary",
-});
-
-const stats = computed(() => {
-  if (!userProfile.value) return [];
-  return [
-    {
-      label: "Models",
-      value: userProfile.value.modelsCount,
-      icon: "i-heroicons-cube",
-    },
-    {
-      label: "Likes Received",
-      value: userProfile.value.likesReceived,
-      icon: "i-heroicons-heart",
-    },
-  ];
-});
-
-const memberSince = computed(() => {
-  if (!userProfile.value?.createdAt) return "";
-  return new Date(userProfile.value.createdAt).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
+  const {
+    data: userProfile,
+    status,
+    error,
+  } = await useFetch<PublicProfile>(() => `/api/users/${username.value}`, {
+    key: `user-${username.value}`,
   });
-});
 
-const roleBadge = computed(() => {
-  if (!userProfile.value) return null;
-  if (userProfile.value.role === "admin") {
-    return { label: "Admin", color: "error" as const };
-  }
-  if (userProfile.value.role === "moderator") {
-    return { label: "Moderator", color: "warning" as const };
-  }
-  return null;
-});
+  useSeoMeta({
+    title: () =>
+      userProfile.value
+        ? `${userProfile.value.displayName || userProfile.value.username} - OpenECU Alliance`
+        : 'User Profile - OpenECU Alliance',
+    description: () =>
+      userProfile.value?.bio || `View ${username.value}'s 3D models and contributions on OpenECU Alliance.`,
+    ogTitle: () =>
+      userProfile.value ? `${userProfile.value.displayName || userProfile.value.username}'s Profile` : 'User Profile',
+    ogDescription: () =>
+      userProfile.value?.bio || `View ${username.value}'s 3D models and contributions on OpenECU Alliance.`,
+    ogType: 'profile',
+    twitterCard: 'summary',
+  });
+
+  const stats = computed(() => {
+    if (!userProfile.value) return [];
+    return [
+      {
+        label: 'Models',
+        value: userProfile.value.modelsCount,
+        icon: 'i-heroicons-cube',
+      },
+      {
+        label: 'Likes Received',
+        value: userProfile.value.likesReceived,
+        icon: 'i-heroicons-heart',
+      },
+    ];
+  });
+
+  const memberSince = computed(() => {
+    if (!userProfile.value?.createdAt) return '';
+    return new Date(userProfile.value.createdAt).toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    });
+  });
+
+  const roleBadge = computed(() => {
+    if (!userProfile.value) return null;
+    if (userProfile.value.role === 'admin') {
+      return { label: 'Admin', color: 'error' as const };
+    }
+    if (userProfile.value.role === 'moderator') {
+      return { label: 'Moderator', color: 'warning' as const };
+    }
+    return null;
+  });
 </script>
 
 <template>
@@ -72,22 +68,14 @@ const roleBadge = computed(() => {
     <UContainer class="py-12">
       <!-- Loading -->
       <div v-if="status === 'pending'" class="flex justify-center py-24">
-        <UIcon
-          name="i-heroicons-arrow-path"
-          class="size-8 text-primary animate-spin"
-        />
+        <UIcon name="i-heroicons-arrow-path" class="size-8 text-primary animate-spin" />
       </div>
 
       <!-- Error -->
       <UCard v-else-if="error" class="text-center py-12">
-        <UIcon
-          name="i-heroicons-user-circle"
-          class="size-16 text-muted mx-auto mb-4"
-        />
+        <UIcon name="i-heroicons-user-circle" class="size-16 text-muted mx-auto mb-4" />
         <h1 class="text-xl font-bold mb-2">User Not Found</h1>
-        <p class="text-muted mb-4">
-          The user @{{ username }} doesn't exist or their profile is not public.
-        </p>
+        <p class="text-muted mb-4">The user @{{ username }} doesn't exist or their profile is not public.</p>
         <UButton to="/"> Back to Home </UButton>
       </UCard>
 
@@ -107,11 +95,7 @@ const roleBadge = computed(() => {
               v-else
               class="size-24 rounded-full bg-primary/10 flex items-center justify-center text-3xl font-bold text-primary"
             >
-              {{
-                (userProfile.displayName || userProfile.username)
-                  .substring(0, 2)
-                  .toUpperCase()
-              }}
+              {{ (userProfile.displayName || userProfile.username).substring(0, 2).toUpperCase() }}
             </div>
           </div>
 
@@ -121,12 +105,7 @@ const roleBadge = computed(() => {
               <h1 class="text-2xl font-bold">
                 {{ userProfile.displayName || userProfile.username }}
               </h1>
-              <UBadge
-                v-if="roleBadge"
-                :color="roleBadge.color"
-                variant="subtle"
-                size="sm"
-              >
+              <UBadge v-if="roleBadge" :color="roleBadge.color" variant="subtle" size="sm">
                 {{ roleBadge.label }}
               </UBadge>
             </div>
@@ -149,13 +128,10 @@ const roleBadge = computed(() => {
                   rel="noopener noreferrer"
                   class="text-primary hover:underline"
                 >
-                  {{ userProfile.website.replace(/^https?:\/\//, "") }}
+                  {{ userProfile.website.replace(/^https?:\/\//, '') }}
                 </a>
               </div>
-              <div
-                v-if="userProfile.githubUsername"
-                class="flex items-center gap-1"
-              >
+              <div v-if="userProfile.githubUsername" class="flex items-center gap-1">
                 <UIcon name="i-simple-icons-github" class="size-4" />
                 <a
                   :href="`https://github.com/${userProfile.githubUsername}`"
@@ -178,9 +154,7 @@ const roleBadge = computed(() => {
         <div class="grid grid-cols-2 gap-4 mb-8">
           <UCard v-for="stat in stats" :key="stat.label">
             <div class="flex items-center gap-4">
-              <div
-                class="size-12 rounded-xl bg-primary/10 flex items-center justify-center"
-              >
+              <div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center">
                 <UIcon :name="stat.icon" class="size-6 text-primary" />
               </div>
               <div>
@@ -194,22 +168,15 @@ const roleBadge = computed(() => {
         <!-- Models Section (placeholder for now) -->
         <UCard>
           <template #header>
-            <h2 class="font-semibold">
-              Models by {{ userProfile.displayName || userProfile.username }}
-            </h2>
+            <h2 class="font-semibold">Models by {{ userProfile.displayName || userProfile.username }}</h2>
           </template>
 
           <div v-if="userProfile.modelsCount === 0" class="text-center py-8">
-            <UIcon
-              name="i-heroicons-cube"
-              class="size-12 text-muted mx-auto mb-4"
-            />
+            <UIcon name="i-heroicons-cube" class="size-12 text-muted mx-auto mb-4" />
             <p class="text-muted">No models published yet.</p>
           </div>
 
-          <div v-else class="text-center py-8 text-muted">
-            Models list coming soon...
-          </div>
+          <div v-else class="text-center py-8 text-muted">Models list coming soon...</div>
         </UCard>
       </template>
     </UContainer>

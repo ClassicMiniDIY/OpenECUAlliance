@@ -1,13 +1,13 @@
-import { z } from "zod";
+import { z } from 'zod';
 import {
   fetchExternalModel,
   isValidExternalUrl,
   normalizeExternalUrl,
   PlatformFetchError,
-} from "../../../utils/external-platforms";
+} from '../../../utils/external-platforms';
 
 const bodySchema = z.object({
-  url: z.string().url("Invalid URL format"),
+  url: z.string().url('Invalid URL format'),
 });
 
 export default defineEventHandler(async (event) => {
@@ -26,8 +26,7 @@ export default defineEventHandler(async (event) => {
   if (!isValidExternalUrl(normalizedUrl)) {
     throw createError({
       statusCode: 400,
-      message:
-        "Unsupported platform. Please use a URL from MakerWorld, Printables, Thingiverse, or Cults3D.",
+      message: 'Unsupported platform. Please use a URL from MakerWorld, Printables, Thingiverse, or Cults3D.',
     });
   }
 
@@ -60,10 +59,10 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    console.error("External fetch error:", error);
+    console.error('External fetch error:', error);
     throw createError({
       statusCode: 502,
-      message: "Failed to fetch model information from external platform",
+      message: 'Failed to fetch model information from external platform',
     });
   }
 });

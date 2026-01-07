@@ -1,9 +1,9 @@
-import type { ExternalPlatform } from "~~/app/types/model";
-import type { PlatformParser, ExternalModelMetadata } from "./types";
-import { makerWorldParser } from "./makerworld";
-import { printablesParser } from "./printables";
-import { thingiverseParser } from "./thingiverse";
-import { cults3dParser } from "./cults3d";
+import type { ExternalPlatform } from '~~/app/types/model';
+import type { PlatformParser, ExternalModelMetadata } from './types';
+import { makerWorldParser } from './makerworld';
+import { printablesParser } from './printables';
+import { thingiverseParser } from './thingiverse';
+import { cults3dParser } from './cults3d';
 
 // Re-export types and error class for consumers
 export {
@@ -11,14 +11,9 @@ export {
   type ExternalModelMetadata,
   type ExternalModelImage,
   type ExternalPrintSettings,
-} from "./types";
+} from './types';
 
-const parsers: PlatformParser[] = [
-  makerWorldParser,
-  printablesParser,
-  thingiverseParser,
-  cults3dParser,
-];
+const parsers: PlatformParser[] = [makerWorldParser, printablesParser, thingiverseParser, cults3dParser];
 
 export function detectPlatform(url: string): ExternalPlatform | null {
   for (const parser of parsers) {
@@ -38,15 +33,13 @@ export function extractExternalId(url: string): string | null {
   return null;
 }
 
-export async function fetchExternalModel(
-  url: string,
-): Promise<ExternalModelMetadata & { platform: ExternalPlatform }> {
+export async function fetchExternalModel(url: string): Promise<ExternalModelMetadata & { platform: ExternalPlatform }> {
   const parser = parsers.find((p) => p.canParse(url));
 
   if (!parser) {
     throw new PlatformFetchError(
-      "Unsupported platform. Supported platforms: MakerWorld, Printables, Thingiverse, Cults3D",
-      "makerworld",
+      'Unsupported platform. Supported platforms: MakerWorld, Printables, Thingiverse, Cults3D',
+      'makerworld'
     );
   }
 
@@ -70,10 +63,10 @@ export function isValidExternalUrl(url: string): boolean {
 export function normalizeExternalUrl(url: string): string {
   try {
     const parsed = new URL(url);
-    parsed.searchParams.delete("utm_source");
-    parsed.searchParams.delete("utm_medium");
-    parsed.searchParams.delete("utm_campaign");
-    parsed.hash = "";
+    parsed.searchParams.delete('utm_source');
+    parsed.searchParams.delete('utm_medium');
+    parsed.searchParams.delete('utm_campaign');
+    parsed.hash = '';
     return parsed.toString();
   } catch {
     return url;

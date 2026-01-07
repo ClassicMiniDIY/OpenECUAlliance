@@ -8,25 +8,10 @@ import type {
   PendingFileUpload,
   PendingImageUpload,
   EcuVendor,
-} from "~/types/model";
+} from '~/types/model';
 
-const ALLOWED_FILE_FORMATS = [
-  "stl",
-  "step",
-  "stp",
-  "3mf",
-  "obj",
-  "iges",
-  "igs",
-  "f3d",
-  "f3z",
-];
-const ALLOWED_IMAGE_FORMATS = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-];
+const ALLOWED_FILE_FORMATS = ['stl', 'step', 'stp', '3mf', 'obj', 'iges', 'igs', 'f3d', 'f3z'];
+const ALLOWED_IMAGE_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
 const MAX_TOTAL_FILES_SIZE = 200 * 1024 * 1024; // 200MB total
@@ -42,13 +27,13 @@ export function useModelUpload() {
   const error = ref<string | null>(null);
 
   // Step 1: Basic Info
-  const name = ref("");
-  const description = ref("");
-  const category = ref<ModelCategory>("mounts");
-  const vendor = ref<EcuVendor | "">("");
-  const license = ref("CC-BY-SA-4.0");
-  const sourceUrl = ref("");
-  const remixOf = ref("");
+  const name = ref('');
+  const description = ref('');
+  const category = ref<ModelCategory>('mounts');
+  const vendor = ref<EcuVendor | ''>('');
+  const license = ref('CC-BY-SA-4.0');
+  const sourceUrl = ref('');
+  const remixOf = ref('');
   const remixesAllowed = ref(true);
   const commercialUseAllowed = ref(false);
 
@@ -60,7 +45,7 @@ export function useModelUpload() {
 
   // Step 4: Print Settings
   const printing = ref<PrintSettings>({
-    recommendedMaterial: "PLA",
+    recommendedMaterial: 'PLA',
     layerHeight: 0.2,
     infillPercent: 20,
     supportsRequired: false,
@@ -69,55 +54,42 @@ export function useModelUpload() {
   // Step 5: Hardware & Assembly (optional)
   const hardware = ref<HardwareItem[]>([]);
   const assembly = ref<AssemblyInstructions>({
-    difficulty: "easy",
+    difficulty: 'easy',
     toolsRequired: [],
     steps: [],
   });
   const compatibility = ref<ModelCompatibility>({});
 
   // Computed
-  const totalFilesSize = computed(() =>
-    pendingFiles.value.reduce((sum, f) => sum + f.sizeBytes, 0),
-  );
+  const totalFilesSize = computed(() => pendingFiles.value.reduce((sum, f) => sum + f.sizeBytes, 0));
 
   const canProceedStep1 = computed(
-    () =>
-      name.value.trim().length >= 3 &&
-      description.value.trim().length >= 10 &&
-      category.value,
+    () => name.value.trim().length >= 3 && description.value.trim().length >= 10 && category.value
   );
 
   const canProceedStep2 = computed(
     () =>
       pendingFiles.value.length > 0 &&
       pendingFiles.value.some((f) => f.isPrimary) &&
-      totalFilesSize.value <= MAX_TOTAL_FILES_SIZE,
+      totalFilesSize.value <= MAX_TOTAL_FILES_SIZE
   );
 
   const canProceedStep3 = computed(
-    () =>
-      pendingImages.value.length > 0 &&
-      pendingImages.value.some((i) => i.isPrimary),
+    () => pendingImages.value.length > 0 && pendingImages.value.some((i) => i.isPrimary)
   );
 
-  const canProceedStep4 = computed(
-    () => printing.value.recommendedMaterial.trim().length > 0,
-  );
+  const canProceedStep4 = computed(() => printing.value.recommendedMaterial.trim().length > 0);
 
   const canSubmit = computed(
-    () =>
-      canProceedStep1.value &&
-      canProceedStep2.value &&
-      canProceedStep3.value &&
-      canProceedStep4.value,
+    () => canProceedStep1.value && canProceedStep2.value && canProceedStep3.value && canProceedStep4.value
   );
 
   // File handling
   function addFiles(files: FileList | File[]) {
     for (const file of files) {
-      const ext = file.name.split(".").pop()?.toLowerCase() || "";
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
       if (!ALLOWED_FILE_FORMATS.includes(ext)) {
-        error.value = `Invalid file format: ${ext}. Allowed: ${ALLOWED_FILE_FORMATS.join(", ")}`;
+        error.value = `Invalid file format: ${ext}. Allowed: ${ALLOWED_FILE_FORMATS.join(', ')}`;
         continue;
       }
       if (file.size > MAX_FILE_SIZE) {
@@ -125,7 +97,7 @@ export function useModelUpload() {
         continue;
       }
       if (totalFilesSize.value + file.size > MAX_TOTAL_FILES_SIZE) {
-        error.value = "Total file size exceeds 200MB limit.";
+        error.value = 'Total file size exceeds 200MB limit.';
         continue;
       }
 
@@ -138,7 +110,7 @@ export function useModelUpload() {
         sizeBytes: file.size,
         isPrimary,
         progress: 0,
-        status: "pending",
+        status: 'pending',
       });
     }
   }
@@ -164,7 +136,7 @@ export function useModelUpload() {
   function addImages(files: FileList | File[]) {
     for (const file of files) {
       if (!ALLOWED_IMAGE_FORMATS.includes(file.type)) {
-        error.value = "Invalid image format. Allowed: JPG, PNG, WebP, GIF";
+        error.value = 'Invalid image format. Allowed: JPG, PNG, WebP, GIF';
         continue;
       }
       if (file.size > MAX_IMAGE_SIZE) {
@@ -179,13 +151,13 @@ export function useModelUpload() {
         id: crypto.randomUUID(),
         file,
         filename: file.name,
-        type: "render",
+        type: 'render',
         previewUrl,
         sizeBytes: file.size,
         isPrimary,
         sortOrder: pendingImages.value.length,
         progress: 0,
-        status: "pending",
+        status: 'pending',
       });
     }
   }
@@ -212,10 +184,7 @@ export function useModelUpload() {
     });
   }
 
-  function setImageType(
-    id: string,
-    type: "render" | "photo" | "diagram" | "screenshot",
-  ) {
+  function setImageType(id: string, type: 'render' | 'photo' | 'diagram' | 'screenshot') {
     const image = pendingImages.value.find((i) => i.id === id);
     if (image) image.type = type;
   }
@@ -231,7 +200,7 @@ export function useModelUpload() {
   // Hardware handling
   function addHardwareItem() {
     hardware.value.push({
-      item: "",
+      item: '',
       quantity: 1,
       optional: false,
     });
@@ -244,7 +213,7 @@ export function useModelUpload() {
   // Assembly steps handling
   function addAssemblyStep() {
     if (!assembly.value.steps) assembly.value.steps = [];
-    assembly.value.steps.push("");
+    assembly.value.steps.push('');
   }
 
   function removeAssemblyStep(index: number) {
@@ -255,9 +224,9 @@ export function useModelUpload() {
   function generateSlug(name: string): string {
     return name
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
       .substring(0, 100);
   }
 
@@ -276,7 +245,7 @@ export function useModelUpload() {
       } = await supabase.auth.getUser();
 
       if (authError || !authUser) {
-        throw new Error("Not authenticated. Please log in again.");
+        throw new Error('Not authenticated. Please log in again.');
       }
 
       const slug = generateSlug(name.value);
@@ -303,7 +272,7 @@ export function useModelUpload() {
         notes: printing.value.notes,
       };
 
-      const { error: modelError } = await supabase.from("models").insert({
+      const { error: modelError } = await supabase.from('models').insert({
         id: modelId,
         slug,
         author_id: authUser.id,
@@ -316,113 +285,100 @@ export function useModelUpload() {
         remix_of: remixOf.value.trim() || null,
         remixes_allowed: remixesAllowed.value,
         commercial_use_allowed: commercialUseAllowed.value,
-        compatibility:
-          Object.keys(compatibility.value).length > 0
-            ? compatibility.value
-            : null,
+        compatibility: Object.keys(compatibility.value).length > 0 ? compatibility.value : null,
         printing: printingData,
         hardware: hardware.value.length > 0 ? hardware.value : null,
         assembly: assembly.value.steps?.length ? assembly.value : null,
-        status: "pending",
+        status: 'pending',
       });
 
       if (modelError) throw new Error(modelError.message);
 
       // 2. Upload files to storage and create records
       for (const pendingFile of pendingFiles.value) {
-        pendingFile.status = "uploading";
+        pendingFile.status = 'uploading';
 
         const storagePath = `${modelId}/${pendingFile.id}.${pendingFile.format}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from("model-files")
-          .upload(storagePath, pendingFile.file);
+        const { error: uploadError } = await supabase.storage.from('model-files').upload(storagePath, pendingFile.file);
 
         if (uploadError) {
-          pendingFile.status = "error";
+          pendingFile.status = 'error';
           pendingFile.error = uploadError.message;
           continue;
         }
 
-        const { error: fileRecordError } = await supabase
-          .from("model_files")
-          .insert({
-            model_id: modelId,
-            filename: `${pendingFile.id}.${pendingFile.format}`,
-            original_filename: pendingFile.filename,
-            format: pendingFile.format,
-            storage_path: storagePath,
-            size_bytes: pendingFile.sizeBytes,
-            is_primary: pendingFile.isPrimary,
-          });
+        const { error: fileRecordError } = await supabase.from('model_files').insert({
+          model_id: modelId,
+          filename: `${pendingFile.id}.${pendingFile.format}`,
+          original_filename: pendingFile.filename,
+          format: pendingFile.format,
+          storage_path: storagePath,
+          size_bytes: pendingFile.sizeBytes,
+          is_primary: pendingFile.isPrimary,
+        });
 
         if (fileRecordError) {
-          pendingFile.status = "error";
+          pendingFile.status = 'error';
           pendingFile.error = fileRecordError.message;
         } else {
-          pendingFile.status = "complete";
+          pendingFile.status = 'complete';
           pendingFile.progress = 100;
         }
       }
 
       // 3. Upload images to storage and create records
       for (const pendingImage of pendingImages.value) {
-        pendingImage.status = "uploading";
+        pendingImage.status = 'uploading';
 
-        const ext = pendingImage.filename.split(".").pop() || "jpg";
+        const ext = pendingImage.filename.split('.').pop() || 'jpg';
         const storagePath = `${modelId}/${pendingImage.id}.${ext}`;
 
-        console.log("[Upload] Uploading image to storage:", storagePath);
+        console.log('[Upload] Uploading image to storage:', storagePath);
 
         const { error: uploadError } = await supabase.storage
-          .from("model-images")
+          .from('model-images')
           .upload(storagePath, pendingImage.file);
 
         if (uploadError) {
-          console.error("[Upload] Storage upload failed:", uploadError);
-          pendingImage.status = "error";
+          console.error('[Upload] Storage upload failed:', uploadError);
+          pendingImage.status = 'error';
           pendingImage.error = uploadError.message;
           continue;
         }
 
-        console.log("[Upload] Storage upload successful, creating record...");
+        console.log('[Upload] Storage upload successful, creating record...');
 
-        const { error: imageRecordError } = await supabase
-          .from("model_images")
-          .insert({
-            model_id: modelId,
-            filename: `${pendingImage.id}.${ext}`,
-            type: pendingImage.type,
-            storage_path: storagePath,
-            is_primary: pendingImage.isPrimary,
-            sort_order: pendingImage.sortOrder,
-          });
+        const { error: imageRecordError } = await supabase.from('model_images').insert({
+          model_id: modelId,
+          filename: `${pendingImage.id}.${ext}`,
+          type: pendingImage.type,
+          storage_path: storagePath,
+          is_primary: pendingImage.isPrimary,
+          sort_order: pendingImage.sortOrder,
+        });
 
         if (imageRecordError) {
-          console.error(
-            "[Upload] Image record insert failed:",
-            imageRecordError,
-          );
-          pendingImage.status = "error";
+          console.error('[Upload] Image record insert failed:', imageRecordError);
+          pendingImage.status = 'error';
           pendingImage.error = imageRecordError.message;
         } else {
-          console.log("[Upload] Image record created successfully");
-          pendingImage.status = "complete";
+          console.log('[Upload] Image record created successfully');
+          pendingImage.status = 'complete';
           pendingImage.progress = 100;
         }
       }
 
       // 4. Create moderation queue entry
-      await supabase.from("moderation_queue").insert({
+      await supabase.from('moderation_queue').insert({
         model_id: modelId,
-        action_type: "new_submission",
-        status: "pending",
+        action_type: 'new_submission',
+        status: 'pending',
       });
 
       return modelId;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to submit model";
+      error.value = err instanceof Error ? err.message : 'Failed to submit model';
       return null;
     } finally {
       saving.value = false;
@@ -432,13 +388,13 @@ export function useModelUpload() {
   // Reset form
   function resetForm() {
     currentStep.value = 1;
-    name.value = "";
-    description.value = "";
-    category.value = "mounts";
-    vendor.value = "";
-    license.value = "CC-BY-SA-4.0";
-    sourceUrl.value = "";
-    remixOf.value = "";
+    name.value = '';
+    description.value = '';
+    category.value = 'mounts';
+    vendor.value = '';
+    license.value = 'CC-BY-SA-4.0';
+    sourceUrl.value = '';
+    remixOf.value = '';
     remixesAllowed.value = true;
     commercialUseAllowed.value = false;
 
@@ -448,14 +404,14 @@ export function useModelUpload() {
     pendingFiles.value = [];
     pendingImages.value = [];
     printing.value = {
-      recommendedMaterial: "PLA",
+      recommendedMaterial: 'PLA',
       layerHeight: 0.2,
       infillPercent: 20,
       supportsRequired: false,
     };
     hardware.value = [];
     assembly.value = {
-      difficulty: "easy",
+      difficulty: 'easy',
       toolsRequired: [],
       steps: [],
     };

@@ -1,58 +1,54 @@
 <script setup lang="ts">
-import type { ContentType } from "~/types/content";
+  import type { ContentType } from '~/types/content';
 
-const props = defineProps<{
-  selected: ContentType | "all";
-  counts: {
-    all: number;
-    adapter: number;
-    protocol: number;
-    model: number;
-  };
-}>();
+  const props = defineProps<{
+    selected: ContentType | 'all';
+    counts: {
+      all: number;
+      adapter: number;
+      protocol: number;
+      model: number;
+    };
+  }>();
 
-const emit = defineEmits<{
-  select: [type: ContentType | "all"];
-}>();
+  const emit = defineEmits<{
+    select: [type: ContentType | 'all'];
+  }>();
 
-const tabs = computed(() => [
-  {
-    key: "all" as const,
-    label: "All",
-    count: props.counts.all,
-    icon: "i-heroicons-squares-2x2",
-    color: "primary",
-  },
-  {
-    key: "adapter" as const,
-    label: "Adapters",
-    count: props.counts.adapter,
-    icon: "i-heroicons-document-text",
-    color: "primary",
-  },
-  {
-    key: "protocol" as const,
-    label: "Protocols",
-    count: props.counts.protocol,
-    icon: "i-heroicons-signal",
-    color: "success",
-  },
-  {
-    key: "model" as const,
-    label: "3D Models",
-    count: props.counts.model,
-    icon: "i-heroicons-cube",
-    color: "warning",
-  },
-]);
+  const tabs = computed(() => [
+    {
+      key: 'all' as const,
+      label: 'All',
+      count: props.counts.all,
+      icon: 'i-heroicons-squares-2x2',
+      color: 'primary',
+    },
+    {
+      key: 'adapter' as const,
+      label: 'Adapters',
+      count: props.counts.adapter,
+      icon: 'i-heroicons-document-text',
+      color: 'primary',
+    },
+    {
+      key: 'protocol' as const,
+      label: 'Protocols',
+      count: props.counts.protocol,
+      icon: 'i-heroicons-signal',
+      color: 'success',
+    },
+    {
+      key: 'model' as const,
+      label: '3D Models',
+      count: props.counts.model,
+      icon: 'i-heroicons-cube',
+      color: 'warning',
+    },
+  ]);
 </script>
 
 <template>
-  <div
-    class="flex flex-wrap gap-2 justify-center"
-    role="tablist"
-    aria-label="Content type filter"
-  >
+  <div class="flex flex-wrap gap-2 justify-center" role="tablist" aria-label="Content type filter">
     <button
       v-for="tab in tabs"
       :key="tab.key"

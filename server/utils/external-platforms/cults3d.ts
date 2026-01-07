@@ -1,6 +1,6 @@
-import type { ExternalPlatform } from "~~/app/types/model";
-import type { PlatformParser, ExternalModelMetadata } from "./types";
-import { PlatformFetchError } from "./types";
+import type { ExternalPlatform } from '~~/app/types/model';
+import type { PlatformParser, ExternalModelMetadata } from './types';
+import { PlatformFetchError } from './types';
 
 const URL_PATTERN = /cults3d\.com\/([a-z]{2})\/3d-model\/([\w-]+)/i;
 
@@ -19,7 +19,7 @@ interface MicrolinkResponse {
 }
 
 export const cults3dParser: PlatformParser = {
-  platform: "cults3d" as ExternalPlatform,
+  platform: 'cults3d' as ExternalPlatform,
 
   canParse(url: string): boolean {
     return URL_PATTERN.test(url);
@@ -33,7 +33,7 @@ export const cults3dParser: PlatformParser = {
   async fetchMetadata(url: string): Promise<ExternalModelMetadata> {
     const slug = this.extractId(url);
     if (!slug) {
-      throw new PlatformFetchError("Invalid Cults3D URL", this.platform);
+      throw new PlatformFetchError('Invalid Cults3D URL', this.platform);
     }
 
     // Use microlink for fast metadata extraction
@@ -41,7 +41,7 @@ export const cults3dParser: PlatformParser = {
 
     const response = await fetch(microlinkUrl, {
       headers: {
-        Accept: "application/json",
+        Accept: 'application/json',
       },
     });
 
@@ -49,36 +49,29 @@ export const cults3dParser: PlatformParser = {
       throw new PlatformFetchError(
         `Failed to fetch from Cults3D: ${response.statusText}`,
         this.platform,
-        response.status,
+        response.status
       );
     }
 
     const result = (await response.json()) as MicrolinkResponse;
 
-    if (result.status !== "success" || !result.data) {
-      throw new PlatformFetchError(
-        "Failed to extract metadata from Cults3D",
-        this.platform,
-      );
+    if (result.status !== 'success' || !result.data) {
+      throw new PlatformFetchError('Failed to extract metadata from Cults3D', this.platform);
     }
 
     // Check if the page was a 404
     if (result.statusCode === 404) {
-      throw new PlatformFetchError(
-        "Model not found on Cults3D",
-        this.platform,
-        404,
-      );
+      throw new PlatformFetchError('Model not found on Cults3D', this.platform, 404);
     }
 
     const data = result.data;
 
     // Parse title - remove "・Cults" suffix
-    let title = data.title || slug.replace(/-/g, " ");
-    title = title.replace(/\s*[・|]\s*Cults.*$/i, "").trim();
+    let title = data.title || slug.replace(/-/g, ' ');
+    title = title.replace(/\s*[・|]\s*Cults.*$/i, '').trim();
 
     // Author
-    const authorName = data.author || "Unknown";
+    const authorName = data.author || 'Unknown';
 
     // Build images array
     const images: Array<{ url: string; isPrimary: boolean }> = [];
@@ -93,13 +86,13 @@ export const cults3dParser: PlatformParser = {
       authorName,
       authorUrl: `https://cults3d.com/en/users/${authorName}`,
       images,
-      license: "CC-BY-NC", // Cults3D common default
+      license: 'CC-BY-NC', // Cults3D common default
       tags: [],
       remixesAllowed: true,
       commercialUseAllowed: false,
       externalId: slug,
       printSettings: {
-        recommendedMaterial: "PLA",
+        recommendedMaterial: 'PLA',
       },
     };
   },

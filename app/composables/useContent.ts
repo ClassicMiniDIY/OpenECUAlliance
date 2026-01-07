@@ -1,26 +1,11 @@
-import type { ContentType, ContentListItem } from "~/types/content";
+import type { ContentType, ContentListItem } from '~/types/content';
 
 export function useContent() {
-  const {
-    adapters,
-    loading: adaptersLoading,
-    refresh: refreshAdapters,
-  } = useAdapters();
-  const {
-    protocols,
-    loading: protocolsLoading,
-    refresh: refreshProtocols,
-  } = useProtocols();
-  const {
-    models,
-    loading: modelsLoading,
-    refresh: refreshModels,
-  } = useModels();
+  const { adapters, loading: adaptersLoading, refresh: refreshAdapters } = useAdapters();
+  const { protocols, loading: protocolsLoading, refresh: refreshProtocols } = useProtocols();
+  const { models, loading: modelsLoading, refresh: refreshModels } = useModels();
 
-  const loading = computed(
-    () =>
-      adaptersLoading.value || protocolsLoading.value || modelsLoading.value,
-  );
+  const loading = computed(() => adaptersLoading.value || protocolsLoading.value || modelsLoading.value);
 
   /**
    * All content items unified with type discriminator
@@ -31,7 +16,7 @@ export function useContent() {
     // Add adapters
     for (const adapter of adapters.value) {
       items.push({
-        type: "adapter",
+        type: 'adapter',
         id: adapter.id,
         name: adapter.name,
         version: adapter.version,
@@ -45,7 +30,7 @@ export function useContent() {
     // Add protocols
     for (const protocol of protocols.value) {
       items.push({
-        type: "protocol",
+        type: 'protocol',
         id: protocol.id,
         name: protocol.name,
         version: protocol.version,
@@ -60,7 +45,7 @@ export function useContent() {
     // Add models
     for (const model of models.value) {
       items.push({
-        type: "model",
+        type: 'model',
         id: model.id,
         name: model.name,
         version: model.version,
@@ -101,18 +86,10 @@ export function useContent() {
   /**
    * Filter content by type and search
    */
-  function filterContent(options: {
-    type?: ContentType | "all";
-    search?: string;
-    vendor?: string;
-  }): ContentListItem[] {
+  function filterContent(options: { type?: ContentType | 'all'; search?: string; vendor?: string }): ContentListItem[] {
     return allContent.value.filter((item) => {
       // Type filter
-      if (
-        options.type &&
-        options.type !== "all" &&
-        item.type !== options.type
-      ) {
+      if (options.type && options.type !== 'all' && item.type !== options.type) {
         return false;
       }
 
@@ -140,9 +117,9 @@ export function useContent() {
    */
   function getTypeLabel(type: ContentType): string {
     const labels: Record<ContentType, string> = {
-      adapter: "Adapter",
-      protocol: "Protocol",
-      model: "3D Model",
+      adapter: 'Adapter',
+      protocol: 'Protocol',
+      model: '3D Model',
     };
     return labels[type];
   }
@@ -152,9 +129,9 @@ export function useContent() {
    */
   function getTypeIcon(type: ContentType): string {
     const icons: Record<ContentType, string> = {
-      adapter: "i-heroicons-document-text",
-      protocol: "i-heroicons-signal",
-      model: "i-heroicons-cube",
+      adapter: 'i-heroicons-document-text',
+      protocol: 'i-heroicons-signal',
+      model: 'i-heroicons-cube',
     };
     return icons[type];
   }
@@ -164,9 +141,9 @@ export function useContent() {
    */
   function getTypeColor(type: ContentType): string {
     const colors: Record<ContentType, string> = {
-      adapter: "primary",
-      protocol: "success",
-      model: "warning",
+      adapter: 'primary',
+      protocol: 'success',
+      model: 'warning',
     };
     return colors[type];
   }

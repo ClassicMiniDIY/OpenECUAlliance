@@ -1,9 +1,9 @@
-import type { Tables } from "./database.types";
+import type { Tables } from './database.types';
 
 /**
  * User profile from database
  */
-export type Profile = Tables<"profiles">;
+export type Profile = Tables<'profiles'>;
 
 /**
  * Public profile view (excludes sensitive fields)
@@ -17,7 +17,7 @@ export interface PublicProfile {
   website: string | null;
   location: string | null;
   githubUsername: string | null;
-  role: "user" | "moderator" | "admin";
+  role: 'user' | 'moderator' | 'admin';
   modelsCount: number;
   likesReceived: number;
   createdAt: string;
@@ -68,10 +68,10 @@ export interface Rating {
 export interface ModerationQueueItem {
   id: string;
   modelId: string;
-  actionType: "new_submission" | "update" | "report" | "appeal";
+  actionType: 'new_submission' | 'update' | 'report' | 'appeal';
   priority: number;
-  status: "pending" | "in_progress" | "resolved";
-  resolution: "approved" | "rejected" | "needs_changes" | "escalated" | null;
+  status: 'pending' | 'in_progress' | 'resolved';
+  resolution: 'approved' | 'rejected' | 'needs_changes' | 'escalated' | null;
   resolutionNotes: string | null;
   assignedTo: PublicProfile | null;
   resolvedBy: PublicProfile | null;
@@ -86,16 +86,9 @@ export interface ModelReport {
   id: string;
   modelId: string;
   reporter: PublicProfile;
-  reason:
-    | "spam"
-    | "inappropriate"
-    | "copyright"
-    | "incorrect_info"
-    | "broken_files"
-    | "duplicate"
-    | "other";
+  reason: 'spam' | 'inappropriate' | 'copyright' | 'incorrect_info' | 'broken_files' | 'duplicate' | 'other';
   details: string | null;
-  status: "pending" | "reviewed" | "resolved" | "dismissed";
+  status: 'pending' | 'reviewed' | 'resolved' | 'dismissed';
   resolutionNotes: string | null;
   resolvedBy: PublicProfile | null;
   createdAt: string;
@@ -104,7 +97,7 @@ export interface ModelReport {
 /**
  * Auth provider types
  */
-export type AuthProvider = "google" | "apple" | "email";
+export type AuthProvider = 'google' | 'apple' | 'email';
 
 /**
  * Login form data

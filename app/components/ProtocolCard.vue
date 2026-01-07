@@ -1,37 +1,33 @@
 <script setup lang="ts">
-import type { Protocol } from "~/types/protocol";
+  import type { Protocol } from '~/types/protocol';
 
-const NuxtLink = resolveComponent("NuxtLink");
+  const NuxtLink = resolveComponent('NuxtLink');
 
-const props = defineProps<{
-  protocol: Protocol;
-}>();
+  const props = defineProps<{
+    protocol: Protocol;
+  }>();
 
-const { getVendorIcon } = useVendorIcons();
-const { formatBaudrate } = useProtocols();
+  const { getVendorIcon } = useVendorIcons();
+  const { formatBaudrate } = useProtocols();
 
-const fallbackIcon = computed(() => getVendorIcon(props.protocol.vendor));
+  const fallbackIcon = computed(() => getVendorIcon(props.protocol.vendor));
 
-const accessibleDescription = computed(() => {
-  const desc =
-    props.protocol.description ||
-    `CAN protocol definition for ${props.protocol.name}`;
-  return `${props.protocol.name} by ${props.protocol.vendor}. ${desc} ${props.protocol.messageCount} messages, ${props.protocol.signalCount} signals. Version ${props.protocol.version}.`;
-});
+  const accessibleDescription = computed(() => {
+    const desc = props.protocol.description || `CAN protocol definition for ${props.protocol.name}`;
+    return `${props.protocol.name} by ${props.protocol.vendor}. ${desc} ${props.protocol.messageCount} messages, ${props.protocol.signalCount} signals. Version ${props.protocol.version}.`;
+  });
 
-const formattedBaudrate = computed(() =>
-  formatBaudrate(props.protocol.baudrate),
-);
+  const formattedBaudrate = computed(() => formatBaudrate(props.protocol.baudrate));
 
-const protocolTypeLabel = computed(() => {
-  const labels: Record<string, string> = {
-    can: "CAN",
-    canfd: "CAN FD",
-    lin: "LIN",
-    "k-line": "K-Line",
-  };
-  return labels[props.protocol.protocolType] || props.protocol.protocolType;
-});
+  const protocolTypeLabel = computed(() => {
+    const labels: Record<string, string> = {
+      can: 'CAN',
+      canfd: 'CAN FD',
+      lin: 'LIN',
+      'k-line': 'K-Line',
+    };
+    return labels[props.protocol.protocolType] || props.protocol.protocolType;
+  });
 </script>
 
 <template>
@@ -54,12 +50,7 @@ const protocolTypeLabel = computed(() => {
             :alt="`${protocol.vendor} logo`"
             class="size-5 object-contain"
           />
-          <UIcon
-            v-else
-            :name="fallbackIcon"
-            class="size-5 text-success"
-            aria-hidden="true"
-          />
+          <UIcon v-else :name="fallbackIcon" class="size-5 text-success" aria-hidden="true" />
         </div>
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
@@ -74,30 +65,18 @@ const protocolTypeLabel = computed(() => {
 
       <!-- Description -->
       <p class="text-sm text-muted line-clamp-2 mb-4 flex-1">
-        {{
-          protocol.description || `CAN protocol definition for ${protocol.name}`
-        }}
+        {{ protocol.description || `CAN protocol definition for ${protocol.name}` }}
       </p>
 
       <!-- Footer -->
-      <div
-        class="flex items-center justify-between text-sm text-muted pt-3 border-t border-default"
-      >
+      <div class="flex items-center justify-between text-sm text-muted pt-3 border-t border-default">
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1">
-            <UIcon
-              name="i-heroicons-envelope"
-              class="size-3.5"
-              aria-hidden="true"
-            />
+            <UIcon name="i-heroicons-envelope" class="size-3.5" aria-hidden="true" />
             <span>{{ protocol.messageCount }} msgs</span>
           </div>
           <div class="flex items-center gap-1">
-            <UIcon
-              name="i-heroicons-signal"
-              class="size-3.5"
-              aria-hidden="true"
-            />
+            <UIcon name="i-heroicons-signal" class="size-3.5" aria-hidden="true" />
             <span>{{ protocol.signalCount }} sigs</span>
           </div>
         </div>

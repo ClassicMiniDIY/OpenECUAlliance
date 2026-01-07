@@ -42,9 +42,7 @@ export function useRatings(modelId: Ref<string> | string) {
   const error = ref<string | null>(null);
   const submitting = ref(false);
 
-  const modelIdValue = computed(() =>
-    typeof modelId === "string" ? modelId : modelId.value,
-  );
+  const modelIdValue = computed(() => (typeof modelId === 'string' ? modelId : modelId.value));
 
   /**
    * Fetch all ratings for the model
@@ -55,7 +53,7 @@ export function useRatings(modelId: Ref<string> | string) {
 
     try {
       const { data, error: fetchError } = await supabase
-        .from("model_ratings")
+        .from('model_ratings')
         .select(
           `
           user_id,
@@ -70,10 +68,10 @@ export function useRatings(modelId: Ref<string> | string) {
             display_name,
             avatar_url
           )
-        `,
+        `
         )
-        .eq("model_id", modelIdValue.value)
-        .order("created_at", { ascending: false });
+        .eq('model_id', modelIdValue.value)
+        .order('created_at', { ascending: false });
 
       if (fetchError) throw fetchError;
 
@@ -96,15 +94,13 @@ export function useRatings(modelId: Ref<string> | string) {
 
       // Find user's rating if authenticated
       if (currentUser.value) {
-        userRating.value =
-          mappedRatings.find((r) => r.userId === currentUser.value!.id) || null;
+        userRating.value = mappedRatings.find((r) => r.userId === currentUser.value!.id) || null;
       }
 
       // Calculate summary
       calculateSummary(mappedRatings);
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to load ratings";
+      error.value = err instanceof Error ? err.message : 'Failed to load ratings';
     } finally {
       loading.value = false;
     }
@@ -140,7 +136,7 @@ export function useRatings(modelId: Ref<string> | string) {
 
     try {
       const { data, error: fetchError } = await supabase
-        .from("model_ratings")
+        .from('model_ratings')
         .select(
           `
           user_id,
@@ -155,10 +151,10 @@ export function useRatings(modelId: Ref<string> | string) {
             display_name,
             avatar_url
           )
-        `,
+        `
         )
-        .eq("model_id", modelIdValue.value)
-        .eq("user_id", currentUser.value.id)
+        .eq('model_id', modelIdValue.value)
+        .eq('user_id', currentUser.value.id)
         .maybeSingle();
 
       if (fetchError) throw fetchError;
@@ -184,7 +180,7 @@ export function useRatings(modelId: Ref<string> | string) {
       userRating.value = null;
       return null;
     } catch (err) {
-      console.error("Failed to fetch user rating:", err);
+      console.error('Failed to fetch user rating:', err);
       return null;
     }
   }
@@ -192,17 +188,14 @@ export function useRatings(modelId: Ref<string> | string) {
   /**
    * Submit or update a rating
    */
-  async function submitRating(
-    rating: number,
-    review?: string,
-  ): Promise<boolean> {
+  async function submitRating(rating: number, review?: string): Promise<boolean> {
     if (!currentUser.value) {
-      error.value = "Not authenticated";
+      error.value = 'Not authenticated';
       return false;
     }
 
     if (rating < 1 || rating > 5) {
-      error.value = "Rating must be between 1 and 5";
+      error.value = 'Rating must be between 1 and 5';
       return false;
     }
 
@@ -211,7 +204,7 @@ export function useRatings(modelId: Ref<string> | string) {
 
     try {
       const { data, error: upsertError } = await supabase
-        .from("model_ratings")
+        .from('model_ratings')
         .upsert(
           {
             model_id: modelIdValue.value,
@@ -220,8 +213,8 @@ export function useRatings(modelId: Ref<string> | string) {
             review: review?.trim() || null,
           },
           {
-            onConflict: "user_id,model_id",
-          },
+            onConflict: 'user_id,model_id',
+          }
         )
         .select()
         .single();
@@ -236,7 +229,7 @@ export function useRatings(modelId: Ref<string> | string) {
         review: data.review,
         author: {
           id: currentUser.value.id,
-          username: currentUser.value.profile?.username || "",
+          username: currentUser.value.profile?.username || '',
           displayName: currentUser.value.profile?.display_name || null,
           avatarUrl: currentUser.value.profile?.avatar_url || null,
         },
@@ -245,9 +238,7 @@ export function useRatings(modelId: Ref<string> | string) {
       };
 
       // Update or add to ratings list
-      const existingIndex = ratings.value.findIndex(
-        (r) => r.userId === currentUser.value!.id,
-      );
+      const existingIndex = ratings.value.findIndex((r) => r.userId === currentUser.value!.id);
       if (existingIndex !== -1) {
         ratings.value[existingIndex] = newRating;
       } else {
@@ -259,8 +250,7 @@ export function useRatings(modelId: Ref<string> | string) {
 
       return true;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to submit rating";
+      error.value = err instanceof Error ? err.message : 'Failed to submit rating';
       return false;
     } finally {
       submitting.value = false;
@@ -275,24 +265,21 @@ export function useRatings(modelId: Ref<string> | string) {
 
     try {
       const { error: deleteError } = await supabase
-        .from("model_ratings")
+        .from('model_ratings')
         .delete()
-        .eq("model_id", modelIdValue.value)
-        .eq("user_id", currentUser.value.id);
+        .eq('model_id', modelIdValue.value)
+        .eq('user_id', currentUser.value.id);
 
       if (deleteError) throw deleteError;
 
       // Remove from local state
-      ratings.value = ratings.value.filter(
-        (r) => r.userId !== currentUser.value!.id,
-      );
+      ratings.value = ratings.value.filter((r) => r.userId !== currentUser.value!.id);
       userRating.value = null;
       calculateSummary(ratings.value);
 
       return true;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to delete rating";
+      error.value = err instanceof Error ? err.message : 'Failed to delete rating';
       return false;
     }
   }
@@ -300,9 +287,7 @@ export function useRatings(modelId: Ref<string> | string) {
   /**
    * Get ratings with reviews only
    */
-  const ratingsWithReviews = computed(() =>
-    ratings.value.filter((r) => r.review && r.review.trim().length > 0),
-  );
+  const ratingsWithReviews = computed(() => ratings.value.filter((r) => r.review && r.review.trim().length > 0));
 
   return {
     ratings,

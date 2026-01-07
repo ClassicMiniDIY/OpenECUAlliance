@@ -1,4 +1,4 @@
-import type { Protocol } from "~/types/protocol";
+import type { Protocol } from '~/types/protocol';
 
 export function useProtocols() {
   const {
@@ -6,15 +6,15 @@ export function useProtocols() {
     status,
     refresh,
     error,
-  } = useFetch<Protocol[]>("/api/protocols", {
-    key: "protocols-list",
+  } = useFetch<Protocol[]>('/api/protocols', {
+    key: 'protocols-list',
     default: () => [],
     getCachedData(key, nuxtApp) {
       return nuxtApp.payload.data[key] ?? nuxtApp.static.data[key];
     },
   });
 
-  const loading = computed(() => status.value === "pending");
+  const loading = computed(() => status.value === 'pending');
 
   const vendors = computed(() => {
     const vendorSet = new Set((protocols.value ?? []).map((p) => p.vendor));
@@ -31,11 +31,7 @@ export function useProtocols() {
     return Array.from(baudrateSet).sort((a, b) => a - b);
   });
 
-  function filterProtocols(options: {
-    search?: string;
-    vendor?: string;
-    protocolType?: string;
-  }) {
+  function filterProtocols(options: { search?: string; vendor?: string; protocolType?: string }) {
     return (protocols.value ?? []).filter((protocol) => {
       // Search filter
       if (options.search) {
@@ -53,10 +49,7 @@ export function useProtocols() {
       }
 
       // Protocol type filter
-      if (
-        options.protocolType &&
-        protocol.protocolType !== options.protocolType
-      ) {
+      if (options.protocolType && protocol.protocolType !== options.protocolType) {
         return false;
       }
 

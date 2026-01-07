@@ -1,19 +1,18 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: "Creating Protocols - OpenECU Alliance",
-  description:
-    "Step-by-step guide to creating CAN Bus protocol definitions for the OpenECU Alliance.",
-});
+  useSeoMeta({
+    title: 'Creating Protocols - OpenECU Alliance',
+    description: 'Step-by-step guide to creating CAN Bus protocol definitions for the OpenECU Alliance.',
+  });
 
-const codeExamples = {
-  step1: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
+  const codeExamples = {
+    step1: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
 cd OECUASpecs`,
 
-  step2: `mkdir -p protocols/vendorname`,
+    step2: `mkdir -p protocols/vendorname`,
 
-  step3: `touch protocols/vendorname/vendorname-protocol.protocol.yaml`,
+    step3: `touch protocols/vendorname/vendorname-protocol.protocol.yaml`,
 
-  step4: `openecualliance: "1.0"
+    step4: `openecualliance: "1.0"
 type: protocol
 id: vendorname-broadcast
 name: "VendorName CAN Broadcast Protocol"
@@ -114,18 +113,18 @@ metadata:
       changes:
         - "Initial release with core engine messages"`,
 
-  step5: `# Install validation tool (one-time)
+    step5: `# Install validation tool (one-time)
 npm install -g ajv-cli
 
 # Validate
 ajv validate -s schema/protocol.schema.json -d protocols/vendorname/vendorname-broadcast.protocol.yaml`,
 
-  step6: `git checkout -b add-vendorname-protocol
+    step6: `git checkout -b add-vendorname-protocol
 git add protocols/vendorname/
 git commit -m "Add CAN protocol for VendorName Broadcast"
 git push origin add-vendorname-protocol`,
 
-  signalBits: `# Signal position is defined by:
+    signalBits: `# Signal position is defined by:
 # - start_bit: The first bit of the signal (0-63 for 8-byte messages)
 # - length: Number of bits in the signal
 
@@ -141,7 +140,7 @@ git push origin add-vendorname-protocol`,
   length: 8
   # This occupies bits 16-23 (byte 2)`,
 
-  scalingExample: `# Raw value to engineering value formula:
+    scalingExample: `# Raw value to engineering value formula:
 # engineering_value = (raw_value * scale) + offset
 
 # Example: Temperature in 0.1 degree resolution
@@ -155,17 +154,14 @@ git push origin add-vendorname-protocol`,
   scale: 0.01     # Raw 10000 = 100.00
   offset: -100    # Offset for vacuum reading
   unit: "kPa"`,
-};
+  };
 </script>
 
 <template>
   <div class="py-8 px-4">
     <UContainer class="max-w-4xl">
       <div class="mb-2">
-        <NuxtLink
-          to="/docs"
-          class="text-sm text-muted hover:text-success inline-flex items-center gap-1"
-        >
+        <NuxtLink to="/docs" class="text-sm text-muted hover:text-success inline-flex items-center gap-1">
           <UIcon name="i-heroicons-arrow-left" class="size-4" />
           Back to Docs
         </NuxtLink>
@@ -176,9 +172,7 @@ git push origin add-vendorname-protocol`,
           <UBadge color="success" variant="subtle">Protocol</UBadge>
         </div>
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">Creating Protocols</h1>
-        <p class="text-lg text-muted">
-          Step-by-step guide to creating CAN Bus protocol definitions.
-        </p>
+        <p class="text-lg text-muted">Step-by-step guide to creating CAN Bus protocol definitions.</p>
       </div>
 
       <!-- What is a Protocol -->
@@ -186,9 +180,8 @@ git push origin add-vendorname-protocol`,
         <h2 class="text-2xl font-bold mb-4">What is a Protocol?</h2>
         <UCard>
           <p class="text-muted mb-4">
-            A protocol definition describes the CAN Bus messages and signals
-            broadcast by an ECU. This allows tools to decode real-time CAN data
-            into human-readable values like RPM, temperatures, and pressures.
+            A protocol definition describes the CAN Bus messages and signals broadcast by an ECU. This allows tools to
+            decode real-time CAN data into human-readable values like RPM, temperatures, and pressures.
           </p>
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
@@ -216,31 +209,19 @@ git push origin add-vendorname-protocol`,
               <h4 class="font-semibold mb-2">Use Cases:</h4>
               <ul class="space-y-1 text-sm text-muted">
                 <li class="flex items-center gap-2">
-                  <UIcon
-                    name="i-heroicons-signal"
-                    class="size-4 text-success"
-                  />
+                  <UIcon name="i-heroicons-signal" class="size-4 text-success" />
                   Real-time CAN data logging
                 </li>
                 <li class="flex items-center gap-2">
-                  <UIcon
-                    name="i-heroicons-signal"
-                    class="size-4 text-success"
-                  />
+                  <UIcon name="i-heroicons-signal" class="size-4 text-success" />
                   Digital dashboards
                 </li>
                 <li class="flex items-center gap-2">
-                  <UIcon
-                    name="i-heroicons-signal"
-                    class="size-4 text-success"
-                  />
+                  <UIcon name="i-heroicons-signal" class="size-4 text-success" />
                   Data acquisition systems
                 </li>
                 <li class="flex items-center gap-2">
-                  <UIcon
-                    name="i-heroicons-signal"
-                    class="size-4 text-success"
-                  />
+                  <UIcon name="i-heroicons-signal" class="size-4 text-success" />
                   CANalyzer / PCAN-View integration
                 </li>
               </ul>
@@ -255,43 +236,29 @@ git push origin add-vendorname-protocol`,
         <UCard>
           <ul class="space-y-3">
             <li class="flex items-start gap-3">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
               <div>
-                <strong>Get official documentation</strong> - Find the vendor's
-                CAN protocol specification document if available.
+                <strong>Get official documentation</strong> - Find the vendor's CAN protocol specification document if
+                available.
               </div>
             </li>
             <li class="flex items-start gap-3">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
               <div>
-                <strong>Test with real hardware</strong> - Verify signals using
-                a CAN interface and the actual ECU.
+                <strong>Test with real hardware</strong> - Verify signals using a CAN interface and the actual ECU.
               </div>
             </li>
             <li class="flex items-start gap-3">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
               <div>
-                <strong>Check existing protocols</strong> - Ensure a protocol
-                doesn't already exist for your ECU.
+                <strong>Check existing protocols</strong> - Ensure a protocol doesn't already exist for your ECU.
               </div>
             </li>
             <li class="flex items-start gap-3">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
               <div>
-                <strong>Understand CAN basics</strong> - Familiarity with
-                message IDs, byte order, and bit packing helps.
+                <strong>Understand CAN basics</strong> - Familiarity with message IDs, byte order, and bit packing
+                helps.
               </div>
             </li>
           </ul>
@@ -331,10 +298,8 @@ git push origin add-vendorname-protocol`,
             <CodeBlock lang="bash" :code="codeExamples.step2" />
             <p class="text-sm text-muted mt-3">
               Use lowercase vendor names:
-              <code class="bg-muted px-1 rounded">haltech</code>,
-              <code class="bg-muted px-1 rounded">link</code>,
-              <code class="bg-muted px-1 rounded">motec</code>,
-              <code class="bg-muted px-1 rounded">aem</code>, etc.
+              <code class="bg-muted px-1 rounded">haltech</code>, <code class="bg-muted px-1 rounded">link</code>,
+              <code class="bg-muted px-1 rounded">motec</code>, <code class="bg-muted px-1 rounded">aem</code>, etc.
             </p>
           </UCard>
         </div>
@@ -353,18 +318,12 @@ git push origin add-vendorname-protocol`,
             <CodeBlock lang="bash" :code="codeExamples.step3" />
             <p class="text-sm text-muted mt-3">
               Naming convention:
-              <code class="bg-muted px-1 rounded"
-                >{vendor}-{protocol}.protocol.yaml</code
-              >
+              <code class="bg-muted px-1 rounded">{vendor}-{protocol}.protocol.yaml</code>
             </p>
             <div class="mt-2 text-sm text-muted">
               Examples:
-              <code class="bg-muted px-1 rounded"
-                >haltech-elite-broadcast.protocol.yaml</code
-              >,
-              <code class="bg-muted px-1 rounded"
-                >link-g4x-broadcast.protocol.yaml</code
-              >
+              <code class="bg-muted px-1 rounded">haltech-elite-broadcast.protocol.yaml</code>,
+              <code class="bg-muted px-1 rounded">link-g4x-broadcast.protocol.yaml</code>
             </div>
           </UCard>
         </div>
@@ -411,9 +370,7 @@ git push origin add-vendorname-protocol`,
           </div>
           <UCard>
             <CodeBlock lang="bash" :code="codeExamples.step6" />
-            <p class="text-sm text-muted mt-3">
-              Then create a Pull Request on GitHub.
-            </p>
+            <p class="text-sm text-muted mt-3">Then create a Pull Request on GitHub.</p>
           </UCard>
         </div>
       </section>
@@ -423,8 +380,7 @@ git push origin add-vendorname-protocol`,
         <h2 class="text-2xl font-bold mb-4">Understanding Signal Bits</h2>
         <UCard>
           <p class="text-muted mb-4">
-            CAN signals are packed into messages at specific bit positions. Each
-            signal has a start bit and length.
+            CAN signals are packed into messages at specific bit positions. Each signal has a start bit and length.
           </p>
           <CodeBlock lang="yaml" :code="codeExamples.signalBits" />
         </UCard>
@@ -434,10 +390,7 @@ git push origin add-vendorname-protocol`,
       <section class="mb-12">
         <h2 class="text-2xl font-bold mb-4">Scaling and Offsets</h2>
         <UCard>
-          <p class="text-muted mb-4">
-            Raw CAN values are converted to engineering units using scale and
-            offset:
-          </p>
+          <p class="text-muted mb-4">Raw CAN values are converted to engineering units using scale and offset:</p>
           <CodeBlock lang="yaml" :code="codeExamples.scalingExample" />
         </UCard>
       </section>
@@ -490,9 +443,8 @@ git push origin add-vendorname-protocol`,
         <h2 class="text-2xl font-bold mb-4">DBC Export</h2>
         <UCard>
           <p class="text-muted mb-4">
-            Protocols in the OpenECU Alliance can be exported to DBC format for
-            use with industry-standard tools like CANalyzer, PCAN-View, and
-            SavvyCAN.
+            Protocols in the OpenECU Alliance can be exported to DBC format for use with industry-standard tools like
+            CANalyzer, PCAN-View, and SavvyCAN.
           </p>
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-2 text-sm text-muted">
@@ -522,22 +474,10 @@ git push origin add-vendorname-protocol`,
         >
           View on GitHub
         </UButton>
-        <UButton
-          to="/protocols"
-          color="neutral"
-          variant="outline"
-          icon="i-heroicons-signal"
-          size="lg"
-        >
+        <UButton to="/protocols" color="neutral" variant="outline" icon="i-heroicons-signal" size="lg">
           Browse Protocols
         </UButton>
-        <UButton
-          to="/spec"
-          color="neutral"
-          variant="outline"
-          icon="i-heroicons-document-text"
-          size="lg"
-        >
+        <UButton to="/spec" color="neutral" variant="outline" icon="i-heroicons-document-text" size="lg">
           Read the Full Spec
         </UButton>
       </div>

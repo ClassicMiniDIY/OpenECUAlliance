@@ -1,13 +1,9 @@
-import { parse } from "yaml";
-import {
-  fetchAllProtocolPaths,
-  fetchGitHubFile,
-  getAssetUrl,
-} from "../utils/github";
+import { parse } from 'yaml';
+import { fetchAllProtocolPaths, fetchGitHubFile, getAssetUrl } from '../utils/github';
 
 interface ProtocolYaml {
   openecualliance: string;
-  type: "protocol";
+  type: 'protocol';
   id: string;
   name: string;
   version: string;
@@ -22,7 +18,7 @@ interface ProtocolYaml {
     color_secondary?: string;
   };
   protocol: {
-    type: "can" | "canfd" | "lin" | "k-line";
+    type: 'can' | 'canfd' | 'lin' | 'k-line';
     baudrate: number;
   };
   messages: Array<{
@@ -49,7 +45,7 @@ interface ProtocolResponse {
   vendor: string;
   description?: string;
   website?: string;
-  protocolType: "can" | "canfd" | "lin" | "k-line";
+  protocolType: 'can' | 'canfd' | 'lin' | 'k-line';
   baudrate: number;
   messageCount: number;
   signalCount: number;
@@ -72,23 +68,14 @@ export default defineCachedEventHandler(
           const yaml = parse(content) as ProtocolYaml;
 
           // Count total signals across all messages
-          const signalCount = yaml.messages.reduce(
-            (total, msg) => total + (msg.signals?.length || 0),
-            0,
-          );
+          const signalCount = yaml.messages.reduce((total, msg) => total + (msg.signals?.length || 0), 0);
 
           // Build branding with full URLs
           const branding: ProtocolBranding | undefined = yaml.branding
             ? {
-                logo: yaml.branding.logo
-                  ? getAssetUrl("logos", yaml.branding.logo)
-                  : undefined,
-                icon: yaml.branding.icon
-                  ? getAssetUrl("icons", yaml.branding.icon)
-                  : undefined,
-                banner: yaml.branding.banner
-                  ? getAssetUrl("banners", yaml.branding.banner)
-                  : undefined,
+                logo: yaml.branding.logo ? getAssetUrl('logos', yaml.branding.logo) : undefined,
+                icon: yaml.branding.icon ? getAssetUrl('icons', yaml.branding.icon) : undefined,
+                banner: yaml.branding.banner ? getAssetUrl('banners', yaml.branding.banner) : undefined,
                 colorPrimary: yaml.branding.color_primary,
                 colorSecondary: yaml.branding.color_secondary,
               }
@@ -99,7 +86,7 @@ export default defineCachedEventHandler(
             name: yaml.name,
             version: yaml.version,
             vendor: yaml.vendor,
-            description: yaml.description?.split("\n")[0].trim(), // First line only
+            description: yaml.description?.split('\n')[0].trim(), // First line only
             website: yaml.website,
             protocolType: yaml.protocol.type,
             baudrate: yaml.protocol.baudrate,
@@ -114,11 +101,9 @@ export default defineCachedEventHandler(
       });
 
       const results = await Promise.all(fetchPromises);
-      protocols.push(
-        ...results.filter((p): p is ProtocolResponse => p !== null),
-      );
+      protocols.push(...results.filter((p): p is ProtocolResponse => p !== null));
     } catch (err) {
-      console.error("Failed to fetch protocols from GitHub:", err);
+      console.error('Failed to fetch protocols from GitHub:', err);
     }
 
     // Sort by vendor, then by name
@@ -130,7 +115,7 @@ export default defineCachedEventHandler(
   },
   {
     maxAge: 60 * 5, // Cache for 5 minutes
-    name: "protocols-list",
-    getKey: () => "all",
-  },
+    name: 'protocols-list',
+    getKey: () => 'all',
+  }
 );

@@ -1,5 +1,5 @@
-import { parse } from "yaml";
-import { fetchGitHubFile, getAssetUrl } from "../../../utils/github";
+import { parse } from 'yaml';
+import { fetchGitHubFile, getAssetUrl } from '../../../utils/github';
 
 interface AdapterYaml {
   openecualliance: string;
@@ -17,7 +17,7 @@ interface AdapterYaml {
     color_secondary?: string;
   };
   file_format: {
-    type: "csv" | "binary";
+    type: 'csv' | 'binary';
     extensions: string[];
     delimiter?: string;
     endianness?: string;
@@ -54,13 +54,13 @@ interface AdapterYaml {
 
 export default defineCachedEventHandler(
   async (event) => {
-    const vendor = getRouterParam(event, "vendor");
-    const id = getRouterParam(event, "id");
+    const vendor = getRouterParam(event, 'vendor');
+    const id = getRouterParam(event, 'id');
 
     if (!vendor || !id) {
       throw createError({
         statusCode: 400,
-        statusMessage: "Missing vendor or adapter id",
+        statusMessage: 'Missing vendor or adapter id',
       });
     }
 
@@ -72,15 +72,9 @@ export default defineCachedEventHandler(
       // Build branding with full URLs
       const branding = yaml.branding
         ? {
-            logo: yaml.branding.logo
-              ? getAssetUrl("logos", yaml.branding.logo)
-              : undefined,
-            icon: yaml.branding.icon
-              ? getAssetUrl("icons", yaml.branding.icon)
-              : undefined,
-            banner: yaml.branding.banner
-              ? getAssetUrl("banners", yaml.branding.banner)
-              : undefined,
+            logo: yaml.branding.logo ? getAssetUrl('logos', yaml.branding.logo) : undefined,
+            icon: yaml.branding.icon ? getAssetUrl('icons', yaml.branding.icon) : undefined,
+            banner: yaml.branding.banner ? getAssetUrl('banners', yaml.branding.banner) : undefined,
             colorPrimary: yaml.branding.color_primary,
             colorSecondary: yaml.branding.color_secondary,
           }
@@ -128,8 +122,7 @@ export default defineCachedEventHandler(
   },
   {
     maxAge: 60 * 5, // Cache for 5 minutes
-    name: "adapter-detail",
-    getKey: (event) =>
-      `${getRouterParam(event, "vendor")}/${getRouterParam(event, "id")}`,
-  },
+    name: 'adapter-detail',
+    getKey: (event) => `${getRouterParam(event, 'vendor')}/${getRouterParam(event, 'id')}`,
+  }
 );

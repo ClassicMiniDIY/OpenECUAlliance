@@ -5,12 +5,7 @@ export interface ModelBranding {
   colorSecondary?: string;
 }
 
-export type ModelCategory =
-  | "mounts"
-  | "enclosures"
-  | "brackets"
-  | "adapters"
-  | "accessories";
+export type ModelCategory = 'mounts' | 'enclosures' | 'brackets' | 'adapters' | 'accessories';
 
 export interface ModelCompatibility {
   ecus?: Array<{
@@ -30,16 +25,7 @@ export interface ModelCompatibility {
 
 export interface ModelFile {
   filename: string;
-  format:
-    | "stl"
-    | "step"
-    | "3mf"
-    | "obj"
-    | "iges"
-    | "f3d"
-    | "f3z"
-    | "stp"
-    | "igs";
+  format: 'stl' | 'step' | '3mf' | 'obj' | 'iges' | 'f3d' | 'f3z' | 'stp' | 'igs';
   description?: string;
   primary?: boolean;
   variant?: string;
@@ -48,7 +34,7 @@ export interface ModelFile {
 
 export interface ModelImage {
   filename: string;
-  type: "render" | "photo" | "diagram" | "screenshot";
+  type: 'render' | 'photo' | 'diagram' | 'screenshot';
   description?: string;
   primary?: boolean;
 }
@@ -62,9 +48,9 @@ export interface PrintSettings {
   infillPattern?: string;
   wallCount?: number;
   supportsRequired?: boolean;
-  supportType?: "normal" | "tree" | "organic" | "none";
+  supportType?: 'normal' | 'tree' | 'organic' | 'none';
   orientation?: string;
-  bedAdhesion?: "none" | "brim" | "raft" | "skirt";
+  bedAdhesion?: 'none' | 'brim' | 'raft' | 'skirt';
   estimatedTimeHours?: number;
   estimatedFilamentGrams?: number;
   nozzleSize?: number;
@@ -82,7 +68,7 @@ export interface HardwareItem {
 }
 
 export interface AssemblyInstructions {
-  difficulty?: "easy" | "moderate" | "advanced";
+  difficulty?: 'easy' | 'moderate' | 'advanced';
   estimatedTimeMinutes?: number;
   toolsRequired?: string[];
   steps?: string[];
@@ -104,19 +90,9 @@ export interface ModelMetadata {
   }>;
 }
 
-export type ModelStatus =
-  | "draft"
-  | "pending"
-  | "approved"
-  | "rejected"
-  | "flagged"
-  | "archived";
+export type ModelStatus = 'draft' | 'pending' | 'approved' | 'rejected' | 'flagged' | 'archived';
 
-export type ExternalPlatform =
-  | "makerworld"
-  | "printables"
-  | "thingiverse"
-  | "cults3d";
+export type ExternalPlatform = 'makerworld' | 'printables' | 'thingiverse' | 'cults3d';
 
 export interface ExternalPlatformInfo {
   id: ExternalPlatform;
@@ -131,82 +107,79 @@ export interface ExternalPlatformInfo {
  */
 export const ECU_VENDORS = [
   // Major standalone ECU manufacturers
-  "Haltech",
-  "ECUMaster",
-  "Link ECU",
-  "AEM",
-  "MoTeC",
-  "Fueltech",
-  "MaxxECU",
-  "Emtron",
-  "Syvecs",
-  "Adaptronic",
-  "VEMS",
-  "ME221",
-  "Megasquirt",
-  "Speeduino",
-  "rusEFI",
-  "Holley",
-  "FAST",
-  "Big Stuff 3",
-  "EcuTek",
-  "COBB",
-  "Hondata",
-  "KTuner",
-  "Neptune",
-  "Apexi",
-  "GReddy",
-  "HKS",
-  "Autronic",
-  "DTA",
-  "Pectel",
-  "Life Racing",
-  "Pi Research",
-  "Bosch Motorsport",
-  "Cosworth",
+  'Haltech',
+  'ECUMaster',
+  'Link ECU',
+  'AEM',
+  'MoTeC',
+  'Fueltech',
+  'MaxxECU',
+  'Emtron',
+  'Syvecs',
+  'Adaptronic',
+  'VEMS',
+  'ME221',
+  'Megasquirt',
+  'Speeduino',
+  'rusEFI',
+  'Holley',
+  'FAST',
+  'Big Stuff 3',
+  'EcuTek',
+  'COBB',
+  'Hondata',
+  'KTuner',
+  'Neptune',
+  'Apexi',
+  'GReddy',
+  'HKS',
+  'Autronic',
+  'DTA',
+  'Pectel',
+  'Life Racing',
+  'Pi Research',
+  'Bosch Motorsport',
+  'Cosworth',
   // Data loggers and displays
-  "AiM",
-  "RaceCapture",
-  "RacePak",
-  "Stack",
-  "Zeitronix",
+  'AiM',
+  'RaceCapture',
+  'RacePak',
+  'Stack',
+  'Zeitronix',
   // Wideband controllers
-  "Innovate",
-  "PLX",
-  "14point7",
+  'Innovate',
+  'PLX',
+  '14point7',
   // Generic/Universal
-  "Universal",
-  "Other",
+  'Universal',
+  'Other',
 ] as const;
 
 export type EcuVendor = (typeof ECU_VENDORS)[number];
 
-export const EXTERNAL_PLATFORMS: Record<
-  ExternalPlatform,
-  Omit<ExternalPlatformInfo, "id">
-> = {
+export const EXTERNAL_PLATFORMS: Record<ExternalPlatform, Omit<ExternalPlatformInfo, 'id'>> = {
   makerworld: {
-    name: "MakerWorld",
-    icon: "i-simple-icons-bambulab",
-    color: "#00AE42",
+    name: 'MakerWorld',
+    icon: 'i-simple-icons-bambulab',
+    color: '#00AE42',
     urlPattern: /makerworld\.com\/(?:[a-z]{2}\/)?models?\/(\d+)/i,
   },
   printables: {
-    name: "Printables",
-    icon: "i-simple-icons-printables",
-    color: "#FA6831",
+    name: 'Printables',
+    icon: 'i-simple-icons-printables',
+    color: '#FA6831',
     urlPattern: /printables\.com\/model\/(\d+)/i,
   },
   thingiverse: {
-    name: "Thingiverse",
-    icon: "i-simple-icons-thingiverse",
-    color: "#248BFB",
+    name: 'Thingiverse',
+    icon: 'i-simple-icons-thingiverse',
+    color: '#248BFB',
     urlPattern: /thingiverse\.com\/thing:(\d+)/i,
   },
   cults3d: {
-    name: "Cults3D",
-    icon: "i-mdi-cube-outline",
-    color: "#000000",
+    name: 'Cults3D',
+    icon: 'i-mdi-cube-outline',
+    color: '#000000',
     urlPattern: /cults3d\.com\/[a-z]{2}\/3d-model\/([\w-]+)/i,
   },
 };
@@ -260,11 +233,7 @@ export interface UserModel {
 export interface UserModelDetail
   extends Omit<
     UserModel,
-    | "fileFormats"
-    | "primaryImage"
-    | "primaryImageThumbnail"
-    | "recommendedMaterial"
-    | "estimatedTimeHours"
+    'fileFormats' | 'primaryImage' | 'primaryImageThumbnail' | 'recommendedMaterial' | 'estimatedTimeHours'
   > {
   compatibility: ModelCompatibility | null;
   files: UserModelFile[];
@@ -303,7 +272,7 @@ export interface UserModelFile {
 export interface UserModelImage {
   id: string;
   filename: string;
-  type: "render" | "photo" | "diagram" | "screenshot";
+  type: 'render' | 'photo' | 'diagram' | 'screenshot';
   url: string;
   thumbnailUrl: string | null;
   isPrimary: boolean;
@@ -342,7 +311,7 @@ export interface PendingFileUpload {
   variant?: string;
   isPrimary: boolean;
   progress: number;
-  status: "pending" | "uploading" | "complete" | "error";
+  status: 'pending' | 'uploading' | 'complete' | 'error';
   error?: string;
 }
 
@@ -353,14 +322,14 @@ export interface PendingImageUpload {
   id: string;
   file: File;
   filename: string;
-  type: "render" | "photo" | "diagram" | "screenshot";
+  type: 'render' | 'photo' | 'diagram' | 'screenshot';
   description?: string;
   previewUrl: string;
   sizeBytes: number;
   isPrimary: boolean;
   sortOrder: number;
   progress: number;
-  status: "pending" | "uploading" | "complete" | "error";
+  status: 'pending' | 'uploading' | 'complete' | 'error';
   error?: string;
 }
 
@@ -386,7 +355,7 @@ export interface Model {
  */
 export interface ModelDetail {
   openecualliance: string;
-  type: "model";
+  type: 'model';
   id: string;
   name: string;
   version: string;

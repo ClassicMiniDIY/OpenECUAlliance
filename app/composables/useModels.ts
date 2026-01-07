@@ -1,4 +1,4 @@
-import type { UserModel, ModelCategory } from "~/types/model";
+import type { UserModel, ModelCategory } from '~/types/model';
 
 export function useModels() {
   const {
@@ -6,21 +6,19 @@ export function useModels() {
     status,
     refresh,
     error,
-  } = useFetch<UserModel[]>("/api/models", {
-    key: "models-list",
+  } = useFetch<UserModel[]>('/api/models', {
+    key: 'models-list',
     default: () => [],
     getCachedData(key, nuxtApp) {
       return nuxtApp.payload.data[key] ?? nuxtApp.static.data[key];
     },
   });
 
-  const loading = computed(() => status.value === "pending");
+  const loading = computed(() => status.value === 'pending');
 
   const vendors = computed(() => {
     const vendorSet = new Set(
-      (models.value ?? [])
-        .map((m) => m.vendor)
-        .filter((v): v is string => v !== null && v !== undefined),
+      (models.value ?? []).map((m) => m.vendor).filter((v): v is string => v !== null && v !== undefined)
     );
     return Array.from(vendorSet).sort();
   });
@@ -31,18 +29,11 @@ export function useModels() {
   });
 
   const materials = computed(() => {
-    const materialSet = new Set(
-      (models.value ?? []).map((m) => m.recommendedMaterial),
-    );
+    const materialSet = new Set((models.value ?? []).map((m) => m.recommendedMaterial));
     return Array.from(materialSet).sort();
   });
 
-  function filterModels(options: {
-    search?: string;
-    vendor?: string;
-    category?: ModelCategory;
-    material?: string;
-  }) {
+  function filterModels(options: { search?: string; vendor?: string; category?: ModelCategory; material?: string }) {
     return (models.value ?? []).filter((model) => {
       // Search filter
       if (options.search) {
@@ -76,24 +67,24 @@ export function useModels() {
 
   function getCategoryLabel(category: ModelCategory): string {
     const labels: Record<ModelCategory, string> = {
-      mounts: "Mounts",
-      enclosures: "Enclosures",
-      brackets: "Brackets",
-      adapters: "Adapters",
-      accessories: "Accessories",
+      mounts: 'Mounts',
+      enclosures: 'Enclosures',
+      brackets: 'Brackets',
+      adapters: 'Adapters',
+      accessories: 'Accessories',
     };
     return labels[category] || category;
   }
 
   function getCategoryIcon(category: ModelCategory): string {
     const icons: Record<ModelCategory, string> = {
-      mounts: "i-heroicons-cube",
-      enclosures: "i-heroicons-inbox",
-      brackets: "i-heroicons-wrench",
-      adapters: "i-heroicons-link",
-      accessories: "i-heroicons-cog-6-tooth",
+      mounts: 'i-heroicons-cube',
+      enclosures: 'i-heroicons-inbox',
+      brackets: 'i-heroicons-wrench',
+      adapters: 'i-heroicons-link',
+      accessories: 'i-heroicons-cog-6-tooth',
     };
-    return icons[category] || "i-heroicons-cube";
+    return icons[category] || 'i-heroicons-cube';
   }
 
   return {

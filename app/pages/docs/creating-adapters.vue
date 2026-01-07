@@ -1,19 +1,19 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: "Creating Adapters - OpenECU Alliance",
-  description: "Step-by-step guide to creating your own ECU adapter.",
-});
+  useSeoMeta({
+    title: 'Creating Adapters - OpenECU Alliance',
+    description: 'Step-by-step guide to creating your own ECU adapter.',
+  });
 
-// Code examples for syntax highlighting
-const codeExamples = {
-  step1: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
+  // Code examples for syntax highlighting
+  const codeExamples = {
+    step1: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
 cd OECUASpecs`,
 
-  step2: `mkdir -p adapters/vendorname`,
+    step2: `mkdir -p adapters/vendorname`,
 
-  step3: `touch adapters/vendorname/vendorname-format.adapter.yaml`,
+    step3: `touch adapters/vendorname/vendorname-format.adapter.yaml`,
 
-  step4: `openecualliance: "1.0"
+    step4: `openecualliance: "1.0"
 id: vendorname-format
 name: "Vendor Name Format Description"
 version: "1.0.0"
@@ -63,18 +63,18 @@ metadata:
       changes:
         - "Initial release"`,
 
-  step5: `# Install validation tool (one-time)
+    step5: `# Install validation tool (one-time)
 npm install -g ajv-cli
 
 # Validate
 ajv validate -s schema/adapter.schema.json -d adapters/vendorname/vendorname-format.adapter.yaml`,
 
-  step6: `git checkout -b add-vendorname-adapter
+    step6: `git checkout -b add-vendorname-adapter
 git add adapters/vendorname/
 git commit -m "Add adapter for VendorName Format"
 git push origin add-vendorname-adapter`,
 
-  sourceNames: `# Before
+    sourceNames: `# Before
 source_names:
   - "Engine RPM"
 
@@ -82,17 +82,14 @@ source_names:
 source_names:
   - "Engine RPM"
   - "Eng RPM"  # Found in firmware v2.3 exports`,
-};
+  };
 </script>
 
 <template>
   <div class="py-8 px-4">
     <UContainer class="max-w-4xl">
       <div class="mb-2">
-        <NuxtLink
-          to="/docs"
-          class="text-sm text-muted hover:text-primary inline-flex items-center gap-1"
-        >
+        <NuxtLink to="/docs" class="text-sm text-muted hover:text-primary inline-flex items-center gap-1">
           <UIcon name="i-heroicons-arrow-left" class="size-4" />
           Back to Docs
         </NuxtLink>
@@ -100,9 +97,7 @@ source_names:
 
       <div class="mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">Creating Adapters</h1>
-        <p class="text-lg text-muted">
-          Step-by-step guide to creating your own ECU adapter.
-        </p>
+        <p class="text-lg text-muted">Step-by-step guide to creating your own ECU adapter.</p>
       </div>
 
       <!-- Before You Start -->
@@ -111,36 +106,20 @@ source_names:
         <UCard>
           <ul class="space-y-3">
             <li class="flex items-start gap-3">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
               <div>
-                <strong>Check existing adapters</strong> - Ensure an adapter
-                doesn't already exist for your format.
+                <strong>Check existing adapters</strong> - Ensure an adapter doesn't already exist for your format.
               </div>
             </li>
             <li class="flex items-start gap-3">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
-              <div>
-                <strong>Gather sample files</strong> - You'll need real log
-                files to test against.
-              </div>
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
+              <div><strong>Gather sample files</strong> - You'll need real log files to test against.</div>
             </li>
             <li class="flex items-start gap-3">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="size-5 text-success shrink-0 mt-0.5"
-              />
+              <UIcon name="i-heroicons-check-circle" class="size-5 text-success shrink-0 mt-0.5" />
               <div>
-                <strong>Read the specification</strong> - Familiarize yourself
-                with the
-                <NuxtLink to="/spec" class="text-primary hover:underline"
-                  >full specification</NuxtLink
-                >.
+                <strong>Read the specification</strong> - Familiarize yourself with the
+                <NuxtLink to="/spec" class="text-primary hover:underline">full specification</NuxtLink>.
               </div>
             </li>
           </ul>
@@ -180,10 +159,8 @@ source_names:
             <CodeBlock lang="bash" :code="codeExamples.step2" />
             <p class="text-sm text-muted mt-3">
               Use lowercase vendor names:
-              <code class="bg-muted px-1 rounded">haltech</code>,
-              <code class="bg-muted px-1 rounded">link</code>,
-              <code class="bg-muted px-1 rounded">motec</code>,
-              <code class="bg-muted px-1 rounded">aem</code>, etc.
+              <code class="bg-muted px-1 rounded">haltech</code>, <code class="bg-muted px-1 rounded">link</code>,
+              <code class="bg-muted px-1 rounded">motec</code>, <code class="bg-muted px-1 rounded">aem</code>, etc.
             </p>
           </UCard>
         </div>
@@ -202,14 +179,11 @@ source_names:
             <CodeBlock lang="bash" :code="codeExamples.step3" />
             <p class="text-sm text-muted mt-3">
               Naming convention:
-              <code class="bg-muted px-1 rounded"
-                >{vendor}-{format}.adapter.yaml</code
-              >
+              <code class="bg-muted px-1 rounded">{vendor}-{format}.adapter.yaml</code>
             </p>
             <div class="mt-2 text-sm text-muted">
               Examples:
-              <code class="bg-muted px-1 rounded">haltech-nsp.adapter.yaml</code
-              >,
+              <code class="bg-muted px-1 rounded">haltech-nsp.adapter.yaml</code>,
               <code class="bg-muted px-1 rounded">motec-csv.adapter.yaml</code>
             </div>
           </UCard>
@@ -257,9 +231,7 @@ source_names:
           </div>
           <UCard>
             <CodeBlock lang="bash" :code="codeExamples.step6" />
-            <p class="text-sm text-muted mt-3">
-              Then create a Pull Request on GitHub.
-            </p>
+            <p class="text-sm text-muted mt-3">Then create a Pull Request on GitHub.</p>
           </UCard>
         </div>
       </section>
@@ -280,13 +252,11 @@ source_names:
             </li>
             <li class="flex items-center gap-2">
               <UIcon name="i-heroicons-check" class="size-4 text-success" />
-              <code class="bg-muted px-1 rounded">id</code> follows naming
-              convention (vendor-format)
+              <code class="bg-muted px-1 rounded">id</code> follows naming convention (vendor-format)
             </li>
             <li class="flex items-center gap-2">
               <UIcon name="i-heroicons-check" class="size-4 text-success" />
-              <code class="bg-muted px-1 rounded">version</code> follows semver
-              (start with 1.0.0)
+              <code class="bg-muted px-1 rounded">version</code> follows semver (start with 1.0.0)
             </li>
             <li class="flex items-center gap-2">
               <UIcon name="i-heroicons-check" class="size-4 text-success" />
@@ -312,25 +282,17 @@ source_names:
 
       <!-- Adding Source Names -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">
-          Adding Source Names to Existing Adapters
-        </h2>
+        <h2 class="text-2xl font-bold mb-4">Adding Source Names to Existing Adapters</h2>
         <UCard>
-          <p class="text-muted mb-4">
-            If you discover additional channel name variations in log files:
-          </p>
-          <ol
-            class="list-decimal list-inside space-y-2 text-sm text-muted mb-4"
-          >
+          <p class="text-muted mb-4">If you discover additional channel name variations in log files:</p>
+          <ol class="list-decimal list-inside space-y-2 text-sm text-muted mb-4">
             <li>Find the channel in the existing adapter</li>
             <li>
               Add the new name to
               <code class="bg-muted px-1 rounded">source_names</code> array
             </li>
             <li>Increment the PATCH version</li>
-            <li>
-              Submit PR with explanation of where you found this variation
-            </li>
+            <li>Submit PR with explanation of where you found this variation</li>
           </ol>
           <CodeBlock lang="yaml" :code="codeExamples.sourceNames" />
         </UCard>
@@ -346,13 +308,7 @@ source_names:
         >
           View on GitHub
         </UButton>
-        <UButton
-          to="/spec"
-          color="neutral"
-          variant="outline"
-          icon="i-heroicons-document-text"
-          size="lg"
-        >
+        <UButton to="/spec" color="neutral" variant="outline" icon="i-heroicons-document-text" size="lg">
           Read the Full Spec
         </UButton>
       </div>

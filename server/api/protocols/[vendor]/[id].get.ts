@@ -1,9 +1,9 @@
-import { parse } from "yaml";
-import { fetchGitHubFile, getAssetUrl } from "../../../utils/github";
+import { parse } from 'yaml';
+import { fetchGitHubFile, getAssetUrl } from '../../../utils/github';
 
 interface ProtocolYaml {
   openecualliance: string;
-  type: "protocol";
+  type: 'protocol';
   id: string;
   name: string;
   version: string;
@@ -18,7 +18,7 @@ interface ProtocolYaml {
     color_secondary?: string;
   };
   protocol: {
-    type: "can" | "canfd" | "lin" | "k-line";
+    type: 'can' | 'canfd' | 'lin' | 'k-line';
     baudrate: number;
     extended_id?: boolean;
     data_baudrate?: number;
@@ -42,8 +42,8 @@ interface ProtocolYaml {
       description?: string;
       start_bit: number;
       length: number;
-      byte_order: "little_endian" | "big_endian";
-      data_type: "unsigned" | "signed" | "float" | "double";
+      byte_order: 'little_endian' | 'big_endian';
+      data_type: 'unsigned' | 'signed' | 'float' | 'double';
       scale?: number;
       offset?: number;
       unit?: string;
@@ -75,13 +75,13 @@ interface ProtocolYaml {
 
 export default defineCachedEventHandler(
   async (event) => {
-    const vendor = getRouterParam(event, "vendor");
-    const id = getRouterParam(event, "id");
+    const vendor = getRouterParam(event, 'vendor');
+    const id = getRouterParam(event, 'id');
 
     if (!vendor || !id) {
       throw createError({
         statusCode: 400,
-        message: "Missing vendor or id parameter",
+        message: 'Missing vendor or id parameter',
       });
     }
 
@@ -102,15 +102,9 @@ export default defineCachedEventHandler(
         website: yaml.website,
         branding: yaml.branding
           ? {
-              logo: yaml.branding.logo
-                ? getAssetUrl("logos", yaml.branding.logo)
-                : undefined,
-              icon: yaml.branding.icon
-                ? getAssetUrl("icons", yaml.branding.icon)
-                : undefined,
-              banner: yaml.branding.banner
-                ? getAssetUrl("banners", yaml.branding.banner)
-                : undefined,
+              logo: yaml.branding.logo ? getAssetUrl('logos', yaml.branding.logo) : undefined,
+              icon: yaml.branding.icon ? getAssetUrl('icons', yaml.branding.icon) : undefined,
+              banner: yaml.branding.banner ? getAssetUrl('banners', yaml.branding.banner) : undefined,
               colorPrimary: yaml.branding.color_primary,
               colorSecondary: yaml.branding.color_secondary,
             }
@@ -175,11 +169,11 @@ export default defineCachedEventHandler(
   },
   {
     maxAge: 60 * 5,
-    name: "protocol-detail",
+    name: 'protocol-detail',
     getKey: (event) => {
-      const vendor = getRouterParam(event, "vendor");
-      const id = getRouterParam(event, "id");
+      const vendor = getRouterParam(event, 'vendor');
+      const id = getRouterParam(event, 'id');
       return `${vendor}/${id}`;
     },
-  },
+  }
 );

@@ -1,29 +1,23 @@
-import type {
-  Profile,
-  CurrentUser,
-  AuthProvider,
-  ProfileUpdateData,
-} from "~/types/user";
+import type { Profile, CurrentUser, AuthProvider, ProfileUpdateData } from '~/types/user';
 
 export function useAuth() {
   const supabase = useSupabaseClient();
   const user = useSupabaseUser();
 
   // Profile state
-  const profile = useState<Profile | null>("user-profile", () => null);
-  const profileLoading = useState<boolean>("profile-loading", () => false);
-  const profileError = useState<string | null>("profile-error", () => null);
+  const profile = useState<Profile | null>('user-profile', () => null);
+  const profileLoading = useState<boolean>('profile-loading', () => false);
+  const profileError = useState<string | null>('profile-error', () => null);
 
   // Current user computed
   const currentUser = computed<CurrentUser | null>(() => {
     if (!user.value) return null;
     return {
       id: user.value.id,
-      email: user.value.email ?? "",
+      email: user.value.email ?? '',
       profile: profile.value,
-      isAdmin: profile.value?.role === "admin",
-      isModerator:
-        profile.value?.role === "moderator" || profile.value?.role === "admin",
+      isAdmin: profile.value?.role === 'admin',
+      isModerator: profile.value?.role === 'moderator' || profile.value?.role === 'admin',
     };
   });
 
@@ -50,15 +44,11 @@ export function useAuth() {
         return null;
       }
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", authUser.id)
-        .single();
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', authUser.id).single();
 
       if (error) {
         // Profile might not exist yet for new users
-        if (error.code === "PGRST116") {
+        if (error.code === 'PGRST116') {
           profile.value = null;
           return null;
         }
@@ -68,8 +58,7 @@ export function useAuth() {
       profile.value = data;
       return data;
     } catch (err) {
-      profileError.value =
-        err instanceof Error ? err.message : "Failed to fetch profile";
+      profileError.value = err instanceof Error ? err.message : 'Failed to fetch profile';
       return null;
     } finally {
       profileLoading.value = false;
@@ -79,7 +68,7 @@ export function useAuth() {
   /**
    * Sign in with OAuth provider (Google or Apple)
    */
-  async function signInWithOAuth(provider: "google" | "apple") {
+  async function signInWithOAuth(provider: 'google' | 'apple') {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
@@ -119,7 +108,7 @@ export function useAuth() {
     }
 
     profile.value = null;
-    await navigateTo("/");
+    await navigateTo('/');
   }
 
   /**
@@ -133,7 +122,7 @@ export function useAuth() {
     } = await supabase.auth.getUser();
 
     if (authError || !authUser) {
-      throw new Error("Not authenticated. Please log in again.");
+      throw new Error('Not authenticated. Please log in again.');
     }
 
     const userId = authUser.id;
@@ -144,21 +133,18 @@ export function useAuth() {
 
     // Convert camelCase to snake_case for database
     if (data.username !== undefined) updateData.username = data.username;
-    if (data.displayName !== undefined)
-      updateData.display_name = data.displayName;
+    if (data.displayName !== undefined) updateData.display_name = data.displayName;
     if (data.avatarUrl !== undefined) updateData.avatar_url = data.avatarUrl;
     if (data.bio !== undefined) updateData.bio = data.bio;
     if (data.website !== undefined) updateData.website = data.website;
     if (data.location !== undefined) updateData.location = data.location;
-    if (data.githubUsername !== undefined)
-      updateData.github_username = data.githubUsername;
-    if (data.emailNotifications !== undefined)
-      updateData.email_notifications = data.emailNotifications;
+    if (data.githubUsername !== undefined) updateData.github_username = data.githubUsername;
+    if (data.emailNotifications !== undefined) updateData.email_notifications = data.emailNotifications;
 
     const { data: updated, error } = await supabase
-      .from("profiles")
+      .from('profiles')
       .update(updateData)
-      .eq("id", userId)
+      .eq('id', userId)
       .select()
       .single();
 
@@ -174,7 +160,7 @@ export function useAuth() {
    * Create a profile for a new user
    */
   async function createProfile(username: string, displayName?: string) {
-    console.log("useSupabaseUser value:", user.value);
+    console.log('useSupabaseUser value:', user.value);
 
     // Get user directly from Supabase auth to ensure we have the ID
     const {
@@ -182,22 +168,22 @@ export function useAuth() {
       error: authError,
     } = await supabase.auth.getUser();
 
-    console.log("supabase.auth.getUser result:", { authUser, authError });
+    console.log('supabase.auth.getUser result:', { authUser, authError });
 
     if (authError || !authUser) {
-      throw new Error("Not authenticated. Please log in again.");
+      throw new Error('Not authenticated. Please log in again.');
     }
 
     const userId = authUser.id;
 
-    console.log("createProfile called with:", {
+    console.log('createProfile called with:', {
       userId,
       username,
       displayName,
     });
 
     const { data, error } = await supabase
-      .from("profiles")
+      .from('profiles')
       .insert({
         id: userId,
         username,
@@ -207,19 +193,19 @@ export function useAuth() {
       .single();
 
     if (error) {
-      console.error("Supabase error creating profile:", {
+      console.error('Supabase error creating profile:', {
         code: error.code,
         message: error.message,
         details: error.details,
         hint: error.hint,
       });
-      if (error.code === "23505") {
-        throw new Error("Username is already taken");
+      if (error.code === '23505') {
+        throw new Error('Username is already taken');
       }
       throw new Error(error.message);
     }
 
-    console.log("Profile created:", data);
+    console.log('Profile created:', data);
     profile.value = data;
     return data;
   }
@@ -229,9 +215,9 @@ export function useAuth() {
    */
   async function checkUsernameAvailable(username: string): Promise<boolean> {
     const { count, error } = await supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("username", username.toLowerCase());
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+      .eq('username', username.toLowerCase());
 
     if (error) {
       throw new Error(error.message);
@@ -251,22 +237,20 @@ export function useAuth() {
     } = await supabase.auth.getUser();
 
     if (authError || !authUser) {
-      throw new Error("Not authenticated. Please log in again.");
+      throw new Error('Not authenticated. Please log in again.');
     }
 
     const userId = authUser.id;
-    const fileExt = file.name.split(".").pop();
+    const fileExt = file.name.split('.').pop();
     const fileName = `${userId}/avatar.${fileExt}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file, { upsert: true });
+    const { error: uploadError } = await supabase.storage.from('avatars').upload(fileName, file, { upsert: true });
 
     if (uploadError) {
       throw new Error(uploadError.message);
     }
 
-    const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
+    const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
 
     // Update profile with new avatar URL
     await updateProfile({ avatarUrl: data.publicUrl });
@@ -284,7 +268,7 @@ export function useAuth() {
         profile.value = null;
       }
     },
-    { immediate: true },
+    { immediate: true }
   );
 
   return {
