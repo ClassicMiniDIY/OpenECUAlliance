@@ -126,6 +126,61 @@ export interface ExternalPlatformInfo {
   urlPattern: RegExp;
 }
 
+/**
+ * Comprehensive list of ECU vendors/brands for normalized selection
+ */
+export const ECU_VENDORS = [
+  // Major standalone ECU manufacturers
+  "Haltech",
+  "ECUMaster",
+  "Link ECU",
+  "AEM",
+  "MoTeC",
+  "Fueltech",
+  "MaxxECU",
+  "Emtron",
+  "Syvecs",
+  "Adaptronic",
+  "VEMS",
+  "ME221",
+  "Megasquirt",
+  "Speeduino",
+  "rusEFI",
+  "Holley",
+  "FAST",
+  "Big Stuff 3",
+  "EcuTek",
+  "COBB",
+  "Hondata",
+  "KTuner",
+  "Neptune",
+  "Apexi",
+  "GReddy",
+  "HKS",
+  "Autronic",
+  "DTA",
+  "Pectel",
+  "Life Racing",
+  "Pi Research",
+  "Bosch Motorsport",
+  "Cosworth",
+  // Data loggers and displays
+  "AiM",
+  "RaceCapture",
+  "RacePak",
+  "Stack",
+  "Zeitronix",
+  // Wideband controllers
+  "Innovate",
+  "PLX",
+  "14point7",
+  // Generic/Universal
+  "Universal",
+  "Other",
+] as const;
+
+export type EcuVendor = (typeof ECU_VENDORS)[number];
+
 export const EXTERNAL_PLATFORMS: Record<
   ExternalPlatform,
   Omit<ExternalPlatformInfo, "id">

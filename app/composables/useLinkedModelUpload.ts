@@ -2,6 +2,7 @@ import type {
   ModelCategory,
   ModelCompatibility,
   ExternalPlatform,
+  EcuVendor,
 } from "~/types/model";
 
 export interface FetchedPrintSettings {
@@ -47,7 +48,7 @@ export function useLinkedModelUpload() {
 
   // Step 2: ECU-specific fields
   const category = ref<ModelCategory>("mounts");
-  const vendor = ref("");
+  const vendor = ref<EcuVendor | "">("");
   const compatibility = ref<ModelCompatibility>({});
 
   // Computed

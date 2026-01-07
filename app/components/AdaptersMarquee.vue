@@ -143,6 +143,9 @@ onMounted(() => {
       </div>
     </div>
 
+    <!-- Dark overlay for text legibility -->
+    <div class="absolute inset-0 z-5 dark-overlay" />
+
     <!-- Gradient overlays -->
     <!-- Left fade -->
     <div
@@ -162,6 +165,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.dark-overlay {
+  background-color: rgba(47, 47, 47, 0.6);
+}
+
 .text-protection {
   background: radial-gradient(
     ellipse 70% 60% at 50% 55%,

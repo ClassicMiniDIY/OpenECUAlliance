@@ -7,6 +7,7 @@ import type {
   ModelCompatibility,
   PendingFileUpload,
   PendingImageUpload,
+  EcuVendor,
 } from "~/types/model";
 
 const ALLOWED_FILE_FORMATS = [
@@ -44,7 +45,7 @@ export function useModelUpload() {
   const name = ref("");
   const description = ref("");
   const category = ref<ModelCategory>("mounts");
-  const vendor = ref("");
+  const vendor = ref<EcuVendor | "">("");
   const license = ref("CC-BY-SA-4.0");
   const sourceUrl = ref("");
   const remixOf = ref("");

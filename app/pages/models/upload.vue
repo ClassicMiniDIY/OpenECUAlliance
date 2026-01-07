@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ModelCategory } from "~/types/model";
+import { ECU_VENDORS } from "~/types/model";
 
 definePageMeta({
   layout: "default",
@@ -386,14 +387,17 @@ async function handleLinkedSubmit(result: {
             </UFormField>
 
             <UFormField label="Vendor/Brand">
-              <UInput
+              <USelectMenu
                 v-model="vendor"
-                placeholder="e.g., Haltech, ECUMaster, Link"
+                :items="[...ECU_VENDORS]"
+                placeholder="Select vendor..."
+                searchable
+                searchable-placeholder="Search vendors..."
               />
               <template #description>
                 <span class="text-xs"
-                  >The ECU or part manufacturer this model is designed
-                  for.</span
+                  >The ECU or part manufacturer this model is designed for.
+                  Select "Other" if not listed.</span
                 >
               </template>
             </UFormField>
