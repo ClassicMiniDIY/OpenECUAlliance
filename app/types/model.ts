@@ -112,6 +112,50 @@ export type ModelStatus =
   | "flagged"
   | "archived";
 
+export type ExternalPlatform =
+  | "makerworld"
+  | "printables"
+  | "thingiverse"
+  | "cults3d";
+
+export interface ExternalPlatformInfo {
+  id: ExternalPlatform;
+  name: string;
+  icon: string;
+  color: string;
+  urlPattern: RegExp;
+}
+
+export const EXTERNAL_PLATFORMS: Record<
+  ExternalPlatform,
+  Omit<ExternalPlatformInfo, "id">
+> = {
+  makerworld: {
+    name: "MakerWorld",
+    icon: "i-simple-icons-bambulab",
+    color: "#00AE42",
+    urlPattern: /makerworld\.com\/(?:[a-z]{2}\/)?models?\/(\d+)/i,
+  },
+  printables: {
+    name: "Printables",
+    icon: "i-simple-icons-printables",
+    color: "#FA6831",
+    urlPattern: /printables\.com\/model\/(\d+)/i,
+  },
+  thingiverse: {
+    name: "Thingiverse",
+    icon: "i-simple-icons-thingiverse",
+    color: "#248BFB",
+    urlPattern: /thingiverse\.com\/thing:(\d+)/i,
+  },
+  cults3d: {
+    name: "Cults3D",
+    icon: "i-mdi-cube-outline",
+    color: "#000000",
+    urlPattern: /cults3d\.com\/[a-z]{2}\/3d-model\/([\w-]+)/i,
+  },
+};
+
 /**
  * Author info for user-submitted models
  */
@@ -150,6 +194,9 @@ export interface UserModel {
   featured: boolean;
   createdAt: string;
   publishedAt: string | null;
+  isLinked: boolean;
+  externalPlatform: ExternalPlatform | null;
+  externalUrl: string | null;
 }
 
 /**
@@ -176,6 +223,10 @@ export interface UserModelDetail
   commercialUseAllowed: boolean;
   isLikedByUser?: boolean;
   userRating?: number | null;
+  externalId: string | null;
+  externalAuthorName: string | null;
+  externalAuthorUrl: string | null;
+  lastSyncedAt: string | null;
 }
 
 /**

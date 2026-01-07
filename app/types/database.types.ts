@@ -106,6 +106,13 @@ export type Database = {
           created_at: string;
           updated_at: string;
           published_at: string | null;
+          is_linked: boolean;
+          external_platform: string | null;
+          external_url: string | null;
+          external_id: string | null;
+          external_author_name: string | null;
+          external_author_url: string | null;
+          last_synced_at: string | null;
         };
         Insert: {
           id?: string;
@@ -145,6 +152,13 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           published_at?: string | null;
+          is_linked?: boolean;
+          external_platform?: string | null;
+          external_url?: string | null;
+          external_id?: string | null;
+          external_author_name?: string | null;
+          external_author_url?: string | null;
+          last_synced_at?: string | null;
         };
         Update: {
           slug?: string;
@@ -182,6 +196,13 @@ export type Database = {
           featured_at?: string | null;
           updated_at?: string;
           published_at?: string | null;
+          is_linked?: boolean;
+          external_platform?: string | null;
+          external_url?: string | null;
+          external_id?: string | null;
+          external_author_name?: string | null;
+          external_author_url?: string | null;
+          last_synced_at?: string | null;
         };
       };
       model_files: {
@@ -529,6 +550,11 @@ export type Database = {
         | "duplicate"
         | "other";
       report_status: "pending" | "reviewed" | "resolved" | "dismissed";
+      external_platform:
+        | "makerworld"
+        | "printables"
+        | "thingiverse"
+        | "cults3d";
     };
   };
 };

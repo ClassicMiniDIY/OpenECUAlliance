@@ -16,15 +16,17 @@
     "@nuxt/fonts": "^0.12.1",
     "@nuxt/icon": "^2.2.0",
     "@nuxt/ui": "^4.3.0",
-    "@nuxtjs/sitemap": "^7.5.1",
+    "@nuxtjs/sitemap": "^7.5.2",
     "@nuxtjs/supabase": "^2.0.3",
     "nuxt": "^4.2.2",
-    "shiki": "^3.20.0",
+    "shiki": "^3.21.0",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4",
-    "yaml": "^2.8.2"
+    "yaml": "^2.8.2",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@iconify-json/mdi": "^1.2.3",
     "@types/node": "^25.0.3"
   }
 }

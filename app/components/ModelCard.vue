@@ -81,6 +81,13 @@ const modelUrl = computed(
         >
           Featured
         </UBadge>
+        <!-- Linked model badge -->
+        <LinkedModelBadge
+          v-if="model.isLinked && model.externalPlatform"
+          :platform="model.externalPlatform"
+          size="sm"
+          class="absolute bottom-2 left-2"
+        />
       </div>
 
       <!-- Header -->

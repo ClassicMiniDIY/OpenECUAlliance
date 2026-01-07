@@ -22,3 +22,7 @@ logs
 .env
 .env.*
 !.env.example
+
+# Supabase local development
+supabase/.branches
+supabase/.temp

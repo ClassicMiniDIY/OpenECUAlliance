@@ -376,10 +376,7 @@ const compatibleApps = [
         <div v-else-if="totalFiltered > 0" class="space-y-8">
           <!-- Adapters Section -->
           <div v-if="filteredAdapters.length > 0">
-            <div
-              v-if="selectedType === 'all'"
-              class="flex items-center gap-2 mb-4"
-            >
+            <div class="flex items-center gap-2 mb-4">
               <UIcon
                 name="i-heroicons-document-text"
                 class="size-5 text-primary"
@@ -388,6 +385,7 @@ const compatibleApps = [
                 Adapters ({{ filteredAdapters.length }})
               </h2>
               <NuxtLink
+                v-if="selectedType === 'all'"
                 to="/adapters"
                 class="ml-auto text-sm text-muted hover:text-primary"
               >
@@ -409,15 +407,13 @@ const compatibleApps = [
 
           <!-- Protocols Section -->
           <div v-if="filteredProtocols.length > 0">
-            <div
-              v-if="selectedType === 'all'"
-              class="flex items-center gap-2 mb-4"
-            >
+            <div class="flex items-center gap-2 mb-4">
               <UIcon name="i-heroicons-signal" class="size-5 text-success" />
               <h2 class="font-semibold">
                 Protocols ({{ filteredProtocols.length }})
               </h2>
               <NuxtLink
+                v-if="selectedType === 'all'"
                 to="/protocols"
                 class="ml-auto text-sm text-muted hover:text-success"
               >
@@ -437,15 +433,13 @@ const compatibleApps = [
 
           <!-- Models Section -->
           <div v-if="filteredModels.length > 0">
-            <div
-              v-if="selectedType === 'all'"
-              class="flex items-center gap-2 mb-4"
-            >
+            <div class="flex items-center gap-2 mb-4">
               <UIcon name="i-heroicons-cube" class="size-5 text-warning" />
               <h2 class="font-semibold">
                 3D Models ({{ filteredModels.length }})
               </h2>
               <NuxtLink
+                v-if="selectedType === 'all'"
                 to="/models"
                 class="ml-auto text-sm text-muted hover:text-warning"
               >

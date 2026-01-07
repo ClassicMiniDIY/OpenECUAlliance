@@ -219,6 +219,9 @@ onMounted(() => {
                 <UBadge color="warning" variant="subtle">
                   Pending Review
                 </UBadge>
+                <UBadge v-if="model.is_linked" color="info" variant="subtle">
+                  Linked Model
+                </UBadge>
               </div>
               <p class="text-muted">
                 Submitted
@@ -465,6 +468,62 @@ onMounted(() => {
               </div>
             </UCard>
 
+            <!-- External Link Info (for linked models) -->
+            <UCard v-if="model.is_linked && model.external_url">
+              <template #header>
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-heroicons-link" class="size-4 text-info" />
+                  <h2 class="font-semibold">External Source</h2>
+                </div>
+              </template>
+
+              <div class="space-y-4">
+                <div>
+                  <p class="text-sm text-muted">Platform</p>
+                  <p class="font-medium capitalize">
+                    {{ model.external_platform }}
+                  </p>
+                </div>
+                <div>
+                  <p class="text-sm text-muted">External URL</p>
+                  <a
+                    :href="model.external_url"
+                    target="_blank"
+                    class="text-primary hover:underline break-all text-sm"
+                  >
+                    {{ model.external_url }}
+                  </a>
+                </div>
+                <div v-if="model.external_author_name">
+                  <p class="text-sm text-muted">Original Author</p>
+                  <a
+                    v-if="model.external_author_url"
+                    :href="model.external_author_url"
+                    target="_blank"
+                    class="text-primary hover:underline"
+                  >
+                    {{ model.external_author_name }}
+                  </a>
+                  <p v-else class="font-medium">
+                    {{ model.external_author_name }}
+                  </p>
+                </div>
+                <UButton
+                  :href="model.external_url"
+                  target="_blank"
+                  variant="outline"
+                  size="sm"
+                  class="w-full"
+                >
+                  <UIcon
+                    name="i-heroicons-arrow-top-right-on-square"
+                    class="size-4 mr-2"
+                  />
+                  Verify on Original Site
+                </UButton>
+              </div>
+            </UCard>
+
             <!-- Author Info -->
             <UCard>
               <template #header>
@@ -567,11 +626,12 @@ onMounted(() => {
               This will publish the model and make it visible to everyone.
             </p>
 
-            <UFormField label="Notes (optional)">
+            <UFormField label="Notes (optional)" class="w-full">
               <UTextarea
                 v-model="approveNotes"
                 placeholder="Add any notes for the author..."
                 :rows="3"
+                class="w-full"
               />
             </UFormField>
 
@@ -613,11 +673,12 @@ onMounted(() => {
               the author.
             </p>
 
-            <UFormField label="Reason" required>
+            <UFormField label="Reason" required class="w-full">
               <UTextarea
                 v-model="rejectReason"
                 placeholder="Explain why the model is being rejected..."
                 :rows="4"
+                class="w-full"
               />
             </UFormField>
 
@@ -662,11 +723,12 @@ onMounted(() => {
               making updates.
             </p>
 
-            <UFormField label="Feedback" required>
+            <UFormField label="Feedback" required class="w-full">
               <UTextarea
                 v-model="changesFeedback"
                 placeholder="Describe the required changes..."
                 :rows="4"
+                class="w-full"
               />
             </UFormField>
 

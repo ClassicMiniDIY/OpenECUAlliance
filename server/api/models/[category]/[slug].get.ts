@@ -56,6 +56,13 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
       featured,
       created_at,
       published_at,
+      is_linked,
+      external_platform,
+      external_url,
+      external_id,
+      external_author_name,
+      external_author_url,
+      last_synced_at,
       profiles:author_id (
         id,
         username,
@@ -270,5 +277,12 @@ export default defineEventHandler(async (event): Promise<UserModelDetail> => {
     publishedAt: model.published_at,
     isLikedByUser,
     userRating,
+    isLinked: (model as any).is_linked || false,
+    externalPlatform: (model as any).external_platform || null,
+    externalUrl: (model as any).external_url || null,
+    externalId: (model as any).external_id || null,
+    externalAuthorName: (model as any).external_author_name || null,
+    externalAuthorUrl: (model as any).external_author_url || null,
+    lastSyncedAt: (model as any).last_synced_at || null,
   };
 });

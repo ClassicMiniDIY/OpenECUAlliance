@@ -11,6 +11,7 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
   const featured = query.featured === "true";
   const authorId = query.author as string | undefined;
   const limit = query.limit ? parseInt(query.limit as string, 10) : undefined;
+  const linked = query.linked as string | undefined;
 
   let dbQuery = supabase
     .from("models")
@@ -48,7 +49,10 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
       model_files (
         format
       ),
-      printing
+      printing,
+      is_linked,
+      external_platform,
+      external_url
     `,
     )
     .eq("is_published", true)
@@ -75,6 +79,12 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
     dbQuery = dbQuery.or(
       `name.ilike.%${search}%,description.ilike.%${search}%,vendor.ilike.%${search}%`,
     );
+  }
+
+  if (linked === "true") {
+    dbQuery = dbQuery.eq("is_linked", true);
+  } else if (linked === "false") {
+    dbQuery = dbQuery.eq("is_linked", false);
   }
 
   // Default ordering
@@ -159,6 +169,9 @@ export default defineEventHandler(async (event): Promise<UserModel[]> => {
       featured: item.featured,
       createdAt: item.created_at,
       publishedAt: item.published_at,
+      isLinked: item.is_linked || false,
+      externalPlatform: item.external_platform || null,
+      externalUrl: item.external_url || null,
     };
   });
 });

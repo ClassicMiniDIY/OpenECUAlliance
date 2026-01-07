@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { UserModelDetail } from "~/types/model";
+import { EXTERNAL_PLATFORMS } from "~/types/model";
 
 const route = useRoute();
 const category = route.params.category as string;
@@ -181,8 +182,59 @@ function formatFileSize(bytes: number): string {
             </div>
           </div>
 
-          <!-- Download Files -->
-          <UCard>
+          <!-- Download Files (or External Link for linked models) -->
+          <UCard v-if="model.isLinked && model.externalUrl">
+            <template #header>
+              <h3 class="font-semibold">Get This Model</h3>
+            </template>
+            <div class="space-y-4">
+              <p class="text-sm text-muted">
+                This model is hosted externally. Click below to view and
+                download on the original platform.
+              </p>
+              <UButton
+                :href="model.externalUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                color="primary"
+                size="lg"
+                block
+              >
+                <LinkedModelBadge
+                  v-if="model.externalPlatform"
+                  :platform="model.externalPlatform"
+                  class="mr-2"
+                />
+                View on
+                {{
+                  model.externalPlatform
+                    ? EXTERNAL_PLATFORMS[model.externalPlatform]?.name
+                    : "Original Site"
+                }}
+                <UIcon
+                  name="i-heroicons-arrow-top-right-on-square"
+                  class="size-4 ml-2"
+                />
+              </UButton>
+              <div
+                v-if="model.externalAuthorName"
+                class="text-xs text-muted text-center"
+              >
+                Originally shared by
+                <a
+                  v-if="model.externalAuthorUrl"
+                  :href="model.externalAuthorUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary hover:underline"
+                >
+                  {{ model.externalAuthorName }}
+                </a>
+                <span v-else>{{ model.externalAuthorName }}</span>
+              </div>
+            </div>
+          </UCard>
+          <UCard v-else>
             <template #header>
               <div class="flex items-center justify-between">
                 <h3 class="font-semibold">Download Files</h3>
@@ -262,6 +314,12 @@ function formatFileSize(bytes: number): string {
                     >
                       Featured
                     </UBadge>
+                    <LinkedModelBadge
+                      v-if="model.isLinked && model.externalPlatform"
+                      :platform="model.externalPlatform"
+                      show-name
+                      class="shrink-0"
+                    />
                   </div>
                   <div class="flex items-center gap-2 text-sm text-muted">
                     <span v-if="model.vendor" class="capitalize">{{
