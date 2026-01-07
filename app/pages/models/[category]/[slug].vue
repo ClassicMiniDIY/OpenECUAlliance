@@ -12,18 +12,23 @@
 
   const { getVendorIcon } = useVendorIcons();
   const { getCategoryLabel, getCategoryIcon } = useModels();
+  const { cleanHtmlTextPreserveBreaks, cleanHtmlText } = useHtmlDecode();
 
   // Check if this is a pending/unpublished model (user's own preview)
   const isPending = computed(() => model.value?.status === 'pending');
   const isUnpublished = computed(() => !model.value?.isPublished);
 
+  // Clean description from HTML entities (common in external platform imports)
+  const cleanedDescription = computed(() => cleanHtmlTextPreserveBreaks(model.value?.description, { stripTags: true }));
+  const cleanedDescriptionSeo = computed(() => cleanHtmlText(model.value?.description, { stripTags: true }));
+
   useSeoMeta({
     title: () => (model.value ? `${model.value.name} - 3D Print - OpenECU Alliance` : '3D Model - OpenECU Alliance'),
     description: () =>
-      model.value?.description || 'Free 3D printable ECU mount or accessory. Download STL, STEP, and 3MF files.',
+      cleanedDescriptionSeo.value || 'Free 3D printable ECU mount or accessory. Download STL, STEP, and 3MF files.',
     ogTitle: () => (model.value ? `${model.value.name} - 3D Printable` : '3D Printable Model'),
     ogDescription: () =>
-      model.value?.description || 'Free 3D printable ECU mount or accessory. Download STL, STEP, and 3MF files.',
+      cleanedDescriptionSeo.value || 'Free 3D printable ECU mount or accessory. Download STL, STEP, and 3MF files.',
     ogType: 'article',
     twitterCard: 'summary_large_image',
   });
@@ -286,7 +291,7 @@
 
           <!-- Description -->
           <p class="text-muted mb-6 whitespace-pre-line">
-            {{ model.description }}
+            {{ cleanedDescription }}
           </p>
 
           <!-- Print Settings -->
@@ -327,7 +332,7 @@
             <div v-if="model.printing.notes" class="mt-4 p-3 bg-warning/10 rounded-lg text-sm">
               <div class="font-medium text-warning mb-1">Print Notes</div>
               <div class="text-muted whitespace-pre-line">
-                {{ model.printing.notes }}
+                {{ cleanHtmlTextPreserveBreaks(model.printing.notes, { stripTags: true }) }}
               </div>
             </div>
           </UCard>
@@ -342,11 +347,11 @@
                 <span class="bg-muted/50 px-2 py-0.5 rounded text-xs font-medium shrink-0"> {{ hw.quantity }}x </span>
                 <div>
                   <span :class="{ 'text-muted': hw.optional }">
-                    {{ hw.item }}
+                    {{ cleanHtmlText(hw.item, { stripTags: true }) }}
                     <span v-if="hw.optional" class="text-xs">(optional)</span>
                   </span>
                   <div v-if="hw.notes" class="text-xs text-muted">
-                    {{ hw.notes }}
+                    {{ cleanHtmlText(hw.notes, { stripTags: true }) }}
                   </div>
                 </div>
               </li>
@@ -365,7 +370,7 @@
             </template>
             <ol class="space-y-2 list-decimal list-inside text-sm">
               <li v-for="(step, i) in model.assembly.steps" :key="i">
-                {{ step }}
+                {{ cleanHtmlText(step, { stripTags: true }) }}
               </li>
             </ol>
             <div v-if="model.assembly.warnings?.length" class="mt-4 p-3 bg-error/10 rounded-lg">
@@ -373,7 +378,7 @@
               <ul class="space-y-1 text-sm text-muted">
                 <li v-for="(warning, i) in model.assembly.warnings" :key="i" class="flex items-start gap-2">
                   <UIcon name="i-heroicons-exclamation-triangle" class="size-4 text-error shrink-0 mt-0.5" />
-                  {{ warning }}
+                  {{ cleanHtmlText(warning, { stripTags: true }) }}
                 </li>
               </ul>
             </div>

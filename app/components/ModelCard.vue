@@ -9,13 +9,21 @@
 
   const { getVendorIcon } = useVendorIcons();
   const { getCategoryLabel, getCategoryIcon } = useModels();
+  const { cleanHtmlText } = useHtmlDecode();
 
   const fallbackIcon = computed(() =>
     props.model.vendor ? getVendorIcon(props.model.vendor) : getCategoryIcon(props.model.category)
   );
 
+  // Clean description from HTML entities (common in external platform imports)
+  const cleanedDescription = computed(
+    () =>
+      cleanHtmlText(props.model.description, { stripTags: true }) ||
+      `3D printable ${getCategoryLabel(props.model.category).toLowerCase()}`
+  );
+
   const accessibleDescription = computed(() => {
-    const desc = props.model.description || `3D model for ${props.model.name}`;
+    const desc = cleanedDescription.value;
     const time = props.model.estimatedTimeHours ? `${props.model.estimatedTimeHours} hour print time.` : '';
     return `${props.model.name}. ${desc} ${props.model.recommendedMaterial} material. ${time} Version ${props.model.version}.`;
   });
@@ -83,7 +91,7 @@
 
       <!-- Description -->
       <p class="text-xs text-muted line-clamp-2 mb-3 flex-1">
-        {{ model.description || `3D printable ${getCategoryLabel(model.category).toLowerCase()}` }}
+        {{ cleanedDescription }}
       </p>
 
       <!-- Stats Row -->

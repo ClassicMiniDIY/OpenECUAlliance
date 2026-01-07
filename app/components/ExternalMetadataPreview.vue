@@ -20,12 +20,14 @@
     metadata: ExternalMetadata;
   }>();
 
+  const { cleanHtmlText } = useHtmlDecode();
+
   const platformInfo = computed(() => EXTERNAL_PLATFORMS[props.metadata.platform]);
 
   const primaryImage = computed(() => props.metadata.images.find((img) => img.isPrimary) || props.metadata.images[0]);
 
   const truncatedDescription = computed(() => {
-    const desc = props.metadata.description;
+    const desc = cleanHtmlText(props.metadata.description, { stripTags: true });
     if (desc.length <= 300) return desc;
     return desc.substring(0, 300) + '...';
   });
