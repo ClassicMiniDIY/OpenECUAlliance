@@ -4,7 +4,7 @@ const NuxtLink = resolveComponent("NuxtLink");
 useSeoMeta({
   title: "Specification - OpenECU Alliance",
   description:
-    "Technical specification for OpenECU Alliance adapters, protocols, and 3D models.",
+    "Technical specification for OpenECU Alliance adapters and protocols.",
 });
 
 const specTypes = [
@@ -32,18 +32,6 @@ const specTypes = [
       "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/protocol.schema.json",
     docsUrl: "/docs/creating-protocols",
   },
-  {
-    id: "model",
-    name: "3D Models",
-    description:
-      "Printable mounts, enclosures, and accessories with print settings metadata.",
-    icon: "i-heroicons-cube",
-    color: "warning",
-    fileExtension: ".model.yaml",
-    schemaUrl:
-      "https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/model.schema.json",
-    docsUrl: "/docs/creating-models",
-  },
 ];
 
 const commonFields = [
@@ -54,7 +42,7 @@ const commonFields = [
   },
   {
     field: "type",
-    description: "Content type: adapter, protocol, or model",
+    description: "Content type: adapter or protocol",
     required: true,
   },
   {
@@ -157,15 +145,14 @@ channels:
           OpenECU Specification
         </h1>
         <p class="text-lg text-muted">
-          YAML-based specifications for ECU adapters, CAN protocols, and 3D
-          models.
+          YAML-based specifications for ECU adapters and CAN protocols.
         </p>
       </div>
 
       <!-- Spec Types -->
       <section class="mb-12">
         <h2 class="text-xl font-semibold mb-4">Content Types</h2>
-        <div class="grid sm:grid-cols-3 gap-4">
+        <div class="grid sm:grid-cols-2 gap-4">
           <UCard v-for="spec in specTypes" :key="spec.id">
             <div class="flex flex-col h-full">
               <div class="flex items-center gap-3 mb-3">
