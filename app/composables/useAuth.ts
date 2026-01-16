@@ -69,10 +69,13 @@ export function useAuth() {
    * Sign in with OAuth provider (Google or Apple)
    */
   async function signInWithOAuth(provider: 'google' | 'apple') {
+    const siteConfig = useSiteConfig();
+    const redirectUrl = siteConfig.url || window.location.origin;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${redirectUrl}/auth/callback`,
       },
     });
 
@@ -85,10 +88,13 @@ export function useAuth() {
    * Sign in with magic link (passwordless email)
    */
   async function signInWithEmail(email: string) {
+    const siteConfig = useSiteConfig();
+    const redirectUrl = siteConfig.url || window.location.origin;
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${redirectUrl}/auth/callback`,
       },
     });
 
