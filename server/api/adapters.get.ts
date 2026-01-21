@@ -1,41 +1,6 @@
 import { parse } from 'yaml';
 import { fetchAllAdapterPaths, fetchGitHubFile, getAssetUrl } from '../utils/github';
-
-interface AdapterYaml {
-  openecualliance: string;
-  id: string;
-  name: string;
-  version: string;
-  vendor: string;
-  description?: string;
-  website?: string;
-  branding?: {
-    logo?: string;
-    icon?: string;
-    banner?: string;
-    color_primary?: string;
-    color_secondary?: string;
-  };
-  file_format: {
-    type: 'csv' | 'binary';
-    extensions: string[];
-  };
-  channels: Array<{
-    id: string;
-    name: string;
-    description?: string;
-    category: string;
-    data_type: string;
-    unit: string;
-    source_names: string[];
-  }>;
-  metadata?: {
-    author?: string;
-    license?: string;
-    tested_with?: string[];
-    known_issues?: string[];
-  };
-}
+import { AdapterYamlSchema, type AdapterYaml } from '../schemas/adapter';
 
 interface AdapterBranding {
   logo?: string;
@@ -72,7 +37,17 @@ export default defineCachedEventHandler(
         try {
           const path = `adapters/${vendor}/${file}`;
           const content = await fetchGitHubFile(path);
-          const yaml = parse(content) as AdapterYaml;
+          const parsedYaml = parse(content);
+
+          // Validate YAML structure with Zod
+          const validationResult = AdapterYamlSchema.safeParse(parsedYaml);
+
+          if (!validationResult.success) {
+            console.error(`Invalid adapter YAML ${vendor}/${file}:`, validationResult.error.format());
+            return null; // Skip this adapter
+          }
+
+          const yaml = validationResult.data;
 
           // Extract unique categories from channels
           const categories = [...new Set(yaml.channels.map((c) => c.category))];
@@ -88,12 +63,15 @@ export default defineCachedEventHandler(
               }
             : undefined;
 
+          // Safe description handling
+          const description = yaml.description ? yaml.description.split('\n')[0].trim() : undefined;
+
           return {
             id: yaml.id,
             name: yaml.name,
             version: yaml.version,
             vendor: yaml.vendor,
-            description: yaml.description?.split('\n')[0].trim(), // First line only
+            description,
             website: yaml.website,
             channelCount: yaml.channels.length,
             categories,
@@ -111,6 +89,21 @@ export default defineCachedEventHandler(
       adapters.push(...results.filter((a): a is AdapterResponse => a !== null));
     } catch (err) {
       console.error('Failed to fetch adapters from GitHub:', err);
+
+      // Re-throw createError instances from github utils
+      if (err && typeof err === 'object' && 'statusCode' in err) {
+        throw err;
+      }
+
+      // Throw a proper error instead of returning empty array
+      throw createError({
+        statusCode: 502,
+        statusMessage: 'Unable to fetch adapters from GitHub',
+        data: {
+          error: err instanceof Error ? err.message : 'Unknown error',
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
 
     // Sort by vendor, then by name

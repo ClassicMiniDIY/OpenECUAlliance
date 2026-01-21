@@ -168,6 +168,17 @@ export default defineNuxtConfig({
     },
   },
 
+  // Runtime configuration
+  runtimeConfig: {
+    // Private keys (server-only)
+    githubToken: process.env.GITHUB_TOKEN || '',
+
+    // Public keys (exposed to client)
+    public: {
+      adapterCacheTTL: 300, // 5 minutes in seconds
+    },
+  },
+
   future: {
     compatibilityVersion: 4,
   },

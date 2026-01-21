@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.82",
-    "@iconify-json/simple-icons": "^1.2.65",
+    "@iconify-json/lucide": "^1.2.86",
+    "@iconify-json/simple-icons": "^1.2.66",
     "@nuxt/fonts": "^0.12.1",
     "@nuxt/icon": "^2.2.0",
     "@nuxt/ui": "^4.3.0",
@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
-    "@types/node": "^25.0.3"
+    "@types/node": "^25.0.9"
   }
 }

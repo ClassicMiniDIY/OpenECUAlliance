@@ -1,62 +1,13 @@
 import { parse } from 'yaml';
 import { fetchGitHubFile, getAssetUrl } from '../../../utils/github';
-
-interface AdapterYaml {
-  openecualliance: string;
-  id: string;
-  name: string;
-  version: string;
-  vendor: string;
-  description?: string;
-  website?: string;
-  branding?: {
-    logo?: string;
-    icon?: string;
-    banner?: string;
-    color_primary?: string;
-    color_secondary?: string;
-  };
-  file_format: {
-    type: 'csv' | 'binary';
-    extensions: string[];
-    delimiter?: string;
-    endianness?: string;
-    magic_bytes?: number[];
-    header_row?: number;
-    data_start_row?: number;
-    timestamp_column?: string;
-    timestamp_unit?: string;
-  };
-  channels: Array<{
-    id: string;
-    name: string;
-    description?: string;
-    category: string;
-    data_type: string;
-    unit: string;
-    min?: number;
-    max?: number;
-    precision?: number;
-    source_names: string[];
-  }>;
-  metadata?: {
-    author?: string;
-    license?: string;
-    tested_with?: string[];
-    known_issues?: string[];
-    changelog?: Array<{
-      version: string;
-      date: string;
-      changes: string[];
-    }>;
-  };
-}
+import { AdapterYamlSchema, type AdapterYaml } from '../../../schemas/adapter';
 
 export default defineCachedEventHandler(
   async (event) => {
     const vendor = getRouterParam(event, 'vendor');
     const id = getRouterParam(event, 'id');
 
+    // Validate inputs exist
     if (!vendor || !id) {
       throw createError({
         statusCode: 400,
@@ -64,10 +15,43 @@ export default defineCachedEventHandler(
       });
     }
 
+    // Prevent path traversal attacks
+    if (vendor.includes('/') || vendor.includes('..') || id.includes('/') || id.includes('..')) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid vendor or adapter id',
+      });
+    }
+
+    // Additional validation: alphanumeric, dash, underscore only
+    const validPattern = /^[a-zA-Z0-9_-]+$/;
+    if (!validPattern.test(vendor) || !validPattern.test(id)) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid vendor or adapter id format',
+      });
+    }
+
     try {
       const path = `adapters/${vendor}/${id}.adapter.yaml`;
       const content = await fetchGitHubFile(path);
-      const yaml = parse(content) as AdapterYaml;
+      const parsedYaml = parse(content);
+
+      // Validate YAML structure with Zod
+      const validationResult = AdapterYamlSchema.safeParse(parsedYaml);
+
+      if (!validationResult.success) {
+        console.error(`Invalid adapter YAML ${vendor}/${id}:`, validationResult.error.format());
+        throw createError({
+          statusCode: 500,
+          statusMessage: 'Adapter file is malformed',
+          data: {
+            errors: validationResult.error.format(),
+          },
+        });
+      }
+
+      const yaml = validationResult.data;
 
       // Build branding with full URLs
       const branding = yaml.branding
@@ -89,7 +73,18 @@ export default defineCachedEventHandler(
         description: yaml.description,
         website: yaml.website,
         branding,
-        fileFormat: yaml.file_format,
+        // Transform snake_case to camelCase for fileFormat
+        fileFormat: {
+          type: yaml.file_format.type,
+          extensions: yaml.file_format.extensions,
+          delimiter: yaml.file_format.delimiter,
+          endianness: yaml.file_format.endianness,
+          magicBytes: yaml.file_format.magic_bytes,
+          headerRow: yaml.file_format.header_row,
+          dataStartRow: yaml.file_format.data_start_row,
+          timestampColumn: yaml.file_format.timestamp_column,
+          timestampUnit: yaml.file_format.timestamp_unit,
+        },
         channels: yaml.channels.map((c) => ({
           id: c.id,
           name: c.name,
@@ -114,15 +109,47 @@ export default defineCachedEventHandler(
       };
     } catch (err) {
       console.error(`Failed to fetch adapter ${vendor}/${id}:`, err);
+
+      // Re-throw createError instances
+      if (err && typeof err === 'object' && 'statusCode' in err) {
+        throw err;
+      }
+
+      // Check for specific error types
+      if (err instanceof Error) {
+        if (err.message.includes('404')) {
+          throw createError({
+            statusCode: 404,
+            statusMessage: `Adapter not found: ${vendor}/${id}`,
+          });
+        }
+
+        if (err.message.includes('rate limit') || err.message.includes('503')) {
+          throw createError({
+            statusCode: 503,
+            statusMessage: 'GitHub API rate limit exceeded',
+          });
+        }
+      }
+
+      // Generic server error for unknown issues
       throw createError({
-        statusCode: 404,
-        statusMessage: `Adapter not found: ${vendor}/${id}`,
+        statusCode: 502,
+        statusMessage: 'Failed to fetch adapter from GitHub',
+        data: {
+          error: err instanceof Error ? err.message : 'Unknown error',
+          timestamp: new Date().toISOString(),
+        },
       });
     }
   },
   {
     maxAge: 60 * 5, // Cache for 5 minutes
     name: 'adapter-detail',
-    getKey: (event) => `${getRouterParam(event, 'vendor')}/${getRouterParam(event, 'id')}`,
+    getKey: (event) => {
+      const vendor = getRouterParam(event, 'vendor');
+      const id = getRouterParam(event, 'id');
+      return `${vendor}/${id}`;
+    },
   }
 );

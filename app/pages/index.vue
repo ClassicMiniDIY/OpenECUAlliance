@@ -93,6 +93,26 @@
     selectedType.value = 'all';
   }
 
+  // Color class mappings for Tailwind (dynamic strings don't work with JIT)
+  const colorClasses = {
+    neutral: {
+      active: 'bg-neutral/10 text-neutral ring-2 ring-neutral/30',
+      badge: 'bg-neutral/20',
+    },
+    primary: {
+      active: 'bg-primary/10 text-primary ring-2 ring-primary/30',
+      badge: 'bg-primary/20',
+    },
+    success: {
+      active: 'bg-success/10 text-success ring-2 ring-success/30',
+      badge: 'bg-success/20',
+    },
+    warning: {
+      active: 'bg-warning/10 text-warning ring-2 ring-warning/30',
+      badge: 'bg-warning/20',
+    },
+  } as const;
+
   // Content type tabs
   const contentTabs = computed(() => [
     {
@@ -100,28 +120,28 @@
       label: 'All',
       count: counts.value.all,
       icon: 'i-heroicons-squares-2x2',
-      color: 'neutral',
+      color: 'neutral' as const,
     },
     {
       key: 'adapter' as const,
       label: 'Adapters',
       count: counts.value.adapter,
       icon: 'i-heroicons-document-text',
-      color: 'primary',
+      color: 'primary' as const,
     },
     {
       key: 'protocol' as const,
       label: 'Protocols',
       count: counts.value.protocol,
       icon: 'i-heroicons-signal',
-      color: 'success',
+      color: 'success' as const,
     },
     {
       key: 'model' as const,
       label: '3D Models',
       count: counts.value.model,
       icon: 'i-heroicons-cube',
-      color: 'warning',
+      color: 'warning' as const,
     },
   ]);
 
@@ -233,12 +253,15 @@
             <button
               v-for="tab in contentTabs"
               :key="tab.key"
+              :id="`tab-${tab.key}`"
               role="tab"
               :aria-selected="selectedType === tab.key"
+              :aria-controls="`tabpanel-${tab.key}`"
+              :tabindex="selectedType === tab.key ? 0 : -1"
               class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
               :class="[
                 selectedType === tab.key
-                  ? `bg-${tab.color}/10 text-${tab.color} ring-2 ring-${tab.color}/30`
+                  ? colorClasses[tab.color].active
                   : 'bg-muted/30 text-muted hover:bg-muted/50 hover:text-default',
               ]"
               @click="selectedType = tab.key"
@@ -247,7 +270,7 @@
               <span class="hidden sm:inline">{{ tab.label }}</span>
               <span
                 class="px-1.5 py-0.5 rounded text-xs"
-                :class="[selectedType === tab.key ? `bg-${tab.color}/20` : 'bg-muted/50']"
+                :class="[selectedType === tab.key ? colorClasses[tab.color].badge : 'bg-muted/50']"
               >
                 {{ tab.count }}
               </span>

@@ -11,6 +11,14 @@
     twitterCard: 'summary_large_image',
   });
 
+  // Color class mappings for Tailwind (dynamic strings don't work with JIT)
+  const colorClasses = {
+    primary: { bg: 'bg-primary/10', text: 'text-primary', hover: 'hover:ring-primary/50' },
+    success: { bg: 'bg-success/10', text: 'text-success', hover: 'hover:ring-success/50' },
+    warning: { bg: 'bg-warning/10', text: 'text-warning', hover: 'hover:ring-warning/50' },
+    error: { bg: 'bg-error/10', text: 'text-error', hover: 'hover:ring-error/50' },
+  } as const;
+
   const waysToContribute = [
     {
       type: 'Submit Adapters',
@@ -74,21 +82,21 @@
       title: 'Adapters',
       description: 'Log file format definitions for ECU data parsing',
       to: '/docs/creating-adapters',
-      color: 'primary',
+      color: 'primary' as const,
     },
     {
       icon: 'i-heroicons-signal',
       title: 'Protocols',
       description: 'CAN Bus message definitions with DBC export',
       to: '/docs/creating-protocols',
-      color: 'success',
+      color: 'success' as const,
     },
     {
       icon: 'i-heroicons-cube',
       title: '3D Models',
       description: 'Upload printable mounts and accessories directly',
       to: '/models/upload',
-      color: 'warning',
+      color: 'warning' as const,
       requiresAuth: true,
     },
   ];
@@ -285,11 +293,11 @@ done`,
             :as="NuxtLink"
             :to="getContributionLink(ct)"
             class="cursor-pointer hover:ring-2 transition-all"
-            :class="`hover:ring-${ct.color}/50`"
+            :class="colorClasses[ct.color].hover"
           >
             <div class="flex items-start gap-3">
-              <div :class="`bg-${ct.color}/10`" class="p-2 rounded-lg shrink-0">
-                <UIcon :name="ct.icon" :class="`size-5 text-${ct.color}`" />
+              <div :class="colorClasses[ct.color].bg" class="p-2 rounded-lg shrink-0">
+                <UIcon :name="ct.icon" :class="['size-5', colorClasses[ct.color].text]" />
               </div>
               <div class="flex-1 min-w-0">
                 <h3 class="font-semibold mb-1">{{ ct.title }}</h3>

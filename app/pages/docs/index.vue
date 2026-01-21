@@ -11,34 +11,41 @@
     twitterCard: 'summary_large_image',
   });
 
+  // Color class mappings for Tailwind (dynamic strings don't work with JIT)
+  const colorClasses = {
+    primary: { bg: 'bg-primary/10', text: 'text-primary' },
+    success: { bg: 'bg-success/10', text: 'text-success' },
+    warning: { bg: 'bg-warning/10', text: 'text-warning' },
+  } as const;
+
   const guides = [
     {
       icon: 'i-heroicons-rocket-launch',
       title: 'Getting Started',
       description: 'Introduction to OpenECU Alliance and the content ecosystem.',
       to: '/docs/getting-started',
-      color: 'primary',
+      color: 'primary' as const,
     },
     {
       icon: 'i-heroicons-document-plus',
       title: 'Creating Adapters',
       description: 'Define log file formats for ECU data parsing.',
       to: '/docs/creating-adapters',
-      color: 'primary',
+      color: 'primary' as const,
     },
     {
       icon: 'i-heroicons-signal',
       title: 'Creating Protocols',
       description: 'Define CAN Bus messages and signals.',
       to: '/docs/creating-protocols',
-      color: 'success',
+      color: 'success' as const,
     },
     {
       icon: 'i-heroicons-cube',
       title: 'Submitting 3D Models',
       description: 'Upload printable mounts, enclosures, and accessories.',
       to: '/docs/creating-models',
-      color: 'warning',
+      color: 'warning' as const,
     },
   ];
 
@@ -87,8 +94,8 @@
             class="cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
           >
             <div class="flex items-start gap-3">
-              <div :class="`bg-${guide.color}/10`" class="p-2 rounded-lg shrink-0">
-                <UIcon :name="guide.icon" :class="`size-5 text-${guide.color}`" />
+              <div :class="colorClasses[guide.color].bg" class="p-2 rounded-lg shrink-0">
+                <UIcon :name="guide.icon" :class="['size-5', colorClasses[guide.color].text]" />
               </div>
               <div class="flex-1 min-w-0">
                 <h3 class="font-semibold mb-1">{{ guide.title }}</h3>

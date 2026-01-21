@@ -1,17 +1,10 @@
 import type { ExternalPlatform } from '~~/app/types/model';
 import type { PlatformParser, ExternalModelMetadata } from './types';
+import { PlatformFetchError } from './types';
 import { makerWorldParser } from './makerworld';
 import { printablesParser } from './printables';
 import { thingiverseParser } from './thingiverse';
 import { cults3dParser } from './cults3d';
-
-// Re-export types and error class for consumers
-export {
-  PlatformFetchError,
-  type ExternalModelMetadata,
-  type ExternalModelImage,
-  type ExternalPrintSettings,
-} from './types';
 
 const parsers: PlatformParser[] = [makerWorldParser, printablesParser, thingiverseParser, cults3dParser];
 

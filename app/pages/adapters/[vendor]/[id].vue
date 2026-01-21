@@ -5,7 +5,13 @@
   const vendor = route.params.vendor as string;
   const id = route.params.id as string;
 
-  const { data: adapter, status } = await useFetch<AdapterDetail>(`/api/adapters/${vendor}/${id}`);
+  const {
+    data: adapter,
+    status,
+    error,
+  } = await useFetch<AdapterDetail>(`/api/adapters/${vendor}/${id}`, {
+    key: `adapter-${vendor}-${id}`,
+  });
 
   const { getVendorIcon } = useVendorIcons();
 

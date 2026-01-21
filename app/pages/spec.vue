@@ -10,13 +10,19 @@
     twitterCard: 'summary_large_image',
   });
 
+  // Color class mappings for Tailwind (dynamic strings don't work with JIT)
+  const colorClasses = {
+    primary: { bg: 'bg-primary/10', text: 'text-primary' },
+    success: { bg: 'bg-success/10', text: 'text-success' },
+  } as const;
+
   const specTypes = [
     {
       id: 'adapter',
       name: 'Adapters',
       description: 'Log file format definitions that map vendor-specific channels to canonical identifiers.',
       icon: 'i-heroicons-document-text',
-      color: 'primary',
+      color: 'primary' as const,
       fileExtension: '.adapter.yaml',
       schemaUrl: 'https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/adapter.schema.json',
       docsUrl: '/docs/creating-adapters',
@@ -26,7 +32,7 @@
       name: 'Protocols',
       description: 'CAN Bus message and signal definitions with DBC export support.',
       icon: 'i-heroicons-signal',
-      color: 'success',
+      color: 'success' as const,
       fileExtension: '.protocol.yaml',
       schemaUrl: 'https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/protocol.schema.json',
       docsUrl: '/docs/creating-protocols',
@@ -149,8 +155,8 @@ channels:
           <UCard v-for="spec in specTypes" :key="spec.id">
             <div class="flex flex-col h-full">
               <div class="flex items-center gap-3 mb-3">
-                <div :class="`bg-${spec.color}/10`" class="p-2 rounded-lg">
-                  <UIcon :name="spec.icon" :class="`size-5 text-${spec.color}`" />
+                <div :class="colorClasses[spec.color].bg" class="p-2 rounded-lg">
+                  <UIcon :name="spec.icon" :class="['size-5', colorClasses[spec.color].text]" />
                 </div>
                 <div>
                   <h3 class="font-semibold">{{ spec.name }}</h3>

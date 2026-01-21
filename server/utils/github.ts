@@ -1,8 +1,7 @@
-import { parse } from 'yaml';
-
 const GITHUB_OWNER = 'ClassicMiniDIY';
 const GITHUB_REPO = 'OECUASpecs';
 const GITHUB_BRANCH = 'main';
+const GITHUB_API_TIMEOUT = 10000; // 10 seconds
 
 /** Base URL for raw assets from the OECUASpecs repository */
 export const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}`;
@@ -23,20 +22,64 @@ interface GitHubContent {
  * Fetch directory contents from GitHub API
  */
 export async function fetchGitHubDirectory(path: string): Promise<GitHubContent[]> {
+  const config = useRuntimeConfig();
   const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`;
 
-  const response = await fetch(url, {
-    headers: {
-      Accept: 'application/vnd.github.v3+json',
-      'User-Agent': 'OpenECUAlliance-Website',
-    },
-  });
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github.v3+json',
+    'User-Agent': 'OpenECUAlliance-Website',
+  };
 
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+  // Add authentication if token is available
+  if (config.githubToken) {
+    headers['Authorization'] = `Bearer ${config.githubToken}`;
   }
 
-  return response.json();
+  // Add timeout to prevent hanging requests
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), GITHUB_API_TIMEOUT);
+
+  try {
+    const response = await fetch(url, {
+      headers,
+      signal: controller.signal,
+    });
+
+    // Check for rate limiting
+    if (response.status === 403) {
+      const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
+      if (rateLimitRemaining === '0') {
+        const resetTime = response.headers.get('X-RateLimit-Reset');
+        throw createError({
+          statusCode: 503,
+          statusMessage: 'GitHub API rate limit exceeded',
+          data: {
+            resetTime: resetTime ? new Date(Number(resetTime) * 1000).toISOString() : undefined,
+          },
+        });
+      }
+    }
+
+    if (!response.ok) {
+      throw createError({
+        statusCode: response.status === 404 ? 404 : 502,
+        statusMessage: `GitHub API error: ${response.status}`,
+      });
+    }
+
+    // Validate content type
+    const contentType = response.headers.get('Content-Type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw createError({
+        statusCode: 502,
+        statusMessage: `Unexpected content type from GitHub: ${contentType}`,
+      });
+    }
+
+    return response.json();
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 /**
@@ -45,63 +88,77 @@ export async function fetchGitHubDirectory(path: string): Promise<GitHubContent[
 export async function fetchGitHubFile(path: string): Promise<string> {
   const url = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${path}`;
 
-  const response = await fetch(url, {
-    headers: {
-      'User-Agent': 'OpenECUAlliance-Website',
-    },
-  });
+  // Add timeout to prevent hanging requests
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), GITHUB_API_TIMEOUT);
 
-  if (!response.ok) {
-    throw new Error(`GitHub raw fetch error: ${response.status} ${response.statusText}`);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'OpenECUAlliance-Website',
+      },
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw createError({
+        statusCode: response.status === 404 ? 404 : 502,
+        statusMessage: `GitHub raw fetch error: ${response.status}`,
+      });
+    }
+
+    // Validate content type (should be text/plain for YAML files)
+    const contentType = response.headers.get('Content-Type');
+    if (contentType && !contentType.includes('text/plain') && !contentType.includes('application/octet-stream')) {
+      throw createError({
+        statusCode: 502,
+        statusMessage: `Unexpected content type from GitHub: ${contentType}`,
+      });
+    }
+
+    return response.text();
+  } finally {
+    clearTimeout(timeout);
   }
-
-  return response.text();
 }
 
 /**
- * Fetch and parse a YAML adapter file from GitHub
+ * Fetch a YAML adapter file content from GitHub
+ * Note: Parsing should be done in the API route with validation
  */
-export async function fetchAdapter<T>(vendor: string, adapterId: string): Promise<T> {
+export async function fetchAdapter(vendor: string, adapterId: string): Promise<string> {
   const path = `adapters/${vendor}/${adapterId}.adapter.yaml`;
-  const content = await fetchGitHubFile(path);
-  return parse(content) as T;
+  return fetchGitHubFile(path);
 }
 
 /**
- * Get all adapter files from GitHub
+ * Get all adapter files from GitHub (parallelized for better performance)
  */
 export async function fetchAllAdapterPaths(): Promise<Array<{ vendor: string; file: string }>> {
-  const adapterPaths: Array<{ vendor: string; file: string }> = [];
-
   // Get list of vendor directories
   const vendors = await fetchGitHubDirectory('adapters');
 
-  for (const vendor of vendors) {
-    if (vendor.type !== 'dir') continue;
+  // Fetch all vendor directories in parallel
+  const vendorPromises = vendors
+    .filter((v) => v.type === 'dir')
+    .map(async (vendor) => {
+      const files = await fetchGitHubDirectory(`adapters/${vendor.name}`);
+      return files
+        .filter((f) => f.type === 'file' && (f.name.endsWith('.adapter.yaml') || f.name.endsWith('.adapter.yml')))
+        .map((f) => ({ vendor: vendor.name, file: f.name }));
+    });
 
-    // Get files in each vendor directory
-    const files = await fetchGitHubDirectory(`adapters/${vendor.name}`);
-
-    for (const file of files) {
-      if (file.type === 'file' && (file.name.endsWith('.adapter.yaml') || file.name.endsWith('.adapter.yml'))) {
-        adapterPaths.push({
-          vendor: vendor.name,
-          file: file.name,
-        });
-      }
-    }
-  }
-
-  return adapterPaths;
+  const results = await Promise.all(vendorPromises);
+  return results.flat();
 }
 
 /**
- * Fetch and parse a YAML protocol file from GitHub
+ * Fetch a YAML protocol file content from GitHub
+ * Note: Parsing should be done in the API route with validation
  */
-export async function fetchProtocol<T>(vendor: string, protocolId: string): Promise<T> {
+export async function fetchProtocol(vendor: string, protocolId: string): Promise<string> {
   const path = `protocols/${vendor}/${protocolId}.protocol.yaml`;
-  const content = await fetchGitHubFile(path);
-  return parse(content) as T;
+  return fetchGitHubFile(path);
 }
 
 /**

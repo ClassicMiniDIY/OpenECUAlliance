@@ -1,10 +1,6 @@
 import { z } from 'zod';
-import {
-  fetchExternalModel,
-  isValidExternalUrl,
-  normalizeExternalUrl,
-  PlatformFetchError,
-} from '../../../utils/external-platforms';
+import { fetchExternalModel, isValidExternalUrl, normalizeExternalUrl } from '../../../utils/external-platforms';
+import { PlatformFetchError } from '../../../utils/external-platforms/types';
 
 const bodySchema = z.object({
   url: z.string().url('Invalid URL format'),
