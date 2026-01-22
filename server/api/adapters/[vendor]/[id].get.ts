@@ -1,11 +1,12 @@
-import { parse } from 'yaml';
-import { fetchGitHubFile, getAssetUrl } from '../../../utils/github';
-import { AdapterYamlSchema, type AdapterYaml } from '../../../schemas/adapter';
+import { readAdapterFile, getAssetUrl } from '../../../utils/filesystem';
+import { AdapterYamlSchema } from '../../../schemas/adapter';
 
 export default defineCachedEventHandler(
   async (event) => {
     const vendor = getRouterParam(event, 'vendor');
     const id = getRouterParam(event, 'id');
+    const query = getQuery(event);
+    const version = query.version as string | undefined;
 
     // Validate inputs exist
     if (!vendor || !id) {
@@ -15,30 +16,11 @@ export default defineCachedEventHandler(
       });
     }
 
-    // Prevent path traversal attacks
-    if (vendor.includes('/') || vendor.includes('..') || id.includes('/') || id.includes('..')) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Invalid vendor or adapter id',
-      });
-    }
-
-    // Additional validation: alphanumeric, dash, underscore only
-    const validPattern = /^[a-zA-Z0-9_-]+$/;
-    if (!validPattern.test(vendor) || !validPattern.test(id)) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Invalid vendor or adapter id format',
-      });
-    }
-
     try {
-      const path = `adapters/${vendor}/${id}.adapter.yaml`;
-      const content = await fetchGitHubFile(path);
-      const parsedYaml = parse(content);
+      const { parsed } = await readAdapterFile(vendor, id, version);
 
       // Validate YAML structure with Zod
-      const validationResult = AdapterYamlSchema.safeParse(parsedYaml);
+      const validationResult = AdapterYamlSchema.safeParse(parsed);
 
       if (!validationResult.success) {
         console.error(`Invalid adapter YAML ${vendor}/${id}:`, validationResult.error.format());
@@ -115,27 +97,10 @@ export default defineCachedEventHandler(
         throw err;
       }
 
-      // Check for specific error types
-      if (err instanceof Error) {
-        if (err.message.includes('404')) {
-          throw createError({
-            statusCode: 404,
-            statusMessage: `Adapter not found: ${vendor}/${id}`,
-          });
-        }
-
-        if (err.message.includes('rate limit') || err.message.includes('503')) {
-          throw createError({
-            statusCode: 503,
-            statusMessage: 'GitHub API rate limit exceeded',
-          });
-        }
-      }
-
       // Generic server error for unknown issues
       throw createError({
-        statusCode: 502,
-        statusMessage: 'Failed to fetch adapter from GitHub',
+        statusCode: 500,
+        statusMessage: 'Failed to fetch adapter from filesystem',
         data: {
           error: err instanceof Error ? err.message : 'Unknown error',
           timestamp: new Date().toISOString(),
@@ -144,12 +109,14 @@ export default defineCachedEventHandler(
     }
   },
   {
-    maxAge: 60 * 5, // Cache for 5 minutes
+    maxAge: 60 * 15, // Cache for 15 minutes
     name: 'adapter-detail',
     getKey: (event) => {
       const vendor = getRouterParam(event, 'vendor');
       const id = getRouterParam(event, 'id');
-      return `${vendor}/${id}`;
+      const query = getQuery(event);
+      const version = query.version as string | undefined;
+      return version ? `${vendor}/${id}@${version}` : `${vendor}/${id}`;
     },
   }
 );

@@ -1,0 +1,717 @@
+# OpenECU Alliance Adapter Specification
+# rusEFI MegaLogViewer (.mlg) Binary Format
+
+openecualliance: "1.0"
+id: rusefi-mlg
+name: "rusEFI MLG Binary"
+version: "1.0.0"
+vendor: rusefi
+description: |
+  Binary log files from rusEFI open-source ECU in MegaLogViewer format.
+
+  Format characteristics:
+  - Binary format with "MLVLG" magic header (shared with Speeduino/TunerStudio)
+  - Self-describing: channel definitions embedded in file
+  - Each channel has name, unit, scale, and transform
+  - Values: (raw_value + transform) * scale
+  - Big-endian byte order
+  - Format version 2 uses 89-byte field definitions
+  - Timestamp wraps at 65535ms (~65.5 seconds)
+website: "https://rusefi.com"
+
+branding:
+  logo: rusefi-logo.png
+  icon: rusefi-icon.png
+  banner: rusefi-banner.png
+  color_primary: "#B7410E"
+  color_secondary: "#2C2C2C"
+
+file_format:
+  type: binary
+  extensions: [".mlg"]
+  endianness: big
+  magic_bytes: [0x4D, 0x4C, 0x56, 0x4C, 0x47]  # "MLVLG"
+  specification_url: "https://github.com/rusefi/rusefi"
+
+channels:
+  # Engine Core
+  - id: rpm
+    name: "Engine RPM"
+    description: "Engine speed from crankshaft sensor"
+    category: engine
+    data_type: float
+    unit: rpm
+    min: 0
+    max: 15000
+    precision: 0
+    source_names:
+      - "RPM"
+      - "Engine Speed"
+      - "rpm"
+
+  - id: tps
+    name: "Throttle Position"
+    description: "Primary throttle position sensor"
+    category: engine
+    data_type: float
+    unit: percent
+    min: 0
+    max: 100
+    precision: 1
+    source_names:
+      - "TPS"
+      - "Throttle"
+      - "TPS1"
+      - "TPSValue"
+
+  - id: tps_2
+    name: "Throttle Position 2"
+    description: "Secondary throttle position sensor"
+    category: engine
+    data_type: float
+    unit: percent
+    min: 0
+    max: 100
+    precision: 1
+    source_names:
+      - "TPS2"
+      - "TPS2Value"
+
+  - id: pedal_position
+    name: "Accelerator Pedal"
+    description: "Accelerator pedal position"
+    category: engine
+    data_type: float
+    unit: percent
+    min: 0
+    max: 100
+    precision: 1
+    source_names:
+      - "Pedal"
+      - "PPS"
+      - "AcceleratorPedal"
+
+  - id: map
+    name: "Manifold Pressure"
+    description: "Manifold absolute pressure"
+    category: pressure
+    data_type: float
+    unit: kpa
+    min: 0
+    max: 400
+    precision: 1
+    source_names:
+      - "MAP"
+      - "Manifold Pressure"
+      - "MAPValue"
+
+  - id: ve
+    name: "VE"
+    description: "Volumetric Efficiency from VE table"
+    category: fuel
+    data_type: float
+    unit: percent
+    min: 0
+    max: 200
+    precision: 1
+    source_names:
+      - "VE"
+      - "VE1"
+      - "VEValue"
+      - "currentVe"
+
+  - id: load
+    name: "Engine Load"
+    description: "Calculated engine load"
+    category: engine
+    data_type: float
+    unit: percent
+    min: 0
+    max: 200
+    precision: 1
+    source_names:
+      - "Load"
+      - "Engine Load"
+      - "fuelingLoad"
+
+  # Fuel System
+  - id: afr
+    name: "Air-Fuel Ratio"
+    description: "Measured AFR from wideband O2 sensor"
+    category: fuel
+    data_type: float
+    unit: afr
+    min: 10
+    max: 20
+    precision: 2
+    source_names:
+      - "AFR"
+      - "AFRValue"
+      - "AFR Gauge"
+
+  - id: lambda
+    name: "Lambda"
+    description: "Lambda value from wideband O2"
+    category: fuel
+    data_type: float
+    unit: lambda
+    min: 0.6
+    max: 1.5
+    precision: 3
+    source_names:
+      - "Lambda"
+      - "Lambda1"
+      - "lambdaValue"
+
+  - id: lambda_2
+    name: "Lambda 2"
+    description: "Lambda value from second wideband O2"
+    category: fuel
+    data_type: float
+    unit: lambda
+    min: 0.6
+    max: 1.5
+    precision: 3
+    source_names:
+      - "Lambda2"
+      - "lambdaValue2"
+
+  - id: afr_target
+    name: "AFR Target"
+    description: "Target AFR from fuel table"
+    category: fuel
+    data_type: float
+    unit: afr
+    min: 10
+    max: 20
+    precision: 2
+    source_names:
+      - "AFR Target"
+      - "Target AFR"
+      - "targetAFR"
+
+  - id: lambda_target
+    name: "Lambda Target"
+    description: "Target lambda from fuel table"
+    category: fuel
+    data_type: float
+    unit: lambda
+    min: 0.6
+    max: 1.5
+    precision: 3
+    source_names:
+      - "Lambda Target"
+      - "targetLambda"
+
+  - id: pulse_width
+    name: "Pulse Width"
+    description: "Injector pulse width"
+    category: fuel
+    data_type: float
+    unit: milliseconds
+    min: 0
+    max: 50
+    precision: 2
+    source_names:
+      - "PW"
+      - "Pulse Width"
+      - "injectorPulseWidth"
+      - "actualLastInjection"
+
+  - id: duty_cycle
+    name: "Injector Duty"
+    description: "Injector duty cycle"
+    category: fuel
+    data_type: float
+    unit: percent
+    min: 0
+    max: 100
+    precision: 1
+    source_names:
+      - "Duty"
+      - "Injector Duty"
+      - "injectorDutyCycle"
+
+  - id: fuel_pressure
+    name: "Fuel Pressure"
+    description: "Fuel rail pressure"
+    category: pressure
+    data_type: float
+    unit: kpa
+    min: 0
+    max: 1000
+    precision: 0
+    source_names:
+      - "Fuel Pressure"
+      - "fuelPressure"
+      - "FP"
+
+  - id: fuel_flow
+    name: "Fuel Flow"
+    description: "Instantaneous fuel flow rate"
+    category: fuel
+    data_type: float
+    unit: g/s
+    min: 0
+    max: 100
+    precision: 2
+    source_names:
+      - "Fuel Flow"
+      - "fuelFlow"
+      - "fuelConsumption"
+
+  # Ignition System
+  - id: ignition_advance
+    name: "Ignition Advance"
+    description: "Spark timing advance"
+    category: ignition
+    data_type: float
+    unit: degrees
+    min: -20
+    max: 60
+    precision: 1
+    source_names:
+      - "Advance"
+      - "Spark Advance"
+      - "Timing"
+      - "timing"
+      - "ignitionAdvance"
+
+  - id: dwell
+    name: "Dwell"
+    description: "Coil dwell time"
+    category: ignition
+    data_type: float
+    unit: milliseconds
+    min: 0
+    max: 10
+    precision: 2
+    source_names:
+      - "Dwell"
+      - "Dwell Time"
+      - "sparkDwell"
+      - "coilDutyCycle"
+
+  - id: knock_level
+    name: "Knock Level"
+    description: "Knock sensor signal level"
+    category: ignition
+    data_type: float
+    unit: volts
+    min: 0
+    max: 5
+    precision: 2
+    source_names:
+      - "Knock"
+      - "Knock Level"
+      - "knockLevel"
+
+  - id: knock_count
+    name: "Knock Count"
+    description: "Number of knock events detected"
+    category: ignition
+    data_type: int
+    unit: count
+    min: 0
+    max: 1000000
+    precision: 0
+    source_names:
+      - "Knock Count"
+      - "knockCount"
+      - "knockCounter"
+
+  - id: knock_retard
+    name: "Knock Retard"
+    description: "Timing retard from knock control"
+    category: correction
+    data_type: float
+    unit: degrees
+    min: 0
+    max: 20
+    precision: 1
+    source_names:
+      - "Knock Retard"
+      - "knockRetard"
+
+  # Temperature Sensors
+  - id: coolant_temp
+    name: "Coolant Temperature"
+    description: "Engine coolant temperature"
+    category: temperature
+    data_type: float
+    unit: celsius
+    min: -40
+    max: 150
+    precision: 1
+    source_names:
+      - "CLT"
+      - "Coolant"
+      - "Coolant Temp"
+      - "coolant"
+
+  - id: iat
+    name: "Intake Air Temperature"
+    description: "Intake air temperature"
+    category: temperature
+    data_type: float
+    unit: celsius
+    min: -40
+    max: 100
+    precision: 1
+    source_names:
+      - "IAT"
+      - "Intake Temp"
+      - "Air Temp"
+      - "intake"
+
+  - id: oil_temp
+    name: "Oil Temperature"
+    description: "Engine oil temperature"
+    category: temperature
+    data_type: float
+    unit: celsius
+    min: -40
+    max: 180
+    precision: 1
+    source_names:
+      - "Oil Temp"
+      - "oilTemperature"
+
+  - id: aux_temp_1
+    name: "Aux Temperature 1"
+    description: "Auxiliary temperature sensor 1"
+    category: temperature
+    data_type: float
+    unit: celsius
+    min: -40
+    max: 200
+    precision: 1
+    source_names:
+      - "Aux Temp 1"
+      - "auxTemp1"
+
+  - id: aux_temp_2
+    name: "Aux Temperature 2"
+    description: "Auxiliary temperature sensor 2"
+    category: temperature
+    data_type: float
+    unit: celsius
+    min: -40
+    max: 200
+    precision: 1
+    source_names:
+      - "Aux Temp 2"
+      - "auxTemp2"
+
+  # Electrical
+  - id: battery_voltage
+    name: "Battery Voltage"
+    description: "System voltage"
+    category: electrical
+    data_type: float
+    unit: volts
+    min: 0
+    max: 20
+    precision: 2
+    source_names:
+      - "Battery"
+      - "Batt V"
+      - "Battery Voltage"
+      - "VBatt"
+      - "vBatt"
+
+  # Corrections
+  - id: warmup_enrichment
+    name: "Warmup Enrichment"
+    description: "Cold engine fuel enrichment"
+    category: correction
+    data_type: float
+    unit: percent
+    min: 0
+    max: 200
+    precision: 0
+    source_names:
+      - "WUE"
+      - "Warmup Enrich"
+      - "warmUpEnrichment"
+
+  - id: iat_correction
+    name: "IAT Correction"
+    description: "Intake air temperature fuel correction"
+    category: correction
+    data_type: float
+    unit: percent
+    min: -50
+    max: 50
+    precision: 1
+    source_names:
+      - "IAT Corr"
+      - "iatCorrection"
+
+  - id: clt_correction
+    name: "CLT Correction"
+    description: "Coolant temperature fuel correction"
+    category: correction
+    data_type: float
+    unit: percent
+    min: -50
+    max: 50
+    precision: 1
+    source_names:
+      - "CLT Corr"
+      - "cltCorrection"
+
+  - id: barometric_correction
+    name: "Barometric Correction"
+    description: "Altitude/barometric fuel correction"
+    category: correction
+    data_type: float
+    unit: percent
+    min: -50
+    max: 50
+    precision: 1
+    source_names:
+      - "Baro Corr"
+      - "baroCorrection"
+
+  - id: fuel_trim
+    name: "Fuel Trim"
+    description: "Total fuel correction"
+    category: correction
+    data_type: float
+    unit: percent
+    min: -50
+    max: 50
+    precision: 1
+    source_names:
+      - "Fuel Trim"
+      - "fuelTrim"
+      - "totalFuelCorrection"
+
+  # Boost Control
+  - id: boost_target
+    name: "Boost Target"
+    description: "Target boost from boost control"
+    category: pressure
+    data_type: float
+    unit: kpa
+    min: 0
+    max: 300
+    precision: 0
+    source_names:
+      - "Boost Target"
+      - "Target Boost"
+      - "boostTarget"
+
+  - id: boost_duty
+    name: "Boost Duty"
+    description: "Boost solenoid duty cycle"
+    category: engine
+    data_type: float
+    unit: percent
+    min: 0
+    max: 100
+    precision: 1
+    source_names:
+      - "Boost Duty"
+      - "boostDuty"
+      - "wastegatePosition"
+
+  - id: barometric_pressure
+    name: "Barometric Pressure"
+    description: "Atmospheric pressure"
+    category: pressure
+    data_type: float
+    unit: kpa
+    min: 80
+    max: 110
+    precision: 1
+    source_names:
+      - "Baro"
+      - "Barometric"
+      - "baroPressure"
+
+  # Idle Control
+  - id: idle_position
+    name: "Idle Position"
+    description: "Idle air control position"
+    category: engine
+    data_type: float
+    unit: percent
+    min: 0
+    max: 100
+    precision: 1
+    source_names:
+      - "Idle Position"
+      - "IAC"
+      - "IAC Position"
+      - "idlePosition"
+
+  - id: idle_target_rpm
+    name: "Idle Target RPM"
+    description: "Target idle speed"
+    category: engine
+    data_type: float
+    unit: rpm
+    min: 0
+    max: 3000
+    precision: 0
+    source_names:
+      - "Idle Target"
+      - "targetRpm"
+      - "idleTargetRpm"
+
+  # VVT/Cam Control
+  - id: vvt_intake
+    name: "VVT Intake"
+    description: "Variable valve timing intake position"
+    category: engine
+    data_type: float
+    unit: degrees
+    min: -50
+    max: 50
+    precision: 1
+    source_names:
+      - "VVT Intake"
+      - "vvtPositionB1I"
+      - "vvt1"
+
+  - id: vvt_exhaust
+    name: "VVT Exhaust"
+    description: "Variable valve timing exhaust position"
+    category: engine
+    data_type: float
+    unit: degrees
+    min: -50
+    max: 50
+    precision: 1
+    source_names:
+      - "VVT Exhaust"
+      - "vvtPositionB1E"
+      - "vvt2"
+
+  # Electronic Throttle Control
+  - id: etb_target
+    name: "ETB Target"
+    description: "Electronic throttle body target position"
+    category: engine
+    data_type: float
+    unit: percent
+    min: 0
+    max: 100
+    precision: 1
+    source_names:
+      - "ETB Target"
+      - "etbTarget"
+      - "etb1Target"
+
+  - id: etb_error
+    name: "ETB Error"
+    description: "Electronic throttle body position error"
+    category: engine
+    data_type: float
+    unit: percent
+    min: -20
+    max: 20
+    precision: 2
+    source_names:
+      - "ETB Error"
+      - "etbError"
+
+  # MAF Sensor
+  - id: maf
+    name: "Mass Airflow"
+    description: "Mass airflow sensor reading"
+    category: engine
+    data_type: float
+    unit: g/s
+    min: 0
+    max: 500
+    precision: 1
+    source_names:
+      - "MAF"
+      - "Mass Airflow"
+      - "mafValue"
+
+  # Vehicle Speed
+  - id: vehicle_speed
+    name: "Vehicle Speed"
+    description: "Vehicle ground speed"
+    category: speed
+    data_type: float
+    unit: kph
+    min: 0
+    max: 400
+    precision: 0
+    source_names:
+      - "Vehicle Speed"
+      - "Speed"
+      - "vehicleSpeed"
+      - "VSS"
+
+  # System
+  - id: loops_per_second
+    name: "Loops Per Second"
+    description: "ECU main loop rate"
+    category: system
+    data_type: float
+    unit: hz
+    min: 0
+    max: 100000
+    precision: 0
+    source_names:
+      - "loopsPerSecond"
+      - "Loops"
+      - "mainLoopRate"
+
+  - id: cpu_load
+    name: "CPU Load"
+    description: "ECU CPU utilization"
+    category: system
+    data_type: float
+    unit: percent
+    min: 0
+    max: 100
+    precision: 1
+    source_names:
+      - "CPU Load"
+      - "cpuLoad"
+
+  - id: trigger_error_counter
+    name: "Trigger Errors"
+    description: "Trigger synchronization error count"
+    category: system
+    data_type: int
+    unit: count
+    min: 0
+    max: 1000000
+    precision: 0
+    source_names:
+      - "Trigger Errors"
+      - "triggerErrorCounter"
+      - "totalTriggerErrorCounter"
+
+metadata:
+  author: "OpenECU Alliance"
+  license: "MIT"
+  tested_with:
+    - "rusEFI firmware 2024.xx"
+    - "rusEFI firmware 2025.xx"
+  known_issues:
+    - "Timestamp wraps at ~65.5 seconds"
+    - "Channel names/units defined in firmware build"
+    - "Format version 2 has extended field definitions"
+  changelog:
+    - version: "1.0.0"
+      date: "2025-01-04"
+      changes:
+        - "Initial release"
+        - "Core rusEFI channels including ETB and VVT"
+
+# rusEFI-specific extensions
+x_rusefi:
+  mlg_version: [1, 2]
+  field_definition_size_v1: 55
+  field_definition_size_v2: 89
+  value_formula: "(raw + transform) * scale"
+  firmware_config_reference: "https://github.com/rusefi/rusefi/tree/master/firmware"

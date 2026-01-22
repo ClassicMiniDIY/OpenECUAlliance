@@ -2,11 +2,11 @@
   const NuxtLink = resolveComponent('NuxtLink');
 
   useSeoMeta({
-    title: 'OpenECU Spec - Technical Specification - OpenECU Alliance',
+    title: 'OpenECU Spec & API - Technical Specification - OpenECU Alliance',
     description:
-      'YAML-based technical specification for ECU log adapters and CAN Bus protocols. Open source standard for ECU data.',
-    ogTitle: 'OpenECU Spec - Technical Specification',
-    ogDescription: 'Open source YAML-based specification for standardizing ECU log adapters and CAN Bus protocols.',
+      'YAML-based technical specification for ECU log adapters and CAN Bus protocols. Fetch specs via public REST API.',
+    ogTitle: 'OpenECU Spec & API - Technical Specification',
+    ogDescription: 'Public REST API for fetching ECU log adapters and CAN Bus protocol specifications programmatically.',
     twitterCard: 'summary_large_image',
   });
 
@@ -24,7 +24,7 @@
       icon: 'i-heroicons-document-text',
       color: 'primary' as const,
       fileExtension: '.adapter.yaml',
-      schemaUrl: 'https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/adapter.schema.json',
+      schemaUrl: 'https://github.com/ClassicMiniDIY/OpenECUAlliance/blob/main/specs/schema/adapter.schema.json',
       docsUrl: '/docs/creating-adapters',
     },
     {
@@ -34,7 +34,7 @@
       icon: 'i-heroicons-signal',
       color: 'success' as const,
       fileExtension: '.protocol.yaml',
-      schemaUrl: 'https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/schema/protocol.schema.json',
+      schemaUrl: 'https://github.com/ClassicMiniDIY/OpenECUAlliance/blob/main/specs/schema/protocol.schema.json',
       docsUrl: '/docs/creating-protocols',
     },
   ];
@@ -108,6 +108,45 @@
     { category: 'Electrical', units: ['volts', 'amps'] },
   ];
 
+  const apiEndpoints = [
+    {
+      method: 'GET',
+      path: '/api/specs/adapters',
+      description: 'List all available adapters with summary info',
+      response: 'Array of adapter objects (JSON)',
+    },
+    {
+      method: 'GET',
+      path: '/api/specs/adapters/:vendor/:id',
+      description: 'Get full adapter specification with all channels',
+      response: 'Complete adapter object (JSON)',
+    },
+    {
+      method: 'GET',
+      path: '/api/specs/adapters-raw/:vendor/:id',
+      description: 'Download raw YAML adapter file',
+      response: 'Raw YAML file',
+    },
+    {
+      method: 'GET',
+      path: '/api/specs/protocols',
+      description: 'List all available CAN protocols with summary info',
+      response: 'Array of protocol objects (JSON)',
+    },
+    {
+      method: 'GET',
+      path: '/api/specs/protocols/:vendor/:id',
+      description: 'Get full CAN protocol specification',
+      response: 'Complete protocol object (JSON)',
+    },
+    {
+      method: 'GET',
+      path: '/api/specs/protocols-raw/:vendor/:id',
+      description: 'Download raw YAML protocol file',
+      response: 'Raw YAML file',
+    },
+  ];
+
   const codeExample = `openecualliance: "1.0"
 type: adapter
 id: haltech-nsp
@@ -136,6 +175,27 @@ channels:
     source_names:
       - "Engine RPM"
       - "RPM"`;
+
+  const apiExampleFetch = `// Fetch all adapters
+const response = await fetch('https://openecualliance.org/api/specs/adapters');
+const adapters = await response.json();
+
+// Fetch specific adapter
+const adapter = await fetch('https://openecualliance.org/api/specs/adapters/haltech/haltech-nsp');
+const haltechSpec = await adapter.json();
+
+// Download raw YAML
+const yaml = await fetch('https://openecualliance.org/api/specs/adapters-raw/haltech/haltech-nsp');
+const yamlText = await yaml.text();`;
+
+  const apiExampleCurl = `# List all adapters
+curl https://openecualliance.org/api/specs/adapters
+
+# Get specific adapter (parsed JSON)
+curl https://openecualliance.org/api/specs/adapters/haltech/haltech-nsp
+
+# Download raw YAML
+curl https://openecualliance.org/api/specs/adapters-raw/haltech/haltech-nsp`;
 </script>
 
 <template>
@@ -144,9 +204,61 @@ channels:
       <!-- Header -->
       <div class="mb-12">
         <UBadge color="primary" variant="subtle" class="mb-4"> Version 1.0 </UBadge>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2">OpenECU Specification</h1>
-        <p class="text-lg text-muted">YAML-based specifications for ECU adapters and CAN protocols.</p>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">OpenECU Specification & API</h1>
+        <p class="text-lg text-muted">YAML-based specifications for ECU adapters and CAN protocols, accessible via public REST API.</p>
       </div>
+
+      <!-- API Endpoints -->
+      <section id="api-endpoints" class="mb-12">
+        <h2 class="text-xl font-semibold mb-4">Public API Endpoints</h2>
+        <p class="text-muted mb-4">
+          Access specs programmatically via REST API. All endpoints return JSON by default, with raw YAML available via
+          <code class="bg-muted px-1.5 py-0.5 rounded text-xs">*-raw</code> endpoints.
+        </p>
+        <UCard>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-default">
+                  <th class="text-left py-2 pr-4 font-semibold w-20">Method</th>
+                  <th class="text-left py-2 pr-4 font-semibold">Endpoint</th>
+                  <th class="text-left py-2 pr-4 font-semibold">Description</th>
+                  <th class="text-left py-2 font-semibold">Response</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="endpoint in apiEndpoints" :key="endpoint.path" class="border-b border-default last:border-0">
+                  <td class="py-2 pr-4">
+                    <UBadge color="success" variant="subtle" size="xs">
+                      {{ endpoint.method }}
+                    </UBadge>
+                  </td>
+                  <td class="py-2 pr-4">
+                    <code class="bg-muted px-1.5 py-0.5 rounded text-xs">{{ endpoint.path }}</code>
+                  </td>
+                  <td class="py-2 pr-4 text-muted">{{ endpoint.description }}</td>
+                  <td class="py-2 text-muted text-xs">{{ endpoint.response }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </UCard>
+      </section>
+
+      <!-- API Examples -->
+      <section class="mb-12">
+        <h2 class="text-xl font-semibold mb-4">API Usage Examples</h2>
+        <div class="space-y-4">
+          <UCard>
+            <h3 class="font-semibold mb-3 text-sm">JavaScript / TypeScript</h3>
+            <CodeBlock lang="javascript" :code="apiExampleFetch" />
+          </UCard>
+          <UCard>
+            <h3 class="font-semibold mb-3 text-sm">cURL</h3>
+            <CodeBlock lang="bash" :code="apiExampleCurl" />
+          </UCard>
+        </div>
+      </section>
 
       <!-- Spec Types -->
       <section class="mb-12">
@@ -272,7 +384,7 @@ check-jsonschema --schemafile schema/adapter.schema.json your-adapter.yaml"
       <!-- Footer Links -->
       <div class="flex flex-wrap gap-3">
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance"
           target="_blank"
           icon="i-simple-icons-github"
           color="neutral"
@@ -282,7 +394,7 @@ check-jsonschema --schemafile schema/adapter.schema.json your-adapter.yaml"
           GitHub Repository
         </UButton>
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs/tree/main/schema"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance/tree/main/specs/schema"
           target="_blank"
           icon="i-heroicons-code-bracket"
           color="neutral"

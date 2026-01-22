@@ -483,7 +483,7 @@
       <div class="flex flex-col sm:flex-row gap-4">
         <UButton to="/docs/compliance" icon="i-heroicons-check-badge" size="lg"> Compliance Levels </UButton>
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/BRANDING.md"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance/blob/main/BRANDING.md"
           target="_blank"
           icon="i-simple-icons-github"
           color="neutral"

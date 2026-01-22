@@ -5,9 +5,9 @@
   useSeoMeta({
     title: 'Contribute - OpenECU Alliance',
     description:
-      'Learn how to contribute ECU log adapters, CAN Bus protocols, and 3D printable models to the OpenECU Alliance.',
+      'Contribute ECU log adapters, CAN Bus protocols, and 3D models. Your contributions are instantly available via our public API.',
     ogTitle: 'Contribute to OpenECU Alliance',
-    ogDescription: 'Join the community and contribute ECU log adapters, CAN protocols, and 3D printable accessories.',
+    ogDescription: 'Join the community and contribute specs that are instantly accessible via public API to developers worldwide.',
     twitterCard: 'summary_large_image',
   });
 
@@ -22,13 +22,13 @@
   const waysToContribute = [
     {
       type: 'Submit Adapters',
-      description: 'Add support for new ECU log formats',
+      description: 'Add support for new ECU log formats (instantly available via API)',
       difficulty: 'Beginner',
       color: 'success' as const,
     },
     {
       type: 'Submit Protocols',
-      description: 'Define CAN Bus messages and signals',
+      description: 'Define CAN Bus messages (instantly available via API)',
       difficulty: 'Intermediate',
       color: 'warning' as const,
     },
@@ -112,21 +112,21 @@
     {
       step: 1,
       title: 'Fork and Clone',
-      description: 'Fork the OECUASpecs repository and clone it locally.',
-      code: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
-cd OECUASpecs`,
+      description: 'Fork the OpenECUAlliance repository and clone it locally.',
+      code: `git clone https://github.com/YOUR-USERNAME/OpenECUAlliance.git
+cd OpenECUAlliance`,
     },
     {
       step: 2,
       title: 'Create Vendor Directory',
       description: "Create a directory for your vendor if it doesn't exist. Use lowercase names.",
-      code: 'mkdir -p adapters/vendorname',
+      code: 'mkdir -p specs/adapters/vendorname',
     },
     {
       step: 3,
       title: 'Create Adapter File',
       description: 'Create your adapter file following the naming convention: {vendor}-{format}.adapter.yaml',
-      code: 'touch adapters/vendorname/vendorname-format.adapter.yaml',
+      code: 'touch specs/adapters/vendorname/vendorname-format.adapter.yaml',
     },
     {
       step: 4,
@@ -141,15 +141,15 @@ cd OECUASpecs`,
 npm install -g ajv-cli
 
 # Validate
-ajv validate -s schema/adapter.schema.json -d adapters/vendorname/vendorname-format.adapter.yaml`,
+ajv validate -s specs/schema/adapter.schema.json -d specs/adapters/vendorname/vendorname-format.adapter.yaml`,
     },
     {
       step: 6,
       title: 'Submit Pull Request',
-      description: 'Push your changes and create a pull request on GitHub.',
+      description: 'Push your changes and create a pull request on GitHub. Once merged, your adapter is instantly available via the API!',
       code: `git checkout -b add-vendorname-adapter
-git add adapters/vendorname/
-git commit -m "Add adapter for VendorName Format"
+git add specs/adapters/vendorname/
+git commit -m "adapter: Add support for VendorName Format"
 git push origin add-vendorname-adapter`,
     },
   ];
@@ -266,8 +266,8 @@ npm install -g ajv-cli
 pip install check-jsonschema`,
 
     validateAll: `# Using ajv-cli
-for f in adapters/**/*.adapter.yaml; do
-  ajv validate -s schema/adapter.schema.json -d "$f"
+for f in specs/adapters/**/*.adapter.yaml; do
+  ajv validate -s specs/schema/adapter.schema.json -d "$f"
 done`,
   };
 </script>
@@ -278,8 +278,7 @@ done`,
       <div class="mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">Contribute</h1>
         <p class="text-lg text-muted">
-          Thank you for your interest in contributing to the OpenECU Alliance! Learn how to contribute adapters,
-          protocols, 3D models, and more.
+          Thank you for your interest in contributing to the OpenECU Alliance! Your contributions are instantly available via our public API. Learn how to contribute adapters, protocols, 3D models, and more.
         </p>
       </div>
 
@@ -341,7 +340,7 @@ done`,
       <!-- Contributing Adapters -->
       <section class="mb-12">
         <h2 class="text-2xl font-bold mb-4">Contributing Adapters</h2>
-        <p class="text-muted mb-6">Adapters are the primary way the community expands OpenECU Spec coverage.</p>
+        <p class="text-muted mb-6">Adapters you contribute are automatically available via our public API for developers worldwide to fetch programmatically.</p>
 
         <!-- Before You Start -->
         <UCard class="mb-6">
@@ -646,7 +645,7 @@ done`,
       <!-- CTA -->
       <div class="flex flex-wrap gap-4">
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance"
           target="_blank"
           icon="i-simple-icons-github"
           size="lg"

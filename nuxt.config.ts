@@ -24,6 +24,14 @@ export default defineNuxtConfig({
         '/spec',
         '/ecosystem',
         '/contribute',
+        '/api/adapters',
+        '/api/adapters/*',
+        '/api/protocols',
+        '/api/protocols/*',
+        '/api/specs',
+        '/api/specs/*',
+        '/api/assets',
+        '/api/assets/*',
       ],
     },
   },
@@ -171,11 +179,11 @@ export default defineNuxtConfig({
   // Runtime configuration
   runtimeConfig: {
     // Private keys (server-only)
-    githubToken: process.env.GITHUB_TOKEN || '',
+    // None currently used
 
     // Public keys (exposed to client)
     public: {
-      adapterCacheTTL: 300, // 5 minutes in seconds
+      adapterCacheTTL: 900, // 15 minutes in seconds (updated from 5 minutes)
     },
   },
 
@@ -188,7 +196,7 @@ export default defineNuxtConfig({
     viewTransition: true,
   },
 
-  // Route rules for caching
+  // Route rules for caching and redirects
   routeRules: {
     // Static pages - cache for 1 hour
     '/': { prerender: true },
@@ -196,5 +204,6 @@ export default defineNuxtConfig({
     '/docs/**': { prerender: true },
     '/ecosystem': { prerender: true },
     '/contribute': { prerender: true },
+
   },
 });

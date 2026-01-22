@@ -1,5 +1,4 @@
-import { parse } from 'yaml';
-import { fetchGitHubFile, getAssetUrl } from '../../../utils/github';
+import { readProtocolFile, getAssetUrl } from '../../../utils/filesystem';
 
 interface ProtocolYaml {
   openecualliance: string;
@@ -77,18 +76,19 @@ export default defineCachedEventHandler(
   async (event) => {
     const vendor = getRouterParam(event, 'vendor');
     const id = getRouterParam(event, 'id');
+    const query = getQuery(event);
+    const version = query.version as string | undefined;
 
     if (!vendor || !id) {
       throw createError({
         statusCode: 400,
-        message: 'Missing vendor or id parameter',
+        statusMessage: 'Missing vendor or id parameter',
       });
     }
 
     try {
-      const path = `protocols/${vendor}/${id}.protocol.yaml`;
-      const content = await fetchGitHubFile(path);
-      const yaml = parse(content) as ProtocolYaml;
+      const { parsed } = await readProtocolFile(vendor, id, version);
+      const yaml = parsed as ProtocolYaml;
 
       // Transform to camelCase
       return {
@@ -161,19 +161,30 @@ export default defineCachedEventHandler(
       };
     } catch (err) {
       console.error(`Failed to fetch protocol ${vendor}/${id}:`, err);
+
+      // Re-throw createError instances
+      if (err && typeof err === 'object' && 'statusCode' in err) {
+        throw err;
+      }
+
       throw createError({
-        statusCode: 404,
-        message: `Protocol not found: ${vendor}/${id}`,
+        statusCode: 500,
+        statusMessage: 'Failed to fetch protocol from filesystem',
+        data: {
+          error: err instanceof Error ? err.message : 'Unknown error',
+        },
       });
     }
   },
   {
-    maxAge: 60 * 5,
+    maxAge: 60 * 15, // Cache for 15 minutes
     name: 'protocol-detail',
     getKey: (event) => {
       const vendor = getRouterParam(event, 'vendor');
       const id = getRouterParam(event, 'id');
-      return `${vendor}/${id}`;
+      const query = getQuery(event);
+      const version = query.version as string | undefined;
+      return version ? `${vendor}/${id}@${version}` : `${vendor}/${id}`;
     },
   }
 );

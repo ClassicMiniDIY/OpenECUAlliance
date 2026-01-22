@@ -1,30 +1,78 @@
 # OpenECU Alliance
 
-The official website for the **OpenECU Spec** - an open specification for standardizing ECU log data formats across the automotive tuning community.
+The official website for the **OpenECU Spec** - an open specification for standardizing ECU log data formats across the automotive tuning community, with a **public REST API** for programmatic access.
 
 ## What is the OpenECU Alliance?
 
 The OpenECU Alliance is an open community that publishes and maintains:
 
 - **The OpenECU Spec** - A YAML-based specification for describing ECU log file formats and channel mappings
+- **Public API** - REST endpoints for fetching adapter and protocol specs programmatically
 - **Adapter Library** - Community-contributed adapters that map vendor-specific channels to canonical IDs
-- **Ecosystem** - Spec-compatible applications and tools that work with any ECU system
+- **Ecosystem** - Applications and tools that integrate with the OpenECU API
 
 ## This Repository
 
 This is the Nuxt 4 website that serves as the public face of the OpenECU Alliance. It provides:
 
+- **Public API** - REST endpoints to fetch specs programmatically (both parsed JSON and raw YAML)
 - **Adapter Browser** - Search and explore adapters for different ECU systems
-- **Specification Documentation** - Reference for the OpenECU Spec format
-- **Ecosystem Showcase** - Spec-compatible applications like [UltraLog](https://ultralog.co)
+- **Specification Documentation** - Reference for the OpenECU Spec format and API endpoints
+- **Ecosystem Showcase** - Applications that integrate with the API like [UltraLog](https://ultralog.co)
 - **Contribution Guide** - How to create and submit new adapters
+
+## Public API
+
+All specs are available via public REST API endpoints:
+
+### Adapters
+
+```bash
+# List all adapters
+GET /api/specs/adapters
+
+# Get specific adapter (parsed JSON)
+GET /api/specs/adapters/:vendor/:id
+
+# Download raw YAML
+GET /api/specs/adapters-raw/:vendor/:id
+```
+
+### Protocols
+
+```bash
+# List all protocols
+GET /api/specs/protocols
+
+# Get specific protocol (parsed JSON)
+GET /api/specs/protocols/:vendor/:id
+
+# Download raw YAML
+GET /api/specs/protocols-raw/:vendor/:id
+```
+
+### Example Usage
+
+```javascript
+// Fetch all adapters
+const response = await fetch('https://openecualliance.org/api/specs/adapters');
+const adapters = await response.json();
+
+// Fetch specific adapter
+const adapter = await fetch('https://openecualliance.org/api/specs/adapters/haltech/haltech-nsp');
+const haltechSpec = await adapter.json();
+```
+
+See the [full API documentation](https://openecualliance.org/spec#api-endpoints) for details.
 
 ## Related Repositories
 
-| Repository                                                           | Description                                               |
-| -------------------------------------------------------------------- | --------------------------------------------------------- |
-| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification |
-| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website                                              |
+| Repository                                                           | Description                                               | Status   |
+| -------------------------------------------------------------------- | --------------------------------------------------------- | -------- |
+| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification | Archived |
+| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website, public API, and all specs                  | Active   |
+
+**Note:** As of January 2026, all specs have been migrated to this repository. The OECUASpecs repository is now archived. Contributions should be made directly to this repository.
 
 ## Supported ECU Systems
 
@@ -58,7 +106,7 @@ cd OpenECUAlliance
 bun install
 ```
 
-> **Note:** Adapter data is fetched directly from the [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs) GitHub repository at runtime.
+> **Note:** Specs are stored locally in the `specs/` directory and served via API routes. Contributions are made directly to this repository.
 
 ### Development Server
 
@@ -89,11 +137,15 @@ bun preview
 
 We welcome contributions! Here's how you can help:
 
-### Contributing Adapters
+### Contributing Adapters & Protocols
 
-1. Fork the [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs) repository
-2. Create a YAML adapter following the specification
-3. Submit a pull request
+When you contribute adapters or protocols, they become instantly available via the public API:
+
+1. Fork this repository (OpenECUAlliance)
+2. Add your YAML file to `specs/adapters/[vendor]/` or `specs/protocols/[vendor]/`
+3. Validate your spec against the JSON Schema
+4. Submit a pull request
+5. Once merged, your spec is instantly available via the API!
 
 See the [Contribution Guide](https://openecualliance.org/contribute) for detailed instructions.
 

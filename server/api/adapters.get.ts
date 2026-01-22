@@ -1,6 +1,5 @@
-import { parse } from 'yaml';
-import { fetchAllAdapterPaths, fetchGitHubFile, getAssetUrl } from '../utils/github';
-import { AdapterYamlSchema, type AdapterYaml } from '../schemas/adapter';
+import { getAllAdapterPaths, readAdapterFile, getAssetUrl } from '../utils/filesystem';
+import { AdapterYamlSchema } from '../schemas/adapter';
 
 interface AdapterBranding {
   logo?: string;
@@ -29,21 +28,22 @@ export default defineCachedEventHandler(
     const adapters: AdapterResponse[] = [];
 
     try {
-      // Fetch list of all adapter files from GitHub
-      const adapterPaths = await fetchAllAdapterPaths();
+      // Get list of all adapter files from filesystem
+      const adapterPaths = await getAllAdapterPaths();
 
-      // Fetch and parse each adapter file
-      const fetchPromises = adapterPaths.map(async ({ vendor, file }) => {
+      // Only process latest versions for the main listing
+      const latestAdapters = adapterPaths.filter((a) => a.isLatest);
+
+      // Read and parse each adapter file
+      const fetchPromises = latestAdapters.map(async ({ vendor, id }) => {
         try {
-          const path = `adapters/${vendor}/${file}`;
-          const content = await fetchGitHubFile(path);
-          const parsedYaml = parse(content);
+          const { parsed } = await readAdapterFile(vendor, id);
 
           // Validate YAML structure with Zod
-          const validationResult = AdapterYamlSchema.safeParse(parsedYaml);
+          const validationResult = AdapterYamlSchema.safeParse(parsed);
 
           if (!validationResult.success) {
-            console.error(`Invalid adapter YAML ${vendor}/${file}:`, validationResult.error.format());
+            console.error(`Invalid adapter YAML ${vendor}/${id}:`, validationResult.error.format());
             return null; // Skip this adapter
           }
 
@@ -80,7 +80,7 @@ export default defineCachedEventHandler(
             branding,
           } as AdapterResponse;
         } catch (err) {
-          console.error(`Failed to fetch adapter ${vendor}/${file}:`, err);
+          console.error(`Failed to fetch adapter ${vendor}/${id}:`, err);
           return null;
         }
       });
@@ -88,17 +88,17 @@ export default defineCachedEventHandler(
       const results = await Promise.all(fetchPromises);
       adapters.push(...results.filter((a): a is AdapterResponse => a !== null));
     } catch (err) {
-      console.error('Failed to fetch adapters from GitHub:', err);
+      console.error('Failed to fetch adapters from filesystem:', err);
 
-      // Re-throw createError instances from github utils
+      // Re-throw createError instances
       if (err && typeof err === 'object' && 'statusCode' in err) {
         throw err;
       }
 
       // Throw a proper error instead of returning empty array
       throw createError({
-        statusCode: 502,
-        statusMessage: 'Unable to fetch adapters from GitHub',
+        statusCode: 500,
+        statusMessage: 'Unable to fetch adapters from filesystem',
         data: {
           error: err instanceof Error ? err.message : 'Unknown error',
           timestamp: new Date().toISOString(),
@@ -114,7 +114,7 @@ export default defineCachedEventHandler(
     });
   },
   {
-    maxAge: 60 * 5, // Cache for 5 minutes
+    maxAge: 60 * 15, // Cache for 15 minutes
     name: 'adapters-list',
     getKey: () => 'all',
   }

@@ -1,5 +1,4 @@
-import { parse } from 'yaml';
-import { fetchAllProtocolPaths, fetchGitHubFile, getAssetUrl } from '../utils/github';
+import { getAllProtocolPaths, readProtocolFile, getAssetUrl } from '../utils/filesystem';
 
 interface ProtocolYaml {
   openecualliance: string;
@@ -57,15 +56,17 @@ export default defineCachedEventHandler(
     const protocols: ProtocolResponse[] = [];
 
     try {
-      // Fetch list of all protocol files from GitHub
-      const protocolPaths = await fetchAllProtocolPaths();
+      // Get list of all protocol files from filesystem
+      const protocolPaths = await getAllProtocolPaths();
 
-      // Fetch and parse each protocol file
-      const fetchPromises = protocolPaths.map(async ({ vendor, file }) => {
+      // Only process latest versions for the main listing
+      const latestProtocols = protocolPaths.filter((p) => p.isLatest);
+
+      // Read and parse each protocol file
+      const fetchPromises = latestProtocols.map(async ({ vendor, id }) => {
         try {
-          const path = `protocols/${vendor}/${file}`;
-          const content = await fetchGitHubFile(path);
-          const yaml = parse(content) as ProtocolYaml;
+          const { parsed } = await readProtocolFile(vendor, id);
+          const yaml = parsed as ProtocolYaml;
 
           // Count total signals across all messages
           const signalCount = yaml.messages.reduce((total, msg) => total + (msg.signals?.length || 0), 0);
@@ -95,7 +96,7 @@ export default defineCachedEventHandler(
             branding,
           } as ProtocolResponse;
         } catch (err) {
-          console.error(`Failed to fetch protocol ${vendor}/${file}:`, err);
+          console.error(`Failed to fetch protocol ${vendor}/${id}:`, err);
           return null;
         }
       });
@@ -103,7 +104,7 @@ export default defineCachedEventHandler(
       const results = await Promise.all(fetchPromises);
       protocols.push(...results.filter((p): p is ProtocolResponse => p !== null));
     } catch (err) {
-      console.error('Failed to fetch protocols from GitHub:', err);
+      console.error('Failed to fetch protocols from filesystem:', err);
     }
 
     // Sort by vendor, then by name
@@ -114,7 +115,7 @@ export default defineCachedEventHandler(
     });
   },
   {
-    maxAge: 60 * 5, // Cache for 5 minutes
+    maxAge: 60 * 15, // Cache for 15 minutes
     name: 'protocols-list',
     getKey: () => 'all',
   }

@@ -134,7 +134,7 @@
     {
       step: 1,
       title: 'Express Interest',
-      description: 'Open a discussion in the OECUASpecs repository with project details',
+      description: 'Open a discussion in the OpenECUAlliance repository with project details',
     },
     {
       step: 2,
@@ -521,11 +521,11 @@
             <div>
               <p class="font-medium mb-1">GitHub Discussions</p>
               <a
-                href="https://github.com/ClassicMiniDIY/OECUASpecs/discussions"
+                href="https://github.com/ClassicMiniDIY/OpenECUAlliance/discussions"
                 target="_blank"
                 class="text-primary hover:underline"
               >
-                OECUASpecs Discussions
+                OpenECUAlliance Discussions
               </a>
             </div>
           </div>
@@ -536,7 +536,7 @@
       <div class="flex flex-col sm:flex-row gap-4">
         <UButton to="/contribute" icon="i-heroicons-gift" size="lg"> Donate a Project </UButton>
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/PROJECT_CHARTER.md"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance/blob/main/PROJECT_CHARTER.md"
           target="_blank"
           icon="i-simple-icons-github"
           color="neutral"

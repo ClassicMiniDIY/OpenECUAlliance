@@ -4,10 +4,10 @@
   useSeoMeta({
     title: 'Documentation - OpenECU Alliance',
     description:
-      'Learn how to create ECU log adapters, CAN Bus protocols, and 3D printable models for the OpenECU Alliance.',
+      'Learn how to use the OpenECU API and create ECU log adapters, CAN Bus protocols, and 3D printable models.',
     ogTitle: 'OpenECU Alliance Documentation',
     ogDescription:
-      'Guides and tutorials for creating ECU log adapters, CAN Bus protocols, and 3D printable accessories.',
+      'API documentation and guides for creating ECU log adapters, CAN Bus protocols, and 3D printable accessories.',
     twitterCard: 'summary_large_image',
   });
 
@@ -22,8 +22,15 @@
     {
       icon: 'i-heroicons-rocket-launch',
       title: 'Getting Started',
-      description: 'Introduction to OpenECU Alliance and the content ecosystem.',
+      description: 'Introduction to OpenECU Alliance and the public API.',
       to: '/docs/getting-started',
+      color: 'primary' as const,
+    },
+    {
+      icon: 'i-heroicons-code-bracket',
+      title: 'Using the API',
+      description: 'Fetch specs programmatically via REST endpoints.',
+      to: '/docs/api',
       color: 'primary' as const,
     },
     {
@@ -53,22 +60,22 @@
     {
       icon: 'i-heroicons-document-text',
       title: 'Full Specification',
-      description: 'Technical reference for all content types.',
+      description: 'Technical reference and API endpoints.',
       to: '/spec',
+      external: false,
+    },
+    {
+      icon: 'i-heroicons-server',
+      title: 'API Reference',
+      description: 'REST endpoints for fetching specs.',
+      to: '/spec#api-endpoints',
       external: false,
     },
     {
       icon: 'i-simple-icons-github',
       title: 'GitHub Repository',
-      description: 'Adapters, protocols, models, and schemas.',
-      to: 'https://github.com/ClassicMiniDIY/OECUASpecs',
-      external: true,
-    },
-    {
-      icon: 'i-heroicons-code-bracket',
-      title: 'JSON Schemas',
-      description: 'Validate your YAML files.',
-      to: 'https://github.com/ClassicMiniDIY/OECUASpecs/tree/main/schema',
+      description: 'Source files and schemas.',
+      to: 'https://github.com/ClassicMiniDIY/OpenECUAlliance',
       external: true,
     },
   ];
@@ -79,7 +86,7 @@
     <UContainer>
       <div class="mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">Documentation</h1>
-        <p class="text-lg text-muted">Learn how to create and contribute to the OpenECU Alliance.</p>
+        <p class="text-lg text-muted">Learn how to create specs and integrate with our public API.</p>
       </div>
 
       <!-- Guides -->

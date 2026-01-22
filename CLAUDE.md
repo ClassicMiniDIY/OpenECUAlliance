@@ -27,7 +27,7 @@ This is the **OpenECU Alliance** website - a Nuxt 4 application that serves as t
 - **UI**: Nuxt UI v4 + Tailwind CSS
 - **Icons**: Heroicons, Lucide, Simple Icons (via @nuxt/icon)
 - **Fonts**: @nuxt/fonts
-- **Data**: Server API reads YAML from sibling OECUASpecs repo
+- **Data**: Server API reads YAML from local `specs/` directory (migrated from OECUASpecs repo)
 
 ## Repository Structure
 
@@ -60,11 +60,27 @@ OpenECUAlliance/
 ├── server/
 │   ├── api/
 │   │   ├── adapters.get.ts           # GET /api/adapters - list all adapters
-│   │   └── adapters/
-│   │       └── [vendor]/
-│   │           └── [id].get.ts       # GET /api/adapters/:vendor/:id - adapter detail
+│   │   ├── adapters/
+│   │   │   └── [vendor]/
+│   │   │       └── [id].get.ts       # GET /api/adapters/:vendor/:id - adapter detail
+│   │   ├── protocols.get.ts          # GET /api/protocols - list all protocols
+│   │   ├── protocols/
+│   │   │   └── [vendor]/
+│   │   │       └── [id].get.ts       # GET /api/protocols/:vendor/:id - protocol detail
+│   │   ├── specs/
+│   │   │   ├── adapters.get.ts       # GET /api/specs/adapters - list with download URLs
+│   │   │   ├── adapters/[vendor]/[id]/raw.get.ts  # Raw YAML download
+│   │   │   ├── protocols.get.ts      # GET /api/specs/protocols - list with download URLs
+│   │   │   └── protocols/[vendor]/[id]/raw.get.ts # Raw YAML download
+│   │   └── assets/
+│   │       └── [type]/
+│   │           └── [filename].get.ts # Asset serving (logos, icons, banners)
 │   └── utils/
-│       └── github.ts                 # GitHub API utilities for fetching adapters
+│       └── filesystem.ts             # Local filesystem utilities for reading specs
+├── specs/
+│   ├── adapters/                     # Adapter YAML files organized by vendor
+│   ├── protocols/                    # Protocol YAML files organized by vendor
+│   └── assets/                       # Branding assets (logos, icons, banners)
 ├── public/
 │   ├── favicon.ico
 │   └── robots.txt
@@ -77,12 +93,12 @@ OpenECUAlliance/
 
 The OpenECU Alliance spans multiple repositories:
 
-| Repository                                                           | Description                                               |
-| -------------------------------------------------------------------- | --------------------------------------------------------- |
-| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification |
-| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website                                              |
+| Repository                                                           | Description                                               | Status   |
+| -------------------------------------------------------------------- | --------------------------------------------------------- | -------- |
+| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification | Archived |
+| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website (includes specs in `specs/` directory)      | Active   |
 
-The website fetches adapters directly from the OECUASpecs GitHub repository via the GitHub API (with 5-minute caching).
+**Migration Note (2026-01-21):** Specs were migrated from the external OECUASpecs repository to this repository's local filesystem. The website now serves specs directly from the `specs/` directory instead of fetching from GitHub API. See `MIGRATION.md` for details.
 
 ## Key Pages
 
@@ -141,23 +157,57 @@ The website fetches adapters directly from the OECUASpecs GitHub repository via 
 
 ## API Routes
 
-### `GET /api/adapters`
+### Main Endpoints (Parsed Data)
 
+#### `GET /api/adapters`
 Returns list of all adapters with summary info:
-
 - `id`, `name`, `version`, `vendor`
 - `description` (first line only)
 - `channelCount`, `categories`, `fileFormat`, `extensions`
+- `branding` with local API URLs
 
-### `GET /api/adapters/[vendor]/[id]`
-
+#### `GET /api/adapters/[vendor]/[id]`
 Returns full adapter detail including:
-
 - Complete metadata
 - File format details
 - All channels with sourceNames
+- Supports `?version=X.Y.Z` query parameter
 
-Both routes fetch YAML files from the OECUASpecs GitHub repository and cache responses for 5 minutes.
+#### `GET /api/protocols`
+Returns list of all protocols with summary info:
+- `id`, `name`, `version`, `vendor`
+- `protocolType`, `baudrate`, `messageCount`, `signalCount`
+
+#### `GET /api/protocols/[vendor]/[id]`
+Returns full protocol detail including messages and signals
+- Supports `?version=X.Y.Z` query parameter
+
+All main endpoints cache responses for **15 minutes**.
+
+### Raw Spec Endpoints (YAML Files)
+
+#### `GET /api/specs/adapters`
+Lists all adapters with download URLs for raw YAML files
+
+#### `GET /api/specs/adapters/[vendor]/[id]/raw`
+Downloads raw adapter YAML file
+- Supports `?version=X.Y.Z` query parameter
+- Sets `Content-Disposition: attachment` header
+
+#### `GET /api/specs/protocols`
+Lists all protocols with download URLs for raw YAML files
+
+#### `GET /api/specs/protocols/[vendor]/[id]/raw`
+Downloads raw protocol YAML file
+- Supports `?version=X.Y.Z` query parameter
+
+### Asset Endpoints
+
+#### `GET /api/assets/[type]/[filename]`
+Serves branding assets (logos, icons, banners)
+- Proper MIME type detection
+- Cached for 24 hours
+- Types: `logos`, `icons`, `banners`
 
 ## Build Commands
 
@@ -193,10 +243,12 @@ bun preview
 
 ### Server API
 
-- Fetches adapter data from GitHub via `server/utils/github.ts`
-- Uses `defineCachedEventHandler` for 5-minute response caching
+- Reads adapter/protocol data from local filesystem via `server/utils/filesystem.ts`
+- Uses `defineCachedEventHandler` for 15-minute response caching
 - YAML parsing via `yaml` package
 - Transforms snake_case YAML to camelCase responses
+- Multi-version support with semantic versioning
+- Path traversal protection and input validation
 
 ### Components
 
@@ -221,7 +273,7 @@ Adapters map vendor-specific names to canonical IDs:
 | `g_lateral`        | Lateral G-Force     | acceleration |
 | `gps_latitude`     | GPS Latitude        | position     |
 
-See `../OECUASpecs/SPECIFICATION.md` for complete reference.
+See `specs/SPECIFICATION.md` for complete reference.
 
 ## Supported Vendors
 

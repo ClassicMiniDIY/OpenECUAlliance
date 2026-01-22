@@ -166,13 +166,13 @@
     {
       icon: 'i-heroicons-document-text',
       title: 'Log Adapters',
-      description: 'Parse ECU log files from any vendor using standardized YAML definitions.',
+      description: 'Parse ECU log files from any vendor using standardized YAML definitions available via API.',
       color: 'primary',
     },
     {
       icon: 'i-heroicons-signal',
       title: 'CAN Protocols',
-      description: 'Real-time CAN Bus message definitions with DBC export for industry tools.',
+      description: 'Real-time CAN Bus message definitions with DBC export, accessible programmatically.',
       color: 'success',
     },
     {
@@ -182,9 +182,9 @@
       color: 'warning',
     },
     {
-      icon: 'i-heroicons-users',
-      title: 'Community Driven',
-      description: 'Open contribution model - anyone can create and share resources.',
+      icon: 'i-heroicons-code-bracket',
+      title: 'Public API',
+      description: 'Fetch specs programmatically with our REST API - both parsed JSON and raw YAML.',
       color: 'neutral',
     },
   ];
@@ -216,7 +216,7 @@
           </h1>
 
           <p class="text-lg sm:text-xl text-muted mb-8 max-w-2xl mx-auto">
-            One community. Shared standards. Free resources for ECU enthusiasts, tuners, and developers.
+            One community. Shared standards. Free resources with public API access for ECU enthusiasts, tuners, and developers.
           </p>
 
           <!-- Unified Search -->
@@ -438,7 +438,7 @@
           <div class="text-center mb-12">
             <h2 class="text-2xl sm:text-3xl font-bold mb-4">What is the OpenECU Alliance?</h2>
             <p class="text-muted max-w-2xl mx-auto">
-              A community-driven initiative providing free, open resources for the automotive ECU enthusiast community.
+              A community-driven initiative providing free, open resources and a public API for the automotive ECU enthusiast community.
             </p>
           </div>
 
@@ -460,9 +460,9 @@
                 <div class="bg-primary/10 p-3 rounded-xl mb-4 inline-flex" aria-hidden="true">
                   <UIcon name="i-heroicons-document-text" class="size-6 text-primary" />
                 </div>
-                <h3 class="font-semibold mb-2">The Spec</h3>
+                <h3 class="font-semibold mb-2">The Spec & API</h3>
                 <p class="text-sm text-muted">
-                  YAML-based specifications that define adapters, protocols, and models with JSON Schema validation.
+                  YAML-based specifications accessible via public API, providing both parsed JSON and raw YAML downloads.
                 </p>
               </div>
             </UCard>
@@ -518,31 +518,32 @@
         </div>
 
         <div class="max-w-2xl mx-auto">
-          <UCard
+          <NuxtLink
             v-for="app in compatibleApps"
             :key="app.name"
-            :as="NuxtLink"
             :to="app.url"
             target="_blank"
             rel="noopener noreferrer"
-            class="hover:ring-2 hover:ring-primary/50 transition-all cursor-pointer"
+            class="block group"
             :aria-label="`${app.name} - ${app.description} (opens in new tab)`"
           >
-            <div class="flex items-center gap-4">
-              <div class="bg-primary/10 p-4 rounded-xl shrink-0" aria-hidden="true">
-                <img v-if="app.logo" :src="app.logo" :alt="`${app.name} logo`" class="size-10 object-contain" />
-                <UIcon v-else name="i-heroicons-cube" class="size-10 text-primary" />
-              </div>
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1">
-                  <h3 class="font-semibold">{{ app.name }}</h3>
-                  <UBadge color="success" variant="subtle" size="md"> Available </UBadge>
+            <UCard class="group-hover:ring-2 group-hover:ring-primary/50 transition-all cursor-pointer">
+              <div class="flex items-center gap-4">
+                <div class="bg-primary/10 p-4 rounded-xl shrink-0" aria-hidden="true">
+                  <img v-if="app.logo" :src="app.logo" :alt="`${app.name} logo`" class="size-10 object-contain" />
+                  <UIcon v-else name="i-heroicons-cube" class="size-10 text-primary" />
                 </div>
-                <p class="text-sm text-muted">{{ app.description }}</p>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h3 class="font-semibold">{{ app.name }}</h3>
+                    <UBadge color="success" variant="subtle" size="md"> Available </UBadge>
+                  </div>
+                  <p class="text-sm text-muted">{{ app.description }}</p>
+                </div>
+                <UIcon name="i-heroicons-arrow-top-right-on-square" class="size-4 text-muted" aria-hidden="true" />
               </div>
-              <UIcon name="i-heroicons-arrow-top-right-on-square" class="size-4 text-muted" aria-hidden="true" />
-            </div>
-          </UCard>
+            </UCard>
+          </NuxtLink>
 
           <p class="text-center text-sm text-muted mt-6">
             Building a spec-compatible app?
@@ -560,33 +561,34 @@
           <div class="text-center mb-12">
             <h2 class="text-2xl sm:text-3xl font-bold mb-4">For Developers</h2>
             <p class="text-muted max-w-2xl mx-auto">
-              The OpenECU Spec makes it easy to add ECU support to your application.
+              Access ECU specs programmatically via our public API. Always up-to-date, no manual downloads required.
             </p>
           </div>
 
           <div class="grid md:grid-cols-2 gap-8">
             <UCard>
-              <h3 class="font-semibold mb-3">Use the Spec</h3>
+              <h3 class="font-semibold mb-3">Use the API</h3>
               <ul class="space-y-2 text-sm text-muted">
                 <li class="flex items-start gap-2">
                   <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
-                  <span>Parse any ECU log format with adapters</span>
+                  <span>Fetch adapter specs programmatically via REST API</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
-                  <span>Use CAN protocols with DBC export</span>
+                  <span>Get parsed JSON or download raw YAML files</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
-                  <span>Leverage community-maintained resources</span>
+                  <span>Always access the latest community-maintained specs</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <UIcon name="i-heroicons-check" class="size-4 text-success shrink-0 mt-0.5" />
                   <span>Add new ECU support without code changes</span>
                 </li>
               </ul>
-              <div class="mt-4">
-                <UButton to="/spec" variant="soft" size="sm"> Read the Spec </UButton>
+              <div class="mt-4 flex gap-2">
+                <UButton to="/spec" variant="soft" size="sm"> API Docs </UButton>
+                <UButton to="/docs" variant="ghost" size="sm"> Guides </UButton>
               </div>
             </UCard>
 

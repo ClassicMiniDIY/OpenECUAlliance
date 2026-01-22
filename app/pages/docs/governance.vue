@@ -384,7 +384,7 @@
       <div class="flex flex-col sm:flex-row gap-4">
         <UButton to="/contribute" icon="i-heroicons-hand-raised" size="lg"> Get Involved </UButton>
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/GOVERNANCE.md"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance/blob/main/GOVERNANCE.md"
           target="_blank"
           icon="i-simple-icons-github"
           color="neutral"

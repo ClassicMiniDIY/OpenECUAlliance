@@ -5,12 +5,12 @@
   });
 
   const codeExamples = {
-    step1: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
-cd OECUASpecs`,
+    step1: `git clone https://github.com/YOUR-USERNAME/OpenECUAlliance.git
+cd OpenECUAlliance`,
 
-    step2: `mkdir -p protocols/vendorname`,
+    step2: `mkdir -p specs/protocols/vendorname`,
 
-    step3: `touch protocols/vendorname/vendorname-protocol.protocol.yaml`,
+    step3: `touch specs/protocols/vendorname/vendorname-protocol.protocol.yaml`,
 
     step4: `openecualliance: "1.0"
 type: protocol
@@ -117,11 +117,11 @@ metadata:
 npm install -g ajv-cli
 
 # Validate
-ajv validate -s schema/protocol.schema.json -d protocols/vendorname/vendorname-broadcast.protocol.yaml`,
+ajv validate -s specs/schema/protocol.schema.json -d specs/protocols/vendorname/vendorname-broadcast.protocol.yaml`,
 
     step6: `git checkout -b add-vendorname-protocol
-git add protocols/vendorname/
-git commit -m "Add CAN protocol for VendorName Broadcast"
+git add specs/protocols/vendorname/
+git commit -m "protocol: Add CAN protocol for VendorName Broadcast"
 git push origin add-vendorname-protocol`,
 
     signalBits: `# Signal position is defined by:
@@ -301,6 +301,10 @@ git push origin add-vendorname-protocol`,
               <code class="bg-muted px-1 rounded">haltech</code>, <code class="bg-muted px-1 rounded">link</code>,
               <code class="bg-muted px-1 rounded">motec</code>, <code class="bg-muted px-1 rounded">aem</code>, etc.
             </p>
+            <p class="text-sm text-muted mt-2">
+              All protocol files go in
+              <code class="bg-muted px-1 rounded">specs/protocols/[vendor]/</code> within this repository.
+            </p>
           </UCard>
         </div>
 
@@ -370,7 +374,9 @@ git push origin add-vendorname-protocol`,
           </div>
           <UCard>
             <CodeBlock lang="bash" :code="codeExamples.step6" />
-            <p class="text-sm text-muted mt-3">Then create a Pull Request on GitHub.</p>
+            <p class="text-sm text-muted mt-3">
+              Then create a Pull Request on GitHub. Once merged, your protocol is instantly available via the public API!
+            </p>
           </UCard>
         </div>
       </section>
@@ -466,7 +472,7 @@ git push origin add-vendorname-protocol`,
       <!-- CTA -->
       <div class="flex flex-col sm:flex-row gap-4">
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance"
           target="_blank"
           icon="i-simple-icons-github"
           color="success"

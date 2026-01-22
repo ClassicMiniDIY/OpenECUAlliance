@@ -245,7 +245,7 @@
           Branding Guidelines
         </UButton>
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs/blob/main/COMPLIANCE.md"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance/blob/main/COMPLIANCE.md"
           target="_blank"
           icon="i-simple-icons-github"
           color="neutral"

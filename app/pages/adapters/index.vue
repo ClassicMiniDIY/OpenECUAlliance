@@ -2,10 +2,10 @@
   useSeoMeta({
     title: 'ECU Log Adapters - OpenECU Alliance',
     description:
-      'Browse log file adapters for popular ECU systems. Parse data from Haltech, ECUMaster, Link, AiM, MoTeC, Speeduino, and more.',
+      'Browse and fetch log file adapters via our public API. Programmatic access to specs for Haltech, ECUMaster, Link, AiM, MoTeC, Speeduino, and more.',
     ogTitle: 'ECU Log Adapters - OpenECU Alliance',
     ogDescription:
-      'Open source log file adapters for Haltech, ECUMaster, Link, AiM, MoTeC, Speeduino, and other popular ECU systems.',
+      'Public API for ECU log file adapters. Fetch specs for Haltech, ECUMaster, Link, AiM, MoTeC, Speeduino, and other popular ECU systems.',
     twitterCard: 'summary_large_image',
   });
 
@@ -55,7 +55,7 @@
         <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">ECU Log Adapters</h1>
 
         <p class="text-lg text-muted mb-8">
-          Browse log file format definitions for popular ECU systems. Parse data from any supported format with ease.
+          Browse log file format definitions for popular ECU systems. Fetch specs via our public API or browse them here.
         </p>
 
         <!-- Search -->

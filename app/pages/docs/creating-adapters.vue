@@ -6,12 +6,12 @@
 
   // Code examples for syntax highlighting
   const codeExamples = {
-    step1: `git clone https://github.com/YOUR-USERNAME/OECUASpecs.git
-cd OECUASpecs`,
+    step1: `git clone https://github.com/YOUR-USERNAME/OpenECUAlliance.git
+cd OpenECUAlliance`,
 
-    step2: `mkdir -p adapters/vendorname`,
+    step2: `mkdir -p specs/adapters/vendorname`,
 
-    step3: `touch adapters/vendorname/vendorname-format.adapter.yaml`,
+    step3: `touch specs/adapters/vendorname/vendorname-format.adapter.yaml`,
 
     step4: `openecualliance: "1.0"
 id: vendorname-format
@@ -67,11 +67,11 @@ metadata:
 npm install -g ajv-cli
 
 # Validate
-ajv validate -s schema/adapter.schema.json -d adapters/vendorname/vendorname-format.adapter.yaml`,
+ajv validate -s specs/schema/adapter.schema.json -d specs/adapters/vendorname/vendorname-format.adapter.yaml`,
 
     step6: `git checkout -b add-vendorname-adapter
-git add adapters/vendorname/
-git commit -m "Add adapter for VendorName Format"
+git add specs/adapters/vendorname/
+git commit -m "adapter: Add support for VendorName Format"
 git push origin add-vendorname-adapter`,
 
     sourceNames: `# Before
@@ -162,6 +162,10 @@ source_names:
               <code class="bg-muted px-1 rounded">haltech</code>, <code class="bg-muted px-1 rounded">link</code>,
               <code class="bg-muted px-1 rounded">motec</code>, <code class="bg-muted px-1 rounded">aem</code>, etc.
             </p>
+            <p class="text-sm text-muted mt-2">
+              All adapter files go in
+              <code class="bg-muted px-1 rounded">specs/adapters/[vendor]/</code> within this repository.
+            </p>
           </UCard>
         </div>
 
@@ -231,7 +235,9 @@ source_names:
           </div>
           <UCard>
             <CodeBlock lang="bash" :code="codeExamples.step6" />
-            <p class="text-sm text-muted mt-3">Then create a Pull Request on GitHub.</p>
+            <p class="text-sm text-muted mt-3">
+              Then create a Pull Request on GitHub. Once merged, your adapter is instantly available via the public API!
+            </p>
           </UCard>
         </div>
       </section>
@@ -301,7 +307,7 @@ source_names:
       <!-- CTA -->
       <div class="flex flex-col sm:flex-row gap-4">
         <UButton
-          to="https://github.com/ClassicMiniDIY/OECUASpecs"
+          to="https://github.com/ClassicMiniDIY/OpenECUAlliance"
           target="_blank"
           icon="i-simple-icons-github"
           size="lg"
