@@ -30,7 +30,7 @@
       icon: 'i-heroicons-code-bracket',
       title: 'Using the API',
       description: 'Fetch specs programmatically via REST endpoints.',
-      to: '/docs/api',
+      to: '/spec#api-endpoints',
       color: 'primary' as const,
     },
     {

@@ -118,9 +118,9 @@
         <!-- Terms -->
         <p class="text-xs text-muted text-center mt-6">
           By signing in, you agree to our
-          <NuxtLink to="/docs/terms" class="text-primary hover:underline">Terms of Service</NuxtLink>
+          <NuxtLink to="/docs/project-charter" class="text-primary hover:underline">Community Guidelines</NuxtLink>
           and
-          <NuxtLink to="/docs/privacy" class="text-primary hover:underline">Privacy Policy</NuxtLink>.
+          <NuxtLink to="/docs/governance" class="text-primary hover:underline">Governance Policy</NuxtLink>.
         </p>
       </UCard>
 
