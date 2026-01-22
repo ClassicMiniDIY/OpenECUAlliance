@@ -96,7 +96,7 @@ The OpenECU Alliance spans multiple repositories:
 | Repository                                                           | Description                                               | Status   |
 | -------------------------------------------------------------------- | --------------------------------------------------------- | -------- |
 | [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification | Archived |
-| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website (includes specs in `specs/` directory)      | Active   |
+| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website (includes specs in `specs/` directory)       | Active   |
 
 **Migration Note (2026-01-21):** Specs were migrated from the external OECUASpecs repository to this repository's local filesystem. The website now serves specs directly from the `specs/` directory instead of fetching from GitHub API. See `MIGRATION.md` for details.
 
@@ -160,26 +160,34 @@ The OpenECU Alliance spans multiple repositories:
 ### Main Endpoints (Parsed Data)
 
 #### `GET /api/adapters`
+
 Returns list of all adapters with summary info:
+
 - `id`, `name`, `version`, `vendor`
 - `description` (first line only)
 - `channelCount`, `categories`, `fileFormat`, `extensions`
 - `branding` with local API URLs
 
 #### `GET /api/adapters/[vendor]/[id]`
+
 Returns full adapter detail including:
+
 - Complete metadata
 - File format details
 - All channels with sourceNames
 - Supports `?version=X.Y.Z` query parameter
 
 #### `GET /api/protocols`
+
 Returns list of all protocols with summary info:
+
 - `id`, `name`, `version`, `vendor`
 - `protocolType`, `baudrate`, `messageCount`, `signalCount`
 
 #### `GET /api/protocols/[vendor]/[id]`
+
 Returns full protocol detail including messages and signals
+
 - Supports `?version=X.Y.Z` query parameter
 
 All main endpoints cache responses for **15 minutes**.
@@ -187,24 +195,32 @@ All main endpoints cache responses for **15 minutes**.
 ### Raw Spec Endpoints (YAML Files)
 
 #### `GET /api/specs/adapters`
+
 Lists all adapters with download URLs for raw YAML files
 
 #### `GET /api/specs/adapters/[vendor]/[id]/raw`
+
 Downloads raw adapter YAML file
+
 - Supports `?version=X.Y.Z` query parameter
 - Sets `Content-Disposition: attachment` header
 
 #### `GET /api/specs/protocols`
+
 Lists all protocols with download URLs for raw YAML files
 
 #### `GET /api/specs/protocols/[vendor]/[id]/raw`
+
 Downloads raw protocol YAML file
+
 - Supports `?version=X.Y.Z` query parameter
 
 ### Asset Endpoints
 
 #### `GET /api/assets/[type]/[filename]`
+
 Serves branding assets (logos, icons, banners)
+
 - Proper MIME type detection
 - Cached for 24 hours
 - Types: `logos`, `icons`, `banners`

@@ -7,7 +7,8 @@
     description:
       'Contribute ECU log adapters, CAN Bus protocols, and 3D models. Your contributions are instantly available via our public API.',
     ogTitle: 'Contribute to OpenECU Alliance',
-    ogDescription: 'Join the community and contribute specs that are instantly accessible via public API to developers worldwide.',
+    ogDescription:
+      'Join the community and contribute specs that are instantly accessible via public API to developers worldwide.',
     twitterCard: 'summary_large_image',
   });
 
@@ -146,7 +147,8 @@ ajv validate -s specs/schema/adapter.schema.json -d specs/adapters/vendorname/ve
     {
       step: 6,
       title: 'Submit Pull Request',
-      description: 'Push your changes and create a pull request on GitHub. Once merged, your adapter is instantly available via the API!',
+      description:
+        'Push your changes and create a pull request on GitHub. Once merged, your adapter is instantly available via the API!',
       code: `git checkout -b add-vendorname-adapter
 git add specs/adapters/vendorname/
 git commit -m "adapter: Add support for VendorName Format"
@@ -278,7 +280,8 @@ done`,
       <div class="mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">Contribute</h1>
         <p class="text-lg text-muted">
-          Thank you for your interest in contributing to the OpenECU Alliance! Your contributions are instantly available via our public API. Learn how to contribute adapters, protocols, 3D models, and more.
+          Thank you for your interest in contributing to the OpenECU Alliance! Your contributions are instantly
+          available via our public API. Learn how to contribute adapters, protocols, 3D models, and more.
         </p>
       </div>
 
@@ -340,7 +343,10 @@ done`,
       <!-- Contributing Adapters -->
       <section class="mb-12">
         <h2 class="text-2xl font-bold mb-4">Contributing Adapters</h2>
-        <p class="text-muted mb-6">Adapters you contribute are automatically available via our public API for developers worldwide to fetch programmatically.</p>
+        <p class="text-muted mb-6">
+          Adapters you contribute are automatically available via our public API for developers worldwide to fetch
+          programmatically.
+        </p>
 
         <!-- Before You Start -->
         <UCard class="mb-6">

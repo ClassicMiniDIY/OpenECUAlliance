@@ -1,10 +1,10 @@
 # OpenECU Alliance Adapter Specification
 # Link ECU LLG Binary Format
 
-openecualliance: "1.0"
+openecualliance: '1.0'
 id: link-llg
-name: "Link ECU LLG Binary"
-version: "1.0.0"
+name: 'Link ECU LLG Binary'
+version: '1.0.0'
 vendor: link
 description: |
   Binary log files from Link ECU standalone engine management systems.
@@ -17,27 +17,26 @@ description: |
   - Channel blocks contain name (200 bytes), unit (200 bytes), and data
   - Data stored as f32 (value, time) pairs
   - Time values in seconds
-website: "https://www.linkecu.com"
-
+website: 'https://www.linkecu.com'
 branding:
   logo: link-logo.svg
   icon: link-icon.svg
   banner: link-banner.png
-  color_primary: "#CF2E2E"
-  color_secondary: "#35074E"
+  color_primary: '#CF2E2E'
+  color_secondary: '#35074E'
 
 file_format:
   type: binary
-  extensions: [".llg", ".llgx"]
+  extensions: ['.llg', '.llgx']
   endianness: little
-  magic_bytes: [0x6C, 0x66, 0x33]  # "lf3" at offset 4
-  specification_url: "https://www.linkecu.com"
+  magic_bytes: [0x6C, 0x66, 0x33] # "lf3" at offset 4
+  specification_url: 'https://www.linkecu.com'
 
 channels:
   # Engine Core
   - id: rpm
-    name: "Engine RPM"
-    description: "Engine speed from crankshaft sensor"
+    name: 'Engine RPM'
+    description: 'Engine speed from crankshaft sensor'
     category: engine
     data_type: float
     unit: rpm
@@ -45,14 +44,14 @@ channels:
     max: 15000
     precision: 0
     source_names:
-      - "RPM"
-      - "Engine RPM"
-      - "Engine Speed"
-      - "Eng Speed"
+      - 'RPM'
+      - 'Engine RPM'
+      - 'Engine Speed'
+      - 'Eng Speed'
 
   - id: tps_main
-    name: "Throttle Position Main"
-    description: "Main throttle position sensor"
+    name: 'Throttle Position Main'
+    description: 'Main throttle position sensor'
     category: engine
     data_type: float
     unit: percent
@@ -60,14 +59,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "TPS (Main)"
-      - "TPS Main"
-      - "TP Main"
-      - "Throttle Position"
+      - 'TPS (Main)'
+      - 'TPS Main'
+      - 'TP Main'
+      - 'Throttle Position'
 
   - id: tps_sub
-    name: "Throttle Position Sub"
-    description: "Secondary throttle position sensor"
+    name: 'Throttle Position Sub'
+    description: 'Secondary throttle position sensor'
     category: engine
     data_type: float
     unit: percent
@@ -75,13 +74,13 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "TPS (Sub)"
-      - "TPS Sub"
-      - "TP Sub"
+      - 'TPS (Sub)'
+      - 'TPS Sub'
+      - 'TP Sub'
 
   - id: ap_main
-    name: "Accelerator Position Main"
-    description: "Main accelerator pedal position"
+    name: 'Accelerator Position Main'
+    description: 'Main accelerator pedal position'
     category: engine
     data_type: float
     unit: percent
@@ -89,14 +88,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "AP (Main)"
-      - "AP Main"
-      - "Accel Position"
-      - "Pedal Position"
+      - 'AP (Main)'
+      - 'AP Main'
+      - 'Accel Position'
+      - 'Pedal Position'
 
   - id: ap_sub
-    name: "Accelerator Position Sub"
-    description: "Secondary accelerator pedal position"
+    name: 'Accelerator Position Sub'
+    description: 'Secondary accelerator pedal position'
     category: engine
     data_type: float
     unit: percent
@@ -104,12 +103,12 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "AP (Sub)"
-      - "AP Sub"
+      - 'AP (Sub)'
+      - 'AP Sub'
 
   - id: map
-    name: "Manifold Pressure"
-    description: "Manifold absolute pressure"
+    name: 'Manifold Pressure'
+    description: 'Manifold absolute pressure'
     category: pressure
     data_type: float
     unit: kpa
@@ -117,13 +116,13 @@ channels:
     max: 400
     precision: 1
     source_names:
-      - "MAP"
-      - "Manifold Pressure"
-      - "MGP"
+      - 'MAP'
+      - 'Manifold Pressure'
+      - 'MGP'
 
   - id: mgp
-    name: "Manifold Gauge Pressure"
-    description: "Manifold gauge pressure (relative)"
+    name: 'Manifold Gauge Pressure'
+    description: 'Manifold gauge pressure (relative)'
     category: pressure
     data_type: float
     unit: kpa
@@ -131,13 +130,13 @@ channels:
     max: 300
     precision: 1
     source_names:
-      - "MGP"
-      - "Man Press"
-      - "Boost"
+      - 'MGP'
+      - 'Man Press'
+      - 'Boost'
 
   - id: barometric
-    name: "Barometric Pressure"
-    description: "Atmospheric pressure"
+    name: 'Barometric Pressure'
+    description: 'Atmospheric pressure'
     category: pressure
     data_type: float
     unit: kpa
@@ -145,15 +144,15 @@ channels:
     max: 110
     precision: 1
     source_names:
-      - "BAP"
-      - "Baro"
-      - "Barometric"
-      - "Atmospheric Pressure"
+      - 'BAP'
+      - 'Baro'
+      - 'Barometric'
+      - 'Atmospheric Pressure'
 
   # Fuel System
   - id: lambda
-    name: "Lambda"
-    description: "Lambda value from wideband O2"
+    name: 'Lambda'
+    description: 'Lambda value from wideband O2'
     category: fuel
     data_type: float
     unit: lambda
@@ -161,14 +160,14 @@ channels:
     max: 1.5
     precision: 3
     source_names:
-      - "Lambda 1"
-      - "Lambda"
-      - "Wideband"
-      - "O2 Lambda"
+      - 'Lambda 1'
+      - 'Lambda'
+      - 'Wideband'
+      - 'O2 Lambda'
 
   - id: lambda_2
-    name: "Lambda 2"
-    description: "Lambda value from second wideband O2"
+    name: 'Lambda 2'
+    description: 'Lambda value from second wideband O2'
     category: fuel
     data_type: float
     unit: lambda
@@ -176,12 +175,12 @@ channels:
     max: 1.5
     precision: 3
     source_names:
-      - "Lambda 2"
-      - "Lambda2"
+      - 'Lambda 2'
+      - 'Lambda2'
 
   - id: afr
-    name: "Air-Fuel Ratio"
-    description: "Calculated AFR from lambda"
+    name: 'Air-Fuel Ratio'
+    description: 'Calculated AFR from lambda'
     category: fuel
     data_type: float
     unit: afr
@@ -189,13 +188,13 @@ channels:
     max: 20
     precision: 2
     source_names:
-      - "AFR"
-      - "Air Fuel Ratio"
-      - "A/F Ratio"
+      - 'AFR'
+      - 'Air Fuel Ratio'
+      - 'A/F Ratio'
 
   - id: lambda_target
-    name: "Lambda Target"
-    description: "Target lambda from fuel table"
+    name: 'Lambda Target'
+    description: 'Target lambda from fuel table'
     category: fuel
     data_type: float
     unit: lambda
@@ -203,13 +202,13 @@ channels:
     max: 1.5
     precision: 3
     source_names:
-      - "Lambda Target"
-      - "Target Lambda"
-      - "CL Lambda Target"
+      - 'Lambda Target'
+      - 'Target Lambda'
+      - 'CL Lambda Target'
 
   - id: pulse_width
-    name: "Injector Pulse Width"
-    description: "Fuel injector pulse width"
+    name: 'Injector Pulse Width'
+    description: 'Fuel injector pulse width'
     category: fuel
     data_type: float
     unit: milliseconds
@@ -217,14 +216,14 @@ channels:
     max: 50
     precision: 2
     source_names:
-      - "Inj PW"
-      - "Injection Time"
-      - "Pulse Width"
-      - "Inj Duty"
+      - 'Inj PW'
+      - 'Injection Time'
+      - 'Pulse Width'
+      - 'Inj Duty'
 
   - id: duty_cycle
-    name: "Injector Duty Cycle"
-    description: "Fuel injector duty cycle"
+    name: 'Injector Duty Cycle'
+    description: 'Fuel injector duty cycle'
     category: fuel
     data_type: float
     unit: percent
@@ -232,13 +231,13 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "Inj DC"
-      - "Injector Duty"
-      - "Duty Cycle"
+      - 'Inj DC'
+      - 'Injector Duty'
+      - 'Duty Cycle'
 
   - id: fuel_pressure
-    name: "Fuel Pressure"
-    description: "Fuel rail pressure"
+    name: 'Fuel Pressure'
+    description: 'Fuel rail pressure'
     category: pressure
     data_type: float
     unit: kpa
@@ -246,13 +245,13 @@ channels:
     max: 1000
     precision: 0
     source_names:
-      - "Fuel Press"
-      - "Fuel Pressure"
-      - "FP"
+      - 'Fuel Press'
+      - 'Fuel Pressure'
+      - 'FP'
 
   - id: fuel_temp
-    name: "Fuel Temperature"
-    description: "Fuel temperature"
+    name: 'Fuel Temperature'
+    description: 'Fuel temperature'
     category: temperature
     data_type: float
     unit: celsius
@@ -260,13 +259,13 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "Fuel Temp"
-      - "Fuel Temperature"
-      - "FT"
+      - 'Fuel Temp'
+      - 'Fuel Temperature'
+      - 'FT'
 
   - id: ve
-    name: "Volumetric Efficiency"
-    description: "Calculated volumetric efficiency"
+    name: 'Volumetric Efficiency'
+    description: 'Calculated volumetric efficiency'
     category: fuel
     data_type: float
     unit: percent
@@ -274,13 +273,13 @@ channels:
     max: 200
     precision: 1
     source_names:
-      - "VE"
-      - "Vol Eff"
-      - "Volumetric Efficiency"
+      - 'VE'
+      - 'Vol Eff'
+      - 'Volumetric Efficiency'
 
   - id: charge_temp
-    name: "Charge Temperature"
-    description: "Intake charge temperature estimate"
+    name: 'Charge Temperature'
+    description: 'Intake charge temperature estimate'
     category: temperature
     data_type: float
     unit: celsius
@@ -288,14 +287,14 @@ channels:
     max: 200
     precision: 1
     source_names:
-      - "Charge Temp"
-      - "ECT"
-      - "Estimated Charge Temp"
+      - 'Charge Temp'
+      - 'ECT'
+      - 'Estimated Charge Temp'
 
   # Ignition System
   - id: ignition_advance
-    name: "Ignition Timing"
-    description: "Spark timing advance"
+    name: 'Ignition Timing'
+    description: 'Spark timing advance'
     category: ignition
     data_type: float
     unit: degrees
@@ -303,14 +302,14 @@ channels:
     max: 60
     precision: 1
     source_names:
-      - "Ign Timing"
-      - "Ignition Angle"
-      - "Spark Advance"
-      - "Timing"
+      - 'Ign Timing'
+      - 'Ignition Angle'
+      - 'Spark Advance'
+      - 'Timing'
 
   - id: dwell
-    name: "Dwell Time"
-    description: "Coil dwell time"
+    name: 'Dwell Time'
+    description: 'Coil dwell time'
     category: ignition
     data_type: float
     unit: milliseconds
@@ -318,13 +317,13 @@ channels:
     max: 10
     precision: 2
     source_names:
-      - "Dwell"
-      - "Dwell Time"
-      - "Coil Dwell"
+      - 'Dwell'
+      - 'Dwell Time'
+      - 'Coil Dwell'
 
   - id: knock_level_1
-    name: "Knock Level 1"
-    description: "Knock sensor 1 signal level"
+    name: 'Knock Level 1'
+    description: 'Knock sensor 1 signal level'
     category: ignition
     data_type: float
     unit: volts
@@ -332,13 +331,13 @@ channels:
     max: 5
     precision: 2
     source_names:
-      - "Knock Level 1"
-      - "Knock 1"
-      - "KL1"
+      - 'Knock Level 1'
+      - 'Knock 1'
+      - 'KL1'
 
   - id: knock_level_2
-    name: "Knock Level 2"
-    description: "Knock sensor 2 signal level"
+    name: 'Knock Level 2'
+    description: 'Knock sensor 2 signal level'
     category: ignition
     data_type: float
     unit: volts
@@ -346,13 +345,13 @@ channels:
     max: 5
     precision: 2
     source_names:
-      - "Knock Level 2"
-      - "Knock 2"
-      - "KL2"
+      - 'Knock Level 2'
+      - 'Knock 2'
+      - 'KL2'
 
   - id: knock_retard
-    name: "Knock Retard"
-    description: "Timing retard from knock control"
+    name: 'Knock Retard'
+    description: 'Timing retard from knock control'
     category: correction
     data_type: float
     unit: degrees
@@ -360,14 +359,14 @@ channels:
     max: 20
     precision: 1
     source_names:
-      - "Knock Retard"
-      - "Knock Trim"
-      - "KCS Retard"
+      - 'Knock Retard'
+      - 'Knock Trim'
+      - 'KCS Retard'
 
   # Temperature Sensors
   - id: coolant_temp
-    name: "Engine Coolant Temperature"
-    description: "Engine coolant temperature"
+    name: 'Engine Coolant Temperature'
+    description: 'Engine coolant temperature'
     category: temperature
     data_type: float
     unit: celsius
@@ -375,14 +374,14 @@ channels:
     max: 150
     precision: 1
     source_names:
-      - "ECT"
-      - "Engine Temp"
-      - "Coolant Temp"
-      - "Water Temp"
+      - 'ECT'
+      - 'Engine Temp'
+      - 'Coolant Temp'
+      - 'Water Temp'
 
   - id: iat
-    name: "Intake Air Temperature"
-    description: "Intake air temperature"
+    name: 'Intake Air Temperature'
+    description: 'Intake air temperature'
     category: temperature
     data_type: float
     unit: celsius
@@ -390,14 +389,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "IAT"
-      - "Intake Temp"
-      - "Air Temp"
-      - "MAT"
+      - 'IAT'
+      - 'Intake Temp'
+      - 'Air Temp'
+      - 'MAT'
 
   - id: oil_temp
-    name: "Oil Temperature"
-    description: "Engine oil temperature"
+    name: 'Oil Temperature'
+    description: 'Engine oil temperature'
     category: temperature
     data_type: float
     unit: celsius
@@ -405,13 +404,13 @@ channels:
     max: 180
     precision: 1
     source_names:
-      - "Oil Temp"
-      - "Engine Oil Temp"
-      - "OT"
+      - 'Oil Temp'
+      - 'Engine Oil Temp'
+      - 'OT'
 
   - id: gearbox_temp
-    name: "Gearbox Temperature"
-    description: "Transmission oil temperature"
+    name: 'Gearbox Temperature'
+    description: 'Transmission oil temperature'
     category: temperature
     data_type: float
     unit: celsius
@@ -419,14 +418,14 @@ channels:
     max: 180
     precision: 1
     source_names:
-      - "Gearbox Temp"
-      - "Trans Temp"
-      - "Diff Temp"
+      - 'Gearbox Temp'
+      - 'Trans Temp'
+      - 'Diff Temp'
 
   # Pressure Sensors
   - id: oil_pressure
-    name: "Oil Pressure"
-    description: "Engine oil pressure"
+    name: 'Oil Pressure'
+    description: 'Engine oil pressure'
     category: pressure
     data_type: float
     unit: kpa
@@ -434,14 +433,14 @@ channels:
     max: 1000
     precision: 0
     source_names:
-      - "Oil Press"
-      - "Oil Pressure"
-      - "OP"
+      - 'Oil Press'
+      - 'Oil Pressure'
+      - 'OP'
 
   # Electrical
   - id: battery_voltage
-    name: "Battery Voltage"
-    description: "System battery voltage"
+    name: 'Battery Voltage'
+    description: 'System battery voltage'
     category: electrical
     data_type: float
     unit: volts
@@ -449,15 +448,15 @@ channels:
     max: 20
     precision: 2
     source_names:
-      - "Batt V"
-      - "Battery"
-      - "Battery Voltage"
-      - "ECU Batt"
+      - 'Batt V'
+      - 'Battery'
+      - 'Battery Voltage'
+      - 'ECU Batt'
 
   # Speed
   - id: vehicle_speed
-    name: "Vehicle Speed"
-    description: "Vehicle ground speed"
+    name: 'Vehicle Speed'
+    description: 'Vehicle ground speed'
     category: speed
     data_type: float
     unit: kph
@@ -465,14 +464,14 @@ channels:
     max: 400
     precision: 1
     source_names:
-      - "Speed"
-      - "Vehicle Speed"
-      - "VSS"
-      - "Ground Speed"
+      - 'Speed'
+      - 'Vehicle Speed'
+      - 'VSS'
+      - 'Ground Speed'
 
   - id: gear
-    name: "Gear Position"
-    description: "Current transmission gear"
+    name: 'Gear Position'
+    description: 'Current transmission gear'
     category: drivetrain
     data_type: int
     unit: gear
@@ -480,13 +479,13 @@ channels:
     max: 8
     precision: 0
     source_names:
-      - "Gear"
-      - "Gear Position"
-      - "Current Gear"
+      - 'Gear'
+      - 'Gear Position'
+      - 'Current Gear'
 
   - id: wheel_speed_fl
-    name: "Wheel Speed FL"
-    description: "Front left wheel speed"
+    name: 'Wheel Speed FL'
+    description: 'Front left wheel speed'
     category: speed
     data_type: float
     unit: kph
@@ -494,13 +493,13 @@ channels:
     max: 400
     precision: 1
     source_names:
-      - "Wheel Spd FL"
-      - "Wheel Speed FL"
-      - "WSS FL"
+      - 'Wheel Spd FL'
+      - 'Wheel Speed FL'
+      - 'WSS FL'
 
   - id: wheel_speed_fr
-    name: "Wheel Speed FR"
-    description: "Front right wheel speed"
+    name: 'Wheel Speed FR'
+    description: 'Front right wheel speed'
     category: speed
     data_type: float
     unit: kph
@@ -508,13 +507,13 @@ channels:
     max: 400
     precision: 1
     source_names:
-      - "Wheel Spd FR"
-      - "Wheel Speed FR"
-      - "WSS FR"
+      - 'Wheel Spd FR'
+      - 'Wheel Speed FR'
+      - 'WSS FR'
 
   - id: wheel_speed_rl
-    name: "Wheel Speed RL"
-    description: "Rear left wheel speed"
+    name: 'Wheel Speed RL'
+    description: 'Rear left wheel speed'
     category: speed
     data_type: float
     unit: kph
@@ -522,13 +521,13 @@ channels:
     max: 400
     precision: 1
     source_names:
-      - "Wheel Spd RL"
-      - "Wheel Speed RL"
-      - "WSS RL"
+      - 'Wheel Spd RL'
+      - 'Wheel Speed RL'
+      - 'WSS RL'
 
   - id: wheel_speed_rr
-    name: "Wheel Speed RR"
-    description: "Rear right wheel speed"
+    name: 'Wheel Speed RR'
+    description: 'Rear right wheel speed'
     category: speed
     data_type: float
     unit: kph
@@ -536,14 +535,14 @@ channels:
     max: 400
     precision: 1
     source_names:
-      - "Wheel Spd RR"
-      - "Wheel Speed RR"
-      - "WSS RR"
+      - 'Wheel Spd RR'
+      - 'Wheel Speed RR'
+      - 'WSS RR'
 
   # Boost Control
   - id: boost_target
-    name: "Boost Target"
-    description: "Target boost pressure"
+    name: 'Boost Target'
+    description: 'Target boost pressure'
     category: pressure
     data_type: float
     unit: kpa
@@ -551,13 +550,13 @@ channels:
     max: 300
     precision: 0
     source_names:
-      - "Boost Target"
-      - "Target Boost"
-      - "WG Target"
+      - 'Boost Target'
+      - 'Target Boost'
+      - 'WG Target'
 
   - id: boost_duty
-    name: "Boost Duty"
-    description: "Wastegate solenoid duty cycle"
+    name: 'Boost Duty'
+    description: 'Wastegate solenoid duty cycle'
     category: engine
     data_type: float
     unit: percent
@@ -565,14 +564,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "Boost DC"
-      - "WG DC"
-      - "Wastegate Duty"
+      - 'Boost DC'
+      - 'WG DC'
+      - 'Wastegate Duty'
 
   # VVT/Cam Control
   - id: vvt_intake_target
-    name: "VVT Intake Target"
-    description: "Target intake cam position"
+    name: 'VVT Intake Target'
+    description: 'Target intake cam position'
     category: engine
     data_type: float
     unit: degrees
@@ -580,13 +579,13 @@ channels:
     max: 50
     precision: 1
     source_names:
-      - "VVT Int Target"
-      - "Inlet Cam Target"
-      - "IVT Target"
+      - 'VVT Int Target'
+      - 'Inlet Cam Target'
+      - 'IVT Target'
 
   - id: vvt_intake_actual
-    name: "VVT Intake Actual"
-    description: "Actual intake cam position"
+    name: 'VVT Intake Actual'
+    description: 'Actual intake cam position'
     category: engine
     data_type: float
     unit: degrees
@@ -594,13 +593,13 @@ channels:
     max: 50
     precision: 1
     source_names:
-      - "VVT Int Actual"
-      - "Inlet Cam Pos"
-      - "IVT Position"
+      - 'VVT Int Actual'
+      - 'Inlet Cam Pos'
+      - 'IVT Position'
 
   - id: vvt_exhaust_target
-    name: "VVT Exhaust Target"
-    description: "Target exhaust cam position"
+    name: 'VVT Exhaust Target'
+    description: 'Target exhaust cam position'
     category: engine
     data_type: float
     unit: degrees
@@ -608,13 +607,13 @@ channels:
     max: 50
     precision: 1
     source_names:
-      - "VVT Exh Target"
-      - "Exhaust Cam Target"
-      - "EVT Target"
+      - 'VVT Exh Target'
+      - 'Exhaust Cam Target'
+      - 'EVT Target'
 
   - id: vvt_exhaust_actual
-    name: "VVT Exhaust Actual"
-    description: "Actual exhaust cam position"
+    name: 'VVT Exhaust Actual'
+    description: 'Actual exhaust cam position'
     category: engine
     data_type: float
     unit: degrees
@@ -622,14 +621,14 @@ channels:
     max: 50
     precision: 1
     source_names:
-      - "VVT Exh Actual"
-      - "Exhaust Cam Pos"
-      - "EVT Position"
+      - 'VVT Exh Actual'
+      - 'Exhaust Cam Pos'
+      - 'EVT Position'
 
   # Electronic Throttle Control
   - id: e_throttle_target
-    name: "E-Throttle Target"
-    description: "Electronic throttle target position"
+    name: 'E-Throttle Target'
+    description: 'Electronic throttle target position'
     category: engine
     data_type: float
     unit: percent
@@ -637,13 +636,13 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "E-Thr Target"
-      - "ETB Target"
-      - "Throttle Target"
+      - 'E-Thr Target'
+      - 'ETB Target'
+      - 'Throttle Target'
 
   - id: e_throttle_position
-    name: "E-Throttle Position"
-    description: "Electronic throttle actual position"
+    name: 'E-Throttle Position'
+    description: 'Electronic throttle actual position'
     category: engine
     data_type: float
     unit: percent
@@ -651,14 +650,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "E-Thr Pos"
-      - "ETB Position"
-      - "Throttle Actual"
+      - 'E-Thr Pos'
+      - 'ETB Position'
+      - 'Throttle Actual'
 
   # Idle Control
   - id: idle_target
-    name: "Idle Target"
-    description: "Target idle speed"
+    name: 'Idle Target'
+    description: 'Target idle speed'
     category: engine
     data_type: float
     unit: rpm
@@ -666,13 +665,13 @@ channels:
     max: 3000
     precision: 0
     source_names:
-      - "Idle Target"
-      - "Target Idle"
-      - "ISC Target"
+      - 'Idle Target'
+      - 'Target Idle'
+      - 'ISC Target'
 
   - id: idle_base
-    name: "Idle Base Position"
-    description: "Idle stepper or solenoid base position"
+    name: 'Idle Base Position'
+    description: 'Idle stepper or solenoid base position'
     category: engine
     data_type: float
     unit: percent
@@ -680,14 +679,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "Idle Base"
-      - "ISC Base"
-      - "Idle Position"
+      - 'Idle Base'
+      - 'ISC Base'
+      - 'Idle Position'
 
   # Corrections
   - id: fuel_trim
-    name: "Closed Loop Trim"
-    description: "Closed loop fuel trim"
+    name: 'Closed Loop Trim'
+    description: 'Closed loop fuel trim'
     category: correction
     data_type: float
     unit: percent
@@ -695,14 +694,14 @@ channels:
     max: 25
     precision: 1
     source_names:
-      - "CL Fuel Trim"
-      - "CLL Trim"
-      - "Fuel Trim"
-      - "Lambda Trim"
+      - 'CL Fuel Trim'
+      - 'CLL Trim'
+      - 'Fuel Trim'
+      - 'Lambda Trim'
 
   - id: ect_fuel_trim
-    name: "ECT Fuel Trim"
-    description: "Coolant temperature fuel trim"
+    name: 'ECT Fuel Trim'
+    description: 'Coolant temperature fuel trim'
     category: correction
     data_type: float
     unit: percent
@@ -710,13 +709,13 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "ECT Fuel Trim"
-      - "ECT Enrich"
-      - "Warmup Enrich"
+      - 'ECT Fuel Trim'
+      - 'ECT Enrich'
+      - 'Warmup Enrich'
 
   - id: iat_fuel_trim
-    name: "IAT Fuel Trim"
-    description: "Intake air temperature fuel trim"
+    name: 'IAT Fuel Trim'
+    description: 'Intake air temperature fuel trim'
     category: correction
     data_type: float
     unit: percent
@@ -724,13 +723,13 @@ channels:
     max: 50
     precision: 1
     source_names:
-      - "IAT Fuel Trim"
-      - "IAT Trim"
+      - 'IAT Fuel Trim'
+      - 'IAT Trim'
 
   # Traction Control
   - id: traction_slip
-    name: "Traction Slip"
-    description: "Wheel slip percentage"
+    name: 'Traction Slip'
+    description: 'Wheel slip percentage'
     category: traction
     data_type: float
     unit: percent
@@ -738,13 +737,13 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "Slip"
-      - "Traction Slip"
-      - "Wheel Slip"
+      - 'Slip'
+      - 'Traction Slip'
+      - 'Wheel Slip'
 
   - id: traction_cut
-    name: "Traction Cut"
-    description: "Traction control ignition cut percentage"
+    name: 'Traction Cut'
+    description: 'Traction control ignition cut percentage'
     category: traction
     data_type: float
     unit: percent
@@ -752,14 +751,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "TC Cut"
-      - "Traction Cut"
-      - "TCS Cut"
+      - 'TC Cut'
+      - 'Traction Cut'
+      - 'TCS Cut'
 
   # Launch Control
   - id: launch_rpm_target
-    name: "Launch RPM Target"
-    description: "Launch control target RPM"
+    name: 'Launch RPM Target'
+    description: 'Launch control target RPM'
     category: engine
     data_type: float
     unit: rpm
@@ -767,14 +766,14 @@ channels:
     max: 10000
     precision: 0
     source_names:
-      - "Launch Target"
-      - "Launch RPM"
-      - "LC Target"
+      - 'Launch Target'
+      - 'Launch RPM'
+      - 'LC Target'
 
   # Analog/Digital Inputs
   - id: an_volt_1
-    name: "Analog Voltage 1"
-    description: "Analog input 1 voltage"
+    name: 'Analog Voltage 1'
+    description: 'Analog input 1 voltage'
     category: electrical
     data_type: float
     unit: volts
@@ -782,13 +781,13 @@ channels:
     max: 5
     precision: 2
     source_names:
-      - "An Volt 1"
-      - "AN1"
-      - "Analog 1"
+      - 'An Volt 1'
+      - 'AN1'
+      - 'Analog 1'
 
   - id: an_volt_2
-    name: "Analog Voltage 2"
-    description: "Analog input 2 voltage"
+    name: 'Analog Voltage 2'
+    description: 'Analog input 2 voltage'
     category: electrical
     data_type: float
     unit: volts
@@ -796,13 +795,13 @@ channels:
     max: 5
     precision: 2
     source_names:
-      - "An Volt 2"
-      - "AN2"
-      - "Analog 2"
+      - 'An Volt 2'
+      - 'AN2'
+      - 'Analog 2'
 
   - id: an_volt_3
-    name: "Analog Voltage 3"
-    description: "Analog input 3 voltage"
+    name: 'Analog Voltage 3'
+    description: 'Analog input 3 voltage'
     category: electrical
     data_type: float
     unit: volts
@@ -810,13 +809,13 @@ channels:
     max: 5
     precision: 2
     source_names:
-      - "An Volt 3"
-      - "AN3"
-      - "Analog 3"
+      - 'An Volt 3'
+      - 'AN3'
+      - 'Analog 3'
 
   - id: an_volt_4
-    name: "Analog Voltage 4"
-    description: "Analog input 4 voltage"
+    name: 'Analog Voltage 4'
+    description: 'Analog input 4 voltage'
     category: electrical
     data_type: float
     unit: volts
@@ -824,14 +823,14 @@ channels:
     max: 5
     precision: 2
     source_names:
-      - "An Volt 4"
-      - "AN4"
-      - "Analog 4"
+      - 'An Volt 4'
+      - 'AN4'
+      - 'Analog 4'
 
   # System
   - id: ecu_temp
-    name: "ECU Temperature"
-    description: "ECU internal temperature"
+    name: 'ECU Temperature'
+    description: 'ECU internal temperature'
     category: system
     data_type: float
     unit: celsius
@@ -839,12 +838,12 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "ECU Temp"
-      - "Internal Temp"
+      - 'ECU Temp'
+      - 'Internal Temp'
 
   - id: error_code
-    name: "Error Code"
-    description: "Active error/fault code"
+    name: 'Error Code'
+    description: 'Active error/fault code'
     category: system
     data_type: int
     unit: code
@@ -852,44 +851,44 @@ channels:
     max: 65535
     precision: 0
     source_names:
-      - "Error Code"
-      - "Fault Code"
-      - "DTC"
+      - 'Error Code'
+      - 'Fault Code'
+      - 'DTC'
 
 metadata:
-  author: "OpenECU Alliance"
-  license: "MIT"
+  author: 'OpenECU Alliance'
+  license: 'MIT'
   tested_with:
-    - "Link G4+"
-    - "Link G4X"
-    - "Link Fury"
-    - "Link Thunder"
-    - "Link Xtreme"
+    - 'Link G4+'
+    - 'Link G4X'
+    - 'Link Fury'
+    - 'Link Thunder'
+    - 'Link Xtreme'
   known_issues:
-    - "Time values may need recalculation relative to first timestamp"
-    - "Channel data uses sample-and-hold for sparse data"
-    - "File format has evolved across ECU generations"
+    - 'Time values may need recalculation relative to first timestamp'
+    - 'Channel data uses sample-and-hold for sparse data'
+    - 'File format has evolved across ECU generations'
   changelog:
-    - version: "1.0.0"
-      date: "2025-01-04"
+    - version: '1.0.0'
+      date: '2025-01-04'
       changes:
-        - "Initial release"
-        - "Support for G4+ and G4X ECU channels"
-        - "Wheel speed and traction control support"
+        - 'Initial release'
+        - 'Support for G4+ and G4X ECU channels'
+        - 'Wheel speed and traction control support'
 
 # Link ECU-specific extensions
 x_link:
   supported_ecus:
-    - "G4+"
-    - "G4X"
-    - "Fury"
-    - "Thunder"
-    - "Xtreme"
-    - "Kurofune"
+    - 'G4+'
+    - 'G4X'
+    - 'Fury'
+    - 'Thunder'
+    - 'Xtreme'
+    - 'Kurofune'
   header_size_offset: 0
   magic_offset: 4
-  utf16_encoding: "little_endian"
+  utf16_encoding: 'little_endian'
   channel_block_structure:
     name_bytes: 200
     unit_bytes: 200
-    data_format: "f32_value_time_pairs"
+    data_format: 'f32_value_time_pairs'

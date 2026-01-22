@@ -4,8 +4,7 @@
     description:
       'Discover applications and tools that integrate with the OpenECU API, including log viewers, tuning software, and analysis tools.',
     ogTitle: 'OpenECU Alliance Ecosystem',
-    ogDescription:
-      'Applications and tools that use the OpenECU API for ECU data logging, analysis, and tuning.',
+    ogDescription: 'Applications and tools that use the OpenECU API for ECU data logging, analysis, and tuning.',
     twitterCard: 'summary_large_image',
   });
 
@@ -38,7 +37,9 @@
       <div class="text-center max-w-3xl mx-auto mb-12">
         <UBadge color="primary" variant="subtle" class="mb-4"> Ecosystem </UBadge>
         <h1 class="text-3xl sm:text-4xl font-bold mb-4">Compatible Applications</h1>
-        <p class="text-lg text-muted">Applications and libraries that integrate with the OpenECU API to access specs programmatically.</p>
+        <p class="text-lg text-muted">
+          Applications and libraries that integrate with the OpenECU API to access specs programmatically.
+        </p>
       </div>
 
       <!-- Compatible Applications -->
@@ -113,7 +114,8 @@
         <div class="py-6">
           <h2 class="text-lg font-bold mb-2">Building Something with the OpenECU API?</h2>
           <p class="text-muted mb-4 max-w-lg mx-auto">
-            If your application integrates with the OpenECU API to fetch adapters, protocols, or models, we'd love to feature it here.
+            If your application integrates with the OpenECU API to fetch adapters, protocols, or models, we'd love to
+            feature it here.
           </p>
           <UButton to="/contribute">Get Listed</UButton>
         </div>

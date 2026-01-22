@@ -216,7 +216,8 @@
           </h1>
 
           <p class="text-lg sm:text-xl text-muted mb-8 max-w-2xl mx-auto">
-            One community. Shared standards. Free resources with public API access for ECU enthusiasts, tuners, and developers.
+            One community. Shared standards. Free resources with public API access for ECU enthusiasts, tuners, and
+            developers.
           </p>
 
           <!-- Unified Search -->
@@ -438,7 +439,8 @@
           <div class="text-center mb-12">
             <h2 class="text-2xl sm:text-3xl font-bold mb-4">What is the OpenECU Alliance?</h2>
             <p class="text-muted max-w-2xl mx-auto">
-              A community-driven initiative providing free, open resources and a public API for the automotive ECU enthusiast community.
+              A community-driven initiative providing free, open resources and a public API for the automotive ECU
+              enthusiast community.
             </p>
           </div>
 
@@ -462,7 +464,8 @@
                 </div>
                 <h3 class="font-semibold mb-2">The Spec & API</h3>
                 <p class="text-sm text-muted">
-                  YAML-based specifications accessible via public API, providing both parsed JSON and raw YAML downloads.
+                  YAML-based specifications accessible via public API, providing both parsed JSON and raw YAML
+                  downloads.
                 </p>
               </div>
             </UCard>

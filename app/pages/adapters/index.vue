@@ -55,7 +55,8 @@
         <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">ECU Log Adapters</h1>
 
         <p class="text-lg text-muted mb-8">
-          Browse log file format definitions for popular ECU systems. Fetch specs via our public API or browse them here.
+          Browse log file format definitions for popular ECU systems. Fetch specs via our public API or browse them
+          here.
         </p>
 
         <!-- Search -->

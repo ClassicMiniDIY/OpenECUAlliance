@@ -6,7 +6,8 @@
     description:
       'YAML-based technical specification for ECU log adapters and CAN Bus protocols. Fetch specs via public REST API.',
     ogTitle: 'OpenECU Spec & API - Technical Specification',
-    ogDescription: 'Public REST API for fetching ECU log adapters and CAN Bus protocol specifications programmatically.',
+    ogDescription:
+      'Public REST API for fetching ECU log adapters and CAN Bus protocol specifications programmatically.',
     twitterCard: 'summary_large_image',
   });
 
@@ -205,7 +206,9 @@ curl https://openecualliance.org/api/specs/adapters-raw/haltech/haltech-nsp`;
       <div class="mb-12">
         <UBadge color="primary" variant="subtle" class="mb-4"> Version 1.0 </UBadge>
         <h1 class="text-3xl sm:text-4xl font-bold mb-2">OpenECU Specification & API</h1>
-        <p class="text-lg text-muted">YAML-based specifications for ECU adapters and CAN protocols, accessible via public REST API.</p>
+        <p class="text-lg text-muted">
+          YAML-based specifications for ECU adapters and CAN protocols, accessible via public REST API.
+        </p>
       </div>
 
       <!-- API Endpoints -->

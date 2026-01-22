@@ -375,7 +375,8 @@ git push origin add-vendorname-protocol`,
           <UCard>
             <CodeBlock lang="bash" :code="codeExamples.step6" />
             <p class="text-sm text-muted mt-3">
-              Then create a Pull Request on GitHub. Once merged, your protocol is instantly available via the public API!
+              Then create a Pull Request on GitHub. Once merged, your protocol is instantly available via the public
+              API!
             </p>
           </UCard>
         </div>

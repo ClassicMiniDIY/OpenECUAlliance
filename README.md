@@ -70,7 +70,7 @@ See the [full API documentation](https://openecualliance.org/spec#api-endpoints)
 | Repository                                                           | Description                                               | Status   |
 | -------------------------------------------------------------------- | --------------------------------------------------------- | -------- |
 | [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification | Archived |
-| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website, public API, and all specs                  | Active   |
+| [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website, public API, and all specs                   | Active   |
 
 **Note:** As of January 2026, all specs have been migrated to this repository. The OECUASpecs repository is now archived. Contributions should be made directly to this repository.
 

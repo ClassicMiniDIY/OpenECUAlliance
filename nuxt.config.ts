@@ -179,7 +179,36 @@ export default defineNuxtConfig({
   // Runtime configuration
   runtimeConfig: {
     // Private keys (server-only)
-    // None currently used
+
+    // Rate limiting configuration
+    rateLimit: {
+      enabled: process.env.RATE_LIMIT_ENABLED !== 'false', // Default: true
+      listPerMinute: parseInt(process.env.RATE_LIMIT_LIST_PER_MINUTE || '30'),
+      listPerHour: parseInt(process.env.RATE_LIMIT_LIST_PER_HOUR || '300'),
+      detailPerMinute: parseInt(process.env.RATE_LIMIT_DETAIL_PER_MINUTE || '60'),
+      detailPerHour: parseInt(process.env.RATE_LIMIT_DETAIL_PER_HOUR || '600'),
+      downloadPerMinute: parseInt(process.env.RATE_LIMIT_DOWNLOAD_PER_MINUTE || '20'),
+      downloadPerHour: parseInt(process.env.RATE_LIMIT_DOWNLOAD_PER_HOUR || '150'),
+      assetPerMinute: parseInt(process.env.RATE_LIMIT_ASSET_PER_MINUTE || '100'),
+      assetPerHour: parseInt(process.env.RATE_LIMIT_ASSET_PER_HOUR || '1000'),
+      modelPerMinute: parseInt(process.env.RATE_LIMIT_MODEL_PER_MINUTE || '40'),
+      modelPerHour: parseInt(process.env.RATE_LIMIT_MODEL_PER_HOUR || '400'),
+      postPerMinute: parseInt(process.env.RATE_LIMIT_POST_PER_MINUTE || '10'),
+      postPerHour: parseInt(process.env.RATE_LIMIT_POST_PER_HOUR || '50'),
+      userPerMinute: parseInt(process.env.RATE_LIMIT_USER_PER_MINUTE || '30'),
+      userPerHour: parseInt(process.env.RATE_LIMIT_USER_PER_HOUR || '300'),
+      blockDuration: parseInt(process.env.RATE_LIMIT_BLOCK_DURATION || '900'), // 15 minutes
+      whitelist: process.env.RATE_LIMIT_WHITELIST?.split(',').map((ip) => ip.trim()) || [],
+    },
+
+    // Security configuration
+    security: {
+      maxRequestSize: parseInt(process.env.SECURITY_MAX_REQUEST_SIZE || String(5 * 1024 * 1024)), // 5MB
+      requestTimeout: parseInt(process.env.SECURITY_REQUEST_TIMEOUT || '30000'), // 30 seconds
+      trustProxy: process.env.SECURITY_TRUST_PROXY !== 'false', // Default: true
+      logViolations: process.env.SECURITY_LOG_VIOLATIONS !== 'false', // Default: true
+      logSuspiciousPatterns: process.env.SECURITY_LOG_SUSPICIOUS !== 'false', // Default: true
+    },
 
     // Public keys (exposed to client)
     public: {
@@ -204,6 +233,5 @@ export default defineNuxtConfig({
     '/docs/**': { prerender: true },
     '/ecosystem': { prerender: true },
     '/contribute': { prerender: true },
-
   },
 });

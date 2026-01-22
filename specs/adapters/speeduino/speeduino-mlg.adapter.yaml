@@ -1,10 +1,10 @@
 # OpenECU Alliance Adapter Specification
 # Speeduino MegaLogViewer (.mlg) Binary Format
 
-openecualliance: "1.0"
+openecualliance: '1.0'
 id: speeduino-mlg
-name: "Speeduino MLG Binary"
-version: "1.0.0"
+name: 'Speeduino MLG Binary'
+version: '1.0.0'
 vendor: speeduino
 description: |
   Binary log files from Speeduino open-source ECU in MegaLogViewer format.
@@ -16,27 +16,26 @@ description: |
   - Values: (raw_value + transform) * scale
   - Big-endian byte order
   - Timestamp wraps at 65535ms (~65.5 seconds)
-website: "https://speeduino.com"
-
+website: 'https://speeduino.com'
 branding:
   logo: speeduino-logo.png
   icon: speeduino-icon.png
   banner: speeduino-banner.png
-  color_primary: "#3498DB"
-  color_secondary: "#2C3E50"
+  color_primary: '#3498DB'
+  color_secondary: '#2C3E50'
 
 file_format:
   type: binary
-  extensions: [".mlg"]
+  extensions: ['.mlg']
   endianness: big
-  magic_bytes: [0x4D, 0x4C, 0x56, 0x4C, 0x47]  # "MLVLG"
-  specification_url: "https://github.com/speeduino/speeduino"
+  magic_bytes: [0x4D, 0x4C, 0x56, 0x4C, 0x47] # "MLVLG"
+  specification_url: 'https://github.com/speeduino/speeduino'
 
 channels:
   # Engine Core
   - id: rpm
-    name: "Engine RPM"
-    description: "Engine speed"
+    name: 'Engine RPM'
+    description: 'Engine speed'
     category: engine
     data_type: float
     unit: rpm
@@ -44,12 +43,12 @@ channels:
     max: 15000
     precision: 0
     source_names:
-      - "RPM"
-      - "Engine Speed"
+      - 'RPM'
+      - 'Engine Speed'
 
   - id: tps
-    name: "Throttle Position"
-    description: "Throttle position sensor"
+    name: 'Throttle Position'
+    description: 'Throttle position sensor'
     category: engine
     data_type: float
     unit: percent
@@ -57,13 +56,13 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "TPS"
-      - "Throttle"
-      - "TPS ADC"
+      - 'TPS'
+      - 'Throttle'
+      - 'TPS ADC'
 
   - id: map
-    name: "Manifold Pressure"
-    description: "Manifold absolute pressure"
+    name: 'Manifold Pressure'
+    description: 'Manifold absolute pressure'
     category: pressure
     data_type: float
     unit: kpa
@@ -71,12 +70,12 @@ channels:
     max: 400
     precision: 1
     source_names:
-      - "MAP"
-      - "Manifold Pressure"
+      - 'MAP'
+      - 'Manifold Pressure'
 
   - id: ve
-    name: "VE"
-    description: "Volumetric Efficiency from VE table"
+    name: 'VE'
+    description: 'Volumetric Efficiency from VE table'
     category: fuel
     data_type: float
     unit: percent
@@ -84,14 +83,14 @@ channels:
     max: 200
     precision: 1
     source_names:
-      - "VE"
-      - "VE1"
-      - "VE Current"
+      - 'VE'
+      - 'VE1'
+      - 'VE Current'
 
   # Fuel System
   - id: afr
-    name: "Air-Fuel Ratio"
-    description: "Measured AFR from O2 sensor"
+    name: 'Air-Fuel Ratio'
+    description: 'Measured AFR from O2 sensor'
     category: fuel
     data_type: float
     unit: afr
@@ -99,13 +98,13 @@ channels:
     max: 20
     precision: 2
     source_names:
-      - "AFR"
-      - "O2"
-      - "AFR Primary"
+      - 'AFR'
+      - 'O2'
+      - 'AFR Primary'
 
   - id: afr_target
-    name: "AFR Target"
-    description: "Target AFR from tune"
+    name: 'AFR Target'
+    description: 'Target AFR from tune'
     category: fuel
     data_type: float
     unit: afr
@@ -113,13 +112,13 @@ channels:
     max: 20
     precision: 2
     source_names:
-      - "AFR Target"
-      - "Target AFR"
-      - "AFR Tgt"
+      - 'AFR Target'
+      - 'Target AFR'
+      - 'AFR Tgt'
 
   - id: pulse_width
-    name: "Pulse Width"
-    description: "Injector pulse width"
+    name: 'Pulse Width'
+    description: 'Injector pulse width'
     category: fuel
     data_type: float
     unit: milliseconds
@@ -127,13 +126,13 @@ channels:
     max: 50
     precision: 2
     source_names:
-      - "PW"
-      - "Pulse Width"
-      - "PW1"
+      - 'PW'
+      - 'Pulse Width'
+      - 'PW1'
 
   - id: duty_cycle
-    name: "Injector Duty"
-    description: "Injector duty cycle"
+    name: 'Injector Duty'
+    description: 'Injector duty cycle'
     category: fuel
     data_type: float
     unit: percent
@@ -141,12 +140,12 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "Duty"
-      - "Injector Duty"
+      - 'Duty'
+      - 'Injector Duty'
 
   - id: ego_correction
-    name: "EGO Correction"
-    description: "Closed-loop O2 correction"
+    name: 'EGO Correction'
+    description: 'Closed-loop O2 correction'
     category: correction
     data_type: float
     unit: percent
@@ -154,14 +153,14 @@ channels:
     max: 25
     precision: 1
     source_names:
-      - "EGO Correction"
-      - "EGO Corr"
-      - "O2 Correction"
+      - 'EGO Correction'
+      - 'EGO Corr'
+      - 'O2 Correction'
 
   # Ignition System
   - id: ignition_advance
-    name: "Ignition Advance"
-    description: "Spark timing advance"
+    name: 'Ignition Advance'
+    description: 'Spark timing advance'
     category: ignition
     data_type: float
     unit: degrees
@@ -169,13 +168,13 @@ channels:
     max: 60
     precision: 1
     source_names:
-      - "Advance"
-      - "Spark Advance"
-      - "Timing"
+      - 'Advance'
+      - 'Spark Advance'
+      - 'Timing'
 
   - id: dwell
-    name: "Dwell"
-    description: "Coil dwell time"
+    name: 'Dwell'
+    description: 'Coil dwell time'
     category: ignition
     data_type: float
     unit: milliseconds
@@ -183,13 +182,13 @@ channels:
     max: 10
     precision: 2
     source_names:
-      - "Dwell"
-      - "Dwell Time"
+      - 'Dwell'
+      - 'Dwell Time'
 
   # Temperature Sensors
   - id: coolant_temp
-    name: "Coolant Temperature"
-    description: "Engine coolant temperature"
+    name: 'Coolant Temperature'
+    description: 'Engine coolant temperature'
     category: temperature
     data_type: float
     unit: celsius
@@ -197,13 +196,13 @@ channels:
     max: 150
     precision: 1
     source_names:
-      - "CLT"
-      - "Coolant"
-      - "Coolant Temp"
+      - 'CLT'
+      - 'Coolant'
+      - 'Coolant Temp'
 
   - id: iat
-    name: "Intake Air Temperature"
-    description: "Intake air temperature"
+    name: 'Intake Air Temperature'
+    description: 'Intake air temperature'
     category: temperature
     data_type: float
     unit: celsius
@@ -211,14 +210,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "IAT"
-      - "Intake Temp"
-      - "Air Temp"
+      - 'IAT'
+      - 'Intake Temp'
+      - 'Air Temp'
 
   # Electrical
   - id: battery_voltage
-    name: "Battery Voltage"
-    description: "System voltage"
+    name: 'Battery Voltage'
+    description: 'System voltage'
     category: electrical
     data_type: float
     unit: volts
@@ -226,14 +225,14 @@ channels:
     max: 20
     precision: 2
     source_names:
-      - "Battery"
-      - "Batt V"
-      - "Battery Voltage"
+      - 'Battery'
+      - 'Batt V'
+      - 'Battery Voltage'
 
   # Corrections
   - id: warmup_enrichment
-    name: "Warmup Enrichment"
-    description: "Cold engine fuel enrichment"
+    name: 'Warmup Enrichment'
+    description: 'Cold engine fuel enrichment'
     category: correction
     data_type: float
     unit: percent
@@ -241,12 +240,12 @@ channels:
     max: 200
     precision: 0
     source_names:
-      - "WUE"
-      - "Warmup Enrich"
+      - 'WUE'
+      - 'Warmup Enrich'
 
   - id: accel_enrichment
-    name: "Acceleration Enrichment"
-    description: "Transient fuel enrichment"
+    name: 'Acceleration Enrichment'
+    description: 'Transient fuel enrichment'
     category: correction
     data_type: float
     unit: percent
@@ -254,13 +253,13 @@ channels:
     max: 200
     precision: 0
     source_names:
-      - "Accel"
-      - "AE"
-      - "Accel Enrich"
+      - 'Accel'
+      - 'AE'
+      - 'Accel Enrich'
 
   - id: gamma_enrichment
-    name: "Gamma Enrichment"
-    description: "Total fuel correction multiplier"
+    name: 'Gamma Enrichment'
+    description: 'Total fuel correction multiplier'
     category: correction
     data_type: float
     unit: percent
@@ -268,13 +267,13 @@ channels:
     max: 200
     precision: 0
     source_names:
-      - "Gamma"
-      - "Total Enrich"
+      - 'Gamma'
+      - 'Total Enrich'
 
   # Boost Control
   - id: boost_target
-    name: "Boost Target"
-    description: "Target boost from boost control"
+    name: 'Boost Target'
+    description: 'Target boost from boost control'
     category: pressure
     data_type: float
     unit: kpa
@@ -282,12 +281,12 @@ channels:
     max: 300
     precision: 0
     source_names:
-      - "Boost Target"
-      - "Target Boost"
+      - 'Boost Target'
+      - 'Target Boost'
 
   - id: boost_duty
-    name: "Boost Duty"
-    description: "Boost solenoid duty cycle"
+    name: 'Boost Duty'
+    description: 'Boost solenoid duty cycle'
     category: engine
     data_type: float
     unit: percent
@@ -295,13 +294,13 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "Boost Duty"
-      - "VVT Duty"
+      - 'Boost Duty'
+      - 'VVT Duty'
 
   # Idle Control
   - id: idle_load
-    name: "Idle Load"
-    description: "Idle air control position"
+    name: 'Idle Load'
+    description: 'Idle air control position'
     category: engine
     data_type: float
     unit: percent
@@ -309,14 +308,14 @@ channels:
     max: 100
     precision: 1
     source_names:
-      - "Idle Load"
-      - "IAC"
-      - "IAC Position"
+      - 'Idle Load'
+      - 'IAC'
+      - 'IAC Position'
 
   # System
   - id: loops_per_second
-    name: "Loops Per Second"
-    description: "ECU loop rate"
+    name: 'Loops Per Second'
+    description: 'ECU loop rate'
     category: system
     data_type: float
     unit: hz
@@ -324,12 +323,12 @@ channels:
     max: 10000
     precision: 0
     source_names:
-      - "loopsPerSecond"
-      - "Loops"
+      - 'loopsPerSecond'
+      - 'Loops'
 
   - id: free_ram
-    name: "Free RAM"
-    description: "Available memory"
+    name: 'Free RAM'
+    description: 'Available memory'
     category: system
     data_type: float
     unit: bytes
@@ -337,28 +336,28 @@ channels:
     max: 10000
     precision: 0
     source_names:
-      - "freeRAM"
-      - "Free RAM"
+      - 'freeRAM'
+      - 'Free RAM'
 
 metadata:
-  author: "OpenECU Alliance"
-  license: "MIT"
+  author: 'OpenECU Alliance'
+  license: 'MIT'
   tested_with:
-    - "Speeduino 0.4.x"
-    - "Speeduino 202xxx firmware"
+    - 'Speeduino 0.4.x'
+    - 'Speeduino 202xxx firmware'
   known_issues:
-    - "Timestamp wraps at ~65.5 seconds"
-    - "Channel names/units defined in firmware"
+    - 'Timestamp wraps at ~65.5 seconds'
+    - 'Channel names/units defined in firmware'
   changelog:
-    - version: "1.0.0"
-      date: "2025-01-04"
+    - version: '1.0.0'
+      date: '2025-01-04'
       changes:
-        - "Initial release"
-        - "Core Speeduino channels"
+        - 'Initial release'
+        - 'Core Speeduino channels'
 
 # Speeduino-specific extensions
 x_speeduino:
   mlg_version: [1, 2]
   field_definition_size_v1: 55
   field_definition_size_v2: 89
-  value_formula: "(raw + transform) * scale"
+  value_formula: '(raw + transform) * scale'

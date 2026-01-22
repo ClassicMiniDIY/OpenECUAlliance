@@ -3,6 +3,7 @@
 This document describes the migration from GitHub API-based spec fetching to local filesystem-based serving.
 
 ## Migration Date
+
 2026-01-21
 
 ## Summary
@@ -70,6 +71,7 @@ Replacement for `server/utils/github.ts` with the following functions:
 - `getAssetUrl(type, filename)` - Generates local API URLs for assets
 
 **Key Features:**
+
 - Multi-version support with semver sorting
 - Path traversal attack prevention
 - Comprehensive error handling
@@ -80,16 +82,19 @@ Replacement for `server/utils/github.ts` with the following functions:
 Created new public-facing endpoints for direct spec access:
 
 #### Adapter Specs
+
 - **GET** `/api/specs/adapters` - Lists all adapters with download URLs
 - **GET** `/api/specs/adapters/:vendor/:id/raw` - Downloads raw adapter YAML
   - Supports `?version=X.Y.Z` query parameter
 
 #### Protocol Specs
+
 - **GET** `/api/specs/protocols` - Lists all protocols with download URLs
 - **GET** `/api/specs/protocols/:vendor/:id/raw` - Downloads raw protocol YAML
   - Supports `?version=X.Y.Z` query parameter
 
 #### Assets
+
 - **GET** `/api/assets/:type/:filename` - Serves asset files
   - Types: `logos`, `icons`, `banners`
   - Proper MIME type detection
@@ -107,6 +112,7 @@ Updated all existing API routes to use filesystem utilities:
 ### 5. Configuration Updates
 
 **nuxt.config.ts:**
+
 - Removed `githubToken` from runtimeConfig (no longer needed)
 - Updated `adapterCacheTTL` from 300s (5 min) to 900s (15 min)
 - Added new API routes to Supabase auth exclusion list:
@@ -116,6 +122,7 @@ Updated all existing API routes to use filesystem utilities:
   - `/api/assets`, `/api/assets/*`
 
 **Cache Duration:**
+
 - All adapter/protocol endpoints: **15 minutes** (up from 5 minutes)
 - Asset endpoints: **24 hours**
 
@@ -124,6 +131,7 @@ Updated all existing API routes to use filesystem utilities:
 **Deleted:** `/Users/colegentry/Development/OpenECUAlliance/server/utils/github.ts`
 
 This file contained:
+
 - GitHub API integration
 - Rate limiting handling
 - Raw file fetching from GitHub
@@ -134,6 +142,7 @@ This file contained:
 The new filesystem utilities support multi-version specs:
 
 ### File Naming Convention
+
 ```
 haltech-nsp.adapter.yaml          # Latest/unversioned
 haltech-nsp.v1.0.0.adapter.yaml   # Specific version
@@ -141,11 +150,13 @@ haltech-nsp.v1.1.0.adapter.yaml   # Newer version
 ```
 
 ### Version Selection Logic
+
 1. If no version specified: returns latest (unversioned file or highest version)
 2. If version specified: returns exact version or 404
 3. Versions sorted using semantic versioning
 
 ### API Usage
+
 ```bash
 # Get latest version
 GET /api/adapters/haltech/haltech-nsp
@@ -168,6 +179,7 @@ GET /api/specs/adapters
 Assets are now served through the API instead of GitHub raw URLs:
 
 ### Before (GitHub)
+
 ```json
 {
   "logo": "https://raw.githubusercontent.com/ClassicMiniDIY/OECUASpecs/main/assets/logos/aim-logo.png"
@@ -175,6 +187,7 @@ Assets are now served through the API instead of GitHub raw URLs:
 ```
 
 ### After (Local API)
+
 ```json
 {
   "logo": "/api/assets/logos/aim-logo.png"
@@ -182,6 +195,7 @@ Assets are now served through the API instead of GitHub raw URLs:
 ```
 
 ### Supported Asset Types
+
 - **Logos:** `.svg`, `.png`, `.jpg`, `.jpeg`
 - **Icons:** `.svg`, `.png`, `.jpg`, `.gif`, `.bmp`
 - **Banners:** All image formats
@@ -197,6 +211,7 @@ Assets are now served through the API instead of GitHub raw URLs:
 ## Breaking Changes
 
 **None.** All existing API endpoints maintain backward compatibility:
+
 - Same response formats
 - Same URL structures
 - Same query parameters
@@ -216,6 +231,7 @@ No GitHub repository access required!
 ## OECUASpecs Repository
 
 The external `OECUASpecs` repository at `github.com/ClassicMiniDIY/OECUASpecs` can now be:
+
 - **Archived** (no longer needed for runtime)
 - **Kept for reference** (historical context)
 - **Used for contributions** (community can still submit PRs, then sync to this repo)
