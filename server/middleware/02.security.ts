@@ -196,8 +196,9 @@ export default defineEventHandler(async (event) => {
 });
 
 // Clean up old entries every hour
+// Use unref() so the interval doesn't prevent Node.js from exiting during build
 if (typeof setInterval !== 'undefined') {
-  setInterval(
+  const cleanupInterval = setInterval(
     () => {
       const now = Date.now();
       const oneHour = 60 * 60 * 1000;
@@ -209,5 +210,10 @@ if (typeof setInterval !== 'undefined') {
       }
     },
     60 * 60 * 1000
-  ); // Run every hour
+  );
+  // Allow Node.js to exit even if this interval is still pending
+  // This is critical for Vercel/Nitro builds to complete
+  if (cleanupInterval.unref) {
+    cleanupInterval.unref();
+  }
 }

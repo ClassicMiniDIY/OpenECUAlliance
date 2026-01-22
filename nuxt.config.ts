@@ -249,6 +249,16 @@ export default defineNuxtConfig({
     viewTransition: true,
   },
 
+  // Vite configuration to suppress build warnings
+  vite: {
+    build: {
+      // Suppress chunk size warnings (Nuxt UI, icons, and SSR bundles are large)
+      chunkSizeWarningLimit: 1000,
+      // Disable sourcemaps in production to avoid Tailwind plugin warnings
+      sourcemap: false,
+    },
+  },
+
   // Route rules for caching and redirects
   routeRules: {
     // Static pages - cache for 1 hour
