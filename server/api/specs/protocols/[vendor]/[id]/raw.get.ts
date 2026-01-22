@@ -1,13 +1,9 @@
-import { readAdapterFile } from '../../../../utils/filesystem';
+import { readProtocolFile } from '../../../../../utils/filesystem';
 
 /**
- * GET /api/specs/adapters-raw/:vendor/:id
- * Returns the raw YAML content of an adapter spec
+ * GET /api/specs/protocols/:vendor/:id/raw
+ * Returns the raw YAML content of a protocol spec
  * Supports optional ?version= query parameter for specific versions
- *
- * Note: Uses -raw suffix in route structure due to Nitro file-based routing limitations.
- * Nitro doesn't support [vendor]/[id]/raw.get.ts pattern (dynamic params followed by static segment).
- * Alternative URL patterns like :vendor/:id/raw would require middleware rewrites that are unreliable.
  */
 export default defineCachedEventHandler(
   async (event) => {
@@ -19,20 +15,20 @@ export default defineCachedEventHandler(
     if (!vendor || !id) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Missing vendor or adapter id',
+        statusMessage: 'Missing vendor or protocol id',
       });
     }
 
     try {
-      const { content } = await readAdapterFile(vendor, id, version);
+      const { content } = await readProtocolFile(vendor, id, version);
 
       // Set appropriate headers for YAML download
       setResponseHeader(event, 'Content-Type', 'text/yaml; charset=utf-8');
-      setResponseHeader(event, 'Content-Disposition', `attachment; filename="${vendor}-${id}.adapter.yaml"`);
+      setResponseHeader(event, 'Content-Disposition', `attachment; filename="${vendor}-${id}.protocol.yaml"`);
 
       return content;
     } catch (err) {
-      console.error(`Failed to fetch raw adapter ${vendor}/${id}:`, err);
+      console.error(`Failed to fetch raw protocol ${vendor}/${id}:`, err);
 
       // Re-throw createError instances
       if (err && typeof err === 'object' && 'statusCode' in err) {
@@ -41,13 +37,13 @@ export default defineCachedEventHandler(
 
       throw createError({
         statusCode: 404,
-        statusMessage: `Adapter not found: ${vendor}/${id}`,
+        statusMessage: `Protocol not found: ${vendor}/${id}`,
       });
     }
   },
   {
     maxAge: 60 * 15, // Cache for 15 minutes
-    name: 'adapter-raw',
+    name: 'protocol-raw',
     getKey: (event) => {
       const vendor = getRouterParam(event, 'vendor');
       const id = getRouterParam(event, 'id');

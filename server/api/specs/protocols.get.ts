@@ -24,8 +24,8 @@ export default defineCachedEventHandler(
         version: protocol.version,
         isLatest: protocol.isLatest,
         downloadUrl: protocol.version
-          ? `/api/specs/protocols-raw/${protocol.vendor}/${protocol.id}?version=${protocol.version}`
-          : `/api/specs/protocols-raw/${protocol.vendor}/${protocol.id}`,
+          ? `/api/specs/protocols/${protocol.vendor}/${protocol.id}/raw?version=${protocol.version}`
+          : `/api/specs/protocols/${protocol.vendor}/${protocol.id}/raw`,
       }));
     } catch (err) {
       console.error('Failed to list protocol specs:', err);

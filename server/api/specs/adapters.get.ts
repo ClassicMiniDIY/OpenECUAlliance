@@ -24,8 +24,8 @@ export default defineCachedEventHandler(
         version: adapter.version,
         isLatest: adapter.isLatest,
         downloadUrl: adapter.version
-          ? `/api/specs/adapters-raw/${adapter.vendor}/${adapter.id}?version=${adapter.version}`
-          : `/api/specs/adapters-raw/${adapter.vendor}/${adapter.id}`,
+          ? `/api/specs/adapters/${adapter.vendor}/${adapter.id}/raw?version=${adapter.version}`
+          : `/api/specs/adapters/${adapter.vendor}/${adapter.id}/raw`,
       }));
     } catch (err) {
       console.error('Failed to list adapter specs:', err);

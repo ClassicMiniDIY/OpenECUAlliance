@@ -45,7 +45,11 @@
       "Bash(ps:*)",
       "Bash(jq:*)",
       "Bash(xargs kill:*)",
-      "Bash(bun dev)"
+      "Bash(bun dev)",
+      "Bash(printf:*)",
+      "Bash(bun install)",
+      "Bash(for i in {1..35})",
+      "Bash(do curl -s -o /dev/null -w \"Request $i: %{http_code}\\\\n\" http://localhost:3000/api/adapters)"
     ]
   }
 }
