@@ -57,6 +57,11 @@ export default defineNuxtConfig({
   // Sitemap configuration
   sitemap: {
     strictNuxtContentPaths: true,
+    // Exclude dynamic routes that require database queries during build
+    exclude: ['/admin/**', '/profile/**', '/login', '/auth/**', '/models/**', '/users/**'],
+    // Disable automatic route discovery to prevent hanging during build
+    autoLastmod: false,
+    discoverImages: false,
   },
 
   app: {
@@ -233,5 +238,43 @@ export default defineNuxtConfig({
     '/docs/**': { prerender: true },
     '/ecosystem': { prerender: true },
     '/contribute': { prerender: true },
+  },
+
+  // Nitro configuration for build optimization
+  nitro: {
+    prerender: {
+      // Disable route crawling to prevent infinite loops and hanging
+      crawlLinks: false,
+      // Don't fail build on prerender errors
+      failOnError: false,
+      // Only prerender explicitly defined routes
+      routes: [
+        '/',
+        '/spec',
+        '/ecosystem',
+        '/contribute',
+        '/docs',
+        '/docs/getting-started',
+        '/docs/creating-adapters',
+        '/docs/creating-protocols',
+        '/docs/creating-models',
+        '/docs/project-charter',
+        '/docs/compliance',
+        '/docs/branding',
+        '/docs/governance',
+      ],
+      // Ignore routes that require database
+      ignore: [
+        '/admin/**',
+        '/profile/**',
+        '/models/**',
+        '/users/**',
+        '/adapters/**',
+        '/protocols/**',
+        '/login',
+        '/auth/**',
+        '/api/**',
+      ],
+    },
   },
 });
