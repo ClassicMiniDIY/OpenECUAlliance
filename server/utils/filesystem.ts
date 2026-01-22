@@ -1,17 +1,9 @@
-import { readdir, readFile, stat } from 'node:fs/promises';
-import { join, extname, basename } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 
 /**
- * Filesystem utilities for reading adapter/protocol specs from local storage
- * This replaces the GitHub API integration with direct filesystem access
+ * Filesystem utilities for reading adapter/protocol specs from Nitro server assets
+ * Uses Nitro's useStorage API for cross-platform compatibility (local dev + Vercel)
  */
-
-// Base path to specs directory (relative to server root)
-const SPECS_BASE_PATH = join(process.cwd(), 'specs');
-const ADAPTERS_PATH = join(SPECS_BASE_PATH, 'adapters');
-const PROTOCOLS_PATH = join(SPECS_BASE_PATH, 'protocols');
-const ASSETS_PATH = join(SPECS_BASE_PATH, 'assets');
 
 /**
  * Validate that a path component doesn't contain traversal attacks
@@ -58,7 +50,7 @@ function extractBaseId(filename: string): string {
 }
 
 /**
- * Get all adapter file paths with metadata
+ * Get all adapter file paths with metadata using Nitro storage
  */
 export async function getAllAdapterPaths(): Promise<
   Array<{
@@ -80,30 +72,40 @@ export async function getAllAdapterPaths(): Promise<
   }> = [];
 
   try {
-    const vendors = await readdir(ADAPTERS_PATH, { withFileTypes: true });
+    const storage = useStorage('assets');
 
-    for (const vendor of vendors) {
-      if (!vendor.isDirectory()) continue;
+    // Get all keys under specs:adapters
+    const allKeys = await storage.getKeys('specs:adapters');
 
-      const vendorPath = join(ADAPTERS_PATH, vendor.name);
-      const files = await readdir(vendorPath);
+    // Group files by vendor and base ID
+    const vendorMap = new Map<string, Map<string, Array<{ file: string; version: string | null; key: string }>>>();
 
-      // Group files by base ID
-      const filesByBaseId = new Map<string, Array<{ file: string; version: string | null }>>();
+    for (const key of allKeys) {
+      // Key format: specs:adapters:vendor:filename
+      const parts = key.split(':');
+      if (parts.length !== 4) continue;
 
-      for (const file of files) {
-        if (!file.endsWith('.adapter.yaml') && !file.endsWith('.adapter.yml')) continue;
+      const [, , vendor, filename] = parts;
 
-        const baseId = extractBaseId(file);
-        const version = extractVersionFromFilename(file);
+      if (!filename.endsWith('.adapter.yaml') && !filename.endsWith('.adapter.yml')) continue;
 
-        if (!filesByBaseId.has(baseId)) {
-          filesByBaseId.set(baseId, []);
-        }
-        filesByBaseId.get(baseId)!.push({ file, version });
+      const baseId = extractBaseId(filename);
+      const version = extractVersionFromFilename(filename);
+
+      if (!vendorMap.has(vendor)) {
+        vendorMap.set(vendor, new Map());
       }
 
-      // Process each base ID group
+      const vendorFiles = vendorMap.get(vendor)!;
+      if (!vendorFiles.has(baseId)) {
+        vendorFiles.set(baseId, []);
+      }
+
+      vendorFiles.get(baseId)!.push({ file: filename, version, key });
+    }
+
+    // Process each vendor
+    for (const [vendor, filesByBaseId] of vendorMap) {
       for (const [baseId, versions] of filesByBaseId) {
         // Sort versions (nulls/latest first, then by semver)
         versions.sort((a, b) => {
@@ -115,21 +117,21 @@ export async function getAllAdapterPaths(): Promise<
         // Mark the first one as latest
         versions.forEach((versionInfo, index) => {
           results.push({
-            vendor: vendor.name,
+            vendor,
             id: baseId,
             file: versionInfo.file,
             version: versionInfo.version,
             isLatest: index === 0,
-            path: join(vendorPath, versionInfo.file),
+            path: versionInfo.key,
           });
         });
       }
     }
   } catch (err) {
-    console.error('Failed to read adapters directory:', err);
+    console.error('Failed to read adapters from storage:', err);
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to read adapters from filesystem',
+      statusMessage: 'Failed to read adapters from storage',
     });
   }
 
@@ -137,7 +139,7 @@ export async function getAllAdapterPaths(): Promise<
 }
 
 /**
- * Get all protocol file paths with metadata
+ * Get all protocol file paths with metadata using Nitro storage
  */
 export async function getAllProtocolPaths(): Promise<
   Array<{
@@ -159,30 +161,40 @@ export async function getAllProtocolPaths(): Promise<
   }> = [];
 
   try {
-    const vendors = await readdir(PROTOCOLS_PATH, { withFileTypes: true });
+    const storage = useStorage('assets');
 
-    for (const vendor of vendors) {
-      if (!vendor.isDirectory()) continue;
+    // Get all keys under specs:protocols
+    const allKeys = await storage.getKeys('specs:protocols');
 
-      const vendorPath = join(PROTOCOLS_PATH, vendor.name);
-      const files = await readdir(vendorPath);
+    // Group files by vendor and base ID
+    const vendorMap = new Map<string, Map<string, Array<{ file: string; version: string | null; key: string }>>>();
 
-      // Group files by base ID
-      const filesByBaseId = new Map<string, Array<{ file: string; version: string | null }>>();
+    for (const key of allKeys) {
+      // Key format: specs:protocols:vendor:filename
+      const parts = key.split(':');
+      if (parts.length !== 4) continue;
 
-      for (const file of files) {
-        if (!file.endsWith('.protocol.yaml') && !file.endsWith('.protocol.yml')) continue;
+      const [, , vendor, filename] = parts;
 
-        const baseId = extractBaseId(file);
-        const version = extractVersionFromFilename(file);
+      if (!filename.endsWith('.protocol.yaml') && !filename.endsWith('.protocol.yml')) continue;
 
-        if (!filesByBaseId.has(baseId)) {
-          filesByBaseId.set(baseId, []);
-        }
-        filesByBaseId.get(baseId)!.push({ file, version });
+      const baseId = extractBaseId(filename);
+      const version = extractVersionFromFilename(filename);
+
+      if (!vendorMap.has(vendor)) {
+        vendorMap.set(vendor, new Map());
       }
 
-      // Process each base ID group
+      const vendorFiles = vendorMap.get(vendor)!;
+      if (!vendorFiles.has(baseId)) {
+        vendorFiles.set(baseId, []);
+      }
+
+      vendorFiles.get(baseId)!.push({ file: filename, version, key });
+    }
+
+    // Process each vendor
+    for (const [vendor, filesByBaseId] of vendorMap) {
       for (const [baseId, versions] of filesByBaseId) {
         // Sort versions (nulls/latest first, then by semver)
         versions.sort((a, b) => {
@@ -194,18 +206,18 @@ export async function getAllProtocolPaths(): Promise<
         // Mark the first one as latest
         versions.forEach((versionInfo, index) => {
           results.push({
-            vendor: vendor.name,
+            vendor,
             id: baseId,
             file: versionInfo.file,
             version: versionInfo.version,
             isLatest: index === 0,
-            path: join(vendorPath, versionInfo.file),
+            path: versionInfo.key,
           });
         });
       }
     }
   } catch (err) {
-    console.error('Failed to read protocols directory:', err);
+    console.error('Failed to read protocols from storage:', err);
     // Protocols directory may not exist, return empty array
     return [];
   }
@@ -214,7 +226,7 @@ export async function getAllProtocolPaths(): Promise<
 }
 
 /**
- * Read and parse an adapter YAML file
+ * Read and parse an adapter YAML file using Nitro storage
  */
 export async function readAdapterFile(
   vendor: string,
@@ -228,25 +240,21 @@ export async function readAdapterFile(
     validatePathComponent(version);
   }
 
-  try {
-    const vendorPath = join(ADAPTERS_PATH, vendor);
+  const storage = useStorage('assets');
 
+  try {
     // If version specified, look for versioned file
     if (version) {
-      const versionedFile = `${id}.v${version}.adapter.yaml`;
-      const versionedPath = join(vendorPath, versionedFile);
+      const versionedKey = `specs:adapters:${vendor}:${id}.v${version}.adapter.yaml`;
+      let content = await storage.getItem<string>(versionedKey);
 
-      try {
-        const content = await readFile(versionedPath, 'utf-8');
-        return {
-          content,
-          parsed: parseYaml(content),
-        };
-      } catch {
+      if (!content) {
         // Try .yml extension
-        const versionedFileYml = `${id}.v${version}.adapter.yml`;
-        const versionedPathYml = join(vendorPath, versionedFileYml);
-        const content = await readFile(versionedPathYml, 'utf-8');
+        const versionedKeyYml = `specs:adapters:${vendor}:${id}.v${version}.adapter.yml`;
+        content = await storage.getItem<string>(versionedKeyYml);
+      }
+
+      if (content) {
         return {
           content,
           parsed: parseYaml(content),
@@ -255,53 +263,53 @@ export async function readAdapterFile(
     }
 
     // Otherwise, look for latest (unversioned file first, then highest version)
-    try {
-      const latestFile = `${id}.adapter.yaml`;
-      const latestPath = join(vendorPath, latestFile);
-      const content = await readFile(latestPath, 'utf-8');
+    const latestKey = `specs:adapters:${vendor}:${id}.adapter.yaml`;
+    let content = await storage.getItem<string>(latestKey);
+
+    if (!content) {
+      // Try .yml extension
+      const latestKeyYml = `specs:adapters:${vendor}:${id}.adapter.yml`;
+      content = await storage.getItem<string>(latestKeyYml);
+    }
+
+    if (content) {
       return {
         content,
         parsed: parseYaml(content),
       };
-    } catch {
-      try {
-        // Try .yml extension
-        const latestFileYml = `${id}.adapter.yml`;
-        const latestPathYml = join(vendorPath, latestFileYml);
-        const content = await readFile(latestPathYml, 'utf-8');
-        return {
-          content,
-          parsed: parseYaml(content),
-        };
-      } catch {
-        // Look for any versioned file and get the latest
-        const files = await readdir(vendorPath);
-        const versionedFiles = files
-          .filter((f) => f.startsWith(id) && (f.endsWith('.adapter.yaml') || f.endsWith('.adapter.yml')))
-          .filter((f) => extractVersionFromFilename(f) !== null);
+    }
 
-        if (versionedFiles.length === 0) {
-          throw createError({
-            statusCode: 404,
-            statusMessage: `Adapter not found: ${vendor}/${id}`,
-          });
-        }
+    // Look for any versioned file and get the latest
+    const allKeys = await storage.getKeys(`specs:adapters:${vendor}`);
+    const versionedFiles = allKeys
+      .filter((k) => {
+        const filename = k.split(':').pop() || '';
+        return (
+          filename.startsWith(id) &&
+          (filename.endsWith('.adapter.yaml') || filename.endsWith('.adapter.yml')) &&
+          extractVersionFromFilename(filename) !== null
+        );
+      })
+      .sort((a, b) => {
+        const vA = extractVersionFromFilename(a.split(':').pop() || '') || '';
+        const vB = extractVersionFromFilename(b.split(':').pop() || '') || '';
+        return vB.localeCompare(vA, undefined, { numeric: true });
+      });
 
-        // Sort by version descending
-        versionedFiles.sort((a, b) => {
-          const vA = extractVersionFromFilename(a) || '';
-          const vB = extractVersionFromFilename(b) || '';
-          return vB.localeCompare(vA, undefined, { numeric: true });
-        });
-
-        const latestVersionedPath = join(vendorPath, versionedFiles[0]);
-        const content = await readFile(latestVersionedPath, 'utf-8');
+    if (versionedFiles.length > 0) {
+      content = await storage.getItem<string>(versionedFiles[0]);
+      if (content) {
         return {
           content,
           parsed: parseYaml(content),
         };
       }
     }
+
+    throw createError({
+      statusCode: 404,
+      statusMessage: `Adapter not found: ${vendor}/${id}`,
+    });
   } catch (err) {
     if (err && typeof err === 'object' && 'statusCode' in err) {
       throw err;
@@ -316,7 +324,7 @@ export async function readAdapterFile(
 }
 
 /**
- * Read and parse a protocol YAML file
+ * Read and parse a protocol YAML file using Nitro storage
  */
 export async function readProtocolFile(
   vendor: string,
@@ -330,25 +338,21 @@ export async function readProtocolFile(
     validatePathComponent(version);
   }
 
-  try {
-    const vendorPath = join(PROTOCOLS_PATH, vendor);
+  const storage = useStorage('assets');
 
+  try {
     // If version specified, look for versioned file
     if (version) {
-      const versionedFile = `${id}.v${version}.protocol.yaml`;
-      const versionedPath = join(vendorPath, versionedFile);
+      const versionedKey = `specs:protocols:${vendor}:${id}.v${version}.protocol.yaml`;
+      let content = await storage.getItem<string>(versionedKey);
 
-      try {
-        const content = await readFile(versionedPath, 'utf-8');
-        return {
-          content,
-          parsed: parseYaml(content),
-        };
-      } catch {
+      if (!content) {
         // Try .yml extension
-        const versionedFileYml = `${id}.v${version}.protocol.yml`;
-        const versionedPathYml = join(vendorPath, versionedFileYml);
-        const content = await readFile(versionedPathYml, 'utf-8');
+        const versionedKeyYml = `specs:protocols:${vendor}:${id}.v${version}.protocol.yml`;
+        content = await storage.getItem<string>(versionedKeyYml);
+      }
+
+      if (content) {
         return {
           content,
           parsed: parseYaml(content),
@@ -357,53 +361,53 @@ export async function readProtocolFile(
     }
 
     // Otherwise, look for latest
-    try {
-      const latestFile = `${id}.protocol.yaml`;
-      const latestPath = join(vendorPath, latestFile);
-      const content = await readFile(latestPath, 'utf-8');
+    const latestKey = `specs:protocols:${vendor}:${id}.protocol.yaml`;
+    let content = await storage.getItem<string>(latestKey);
+
+    if (!content) {
+      // Try .yml extension
+      const latestKeyYml = `specs:protocols:${vendor}:${id}.protocol.yml`;
+      content = await storage.getItem<string>(latestKeyYml);
+    }
+
+    if (content) {
       return {
         content,
         parsed: parseYaml(content),
       };
-    } catch {
-      try {
-        // Try .yml extension
-        const latestFileYml = `${id}.protocol.yml`;
-        const latestPathYml = join(vendorPath, latestFileYml);
-        const content = await readFile(latestPathYml, 'utf-8');
-        return {
-          content,
-          parsed: parseYaml(content),
-        };
-      } catch {
-        // Look for any versioned file and get the latest
-        const files = await readdir(vendorPath);
-        const versionedFiles = files
-          .filter((f) => f.startsWith(id) && (f.endsWith('.protocol.yaml') || f.endsWith('.protocol.yml')))
-          .filter((f) => extractVersionFromFilename(f) !== null);
+    }
 
-        if (versionedFiles.length === 0) {
-          throw createError({
-            statusCode: 404,
-            statusMessage: `Protocol not found: ${vendor}/${id}`,
-          });
-        }
+    // Look for any versioned file and get the latest
+    const allKeys = await storage.getKeys(`specs:protocols:${vendor}`);
+    const versionedFiles = allKeys
+      .filter((k) => {
+        const filename = k.split(':').pop() || '';
+        return (
+          filename.startsWith(id) &&
+          (filename.endsWith('.protocol.yaml') || filename.endsWith('.protocol.yml')) &&
+          extractVersionFromFilename(filename) !== null
+        );
+      })
+      .sort((a, b) => {
+        const vA = extractVersionFromFilename(a.split(':').pop() || '') || '';
+        const vB = extractVersionFromFilename(b.split(':').pop() || '') || '';
+        return vB.localeCompare(vA, undefined, { numeric: true });
+      });
 
-        // Sort by version descending
-        versionedFiles.sort((a, b) => {
-          const vA = extractVersionFromFilename(a) || '';
-          const vB = extractVersionFromFilename(b) || '';
-          return vB.localeCompare(vA, undefined, { numeric: true });
-        });
-
-        const latestVersionedPath = join(vendorPath, versionedFiles[0]);
-        const content = await readFile(latestVersionedPath, 'utf-8');
+    if (versionedFiles.length > 0) {
+      content = await storage.getItem<string>(versionedFiles[0]);
+      if (content) {
         return {
           content,
           parsed: parseYaml(content),
         };
       }
     }
+
+    throw createError({
+      statusCode: 404,
+      statusMessage: `Protocol not found: ${vendor}/${id}`,
+    });
   } catch (err) {
     if (err && typeof err === 'object' && 'statusCode' in err) {
       throw err;
@@ -425,12 +429,15 @@ export async function getAdapterVersions(vendor: string, id: string): Promise<st
   validatePathComponent(id);
 
   try {
-    const vendorPath = join(ADAPTERS_PATH, vendor);
-    const files = await readdir(vendorPath);
+    const storage = useStorage('assets');
+    const allKeys = await storage.getKeys(`specs:adapters:${vendor}`);
 
-    const versions = files
-      .filter((f) => f.startsWith(id) && (f.endsWith('.adapter.yaml') || f.endsWith('.adapter.yml')))
-      .map((f) => extractVersionFromFilename(f))
+    const versions = allKeys
+      .filter((k) => {
+        const filename = k.split(':').pop() || '';
+        return filename.startsWith(id) && (filename.endsWith('.adapter.yaml') || filename.endsWith('.adapter.yml'));
+      })
+      .map((k) => extractVersionFromFilename(k.split(':').pop() || ''))
       .filter((v): v is string => v !== null);
 
     return versions.sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
@@ -447,12 +454,15 @@ export async function getProtocolVersions(vendor: string, id: string): Promise<s
   validatePathComponent(id);
 
   try {
-    const vendorPath = join(PROTOCOLS_PATH, vendor);
-    const files = await readdir(vendorPath);
+    const storage = useStorage('assets');
+    const allKeys = await storage.getKeys(`specs:protocols:${vendor}`);
 
-    const versions = files
-      .filter((f) => f.startsWith(id) && (f.endsWith('.protocol.yaml') || f.endsWith('.protocol.yml')))
-      .map((f) => extractVersionFromFilename(f))
+    const versions = allKeys
+      .filter((k) => {
+        const filename = k.split(':').pop() || '';
+        return filename.startsWith(id) && (filename.endsWith('.protocol.yaml') || filename.endsWith('.protocol.yml'));
+      })
+      .map((k) => extractVersionFromFilename(k.split(':').pop() || ''))
       .filter((v): v is string => v !== null);
 
     return versions.sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
@@ -478,25 +488,43 @@ export async function getLatestProtocolVersion(vendor: string, id: string): Prom
 }
 
 /**
- * Read an asset file from the assets directory
+ * Read an asset file from the assets directory using Nitro storage
  */
 export async function readAssetFile(type: 'logos' | 'icons' | 'banners', filename: string): Promise<Buffer> {
   validatePathComponent(type);
   validatePathComponent(filename);
 
   try {
-    const assetPath = join(ASSETS_PATH, type, filename);
+    const storage = useStorage('assets');
+    const key = `specs:assets:${type}:${filename}`;
 
-    // Check if file exists and is a file (not directory)
-    const stats = await stat(assetPath);
-    if (!stats.isFile()) {
+    const content = await storage.getItemRaw(key);
+
+    if (!content) {
       throw createError({
         statusCode: 404,
         statusMessage: 'Asset not found',
       });
     }
 
-    return await readFile(assetPath);
+    // Convert to Buffer if it's not already
+    if (Buffer.isBuffer(content)) {
+      return content;
+    }
+
+    if (content instanceof Uint8Array) {
+      return Buffer.from(content);
+    }
+
+    // If it's a string (shouldn't happen for binary assets, but handle it)
+    if (typeof content === 'string') {
+      return Buffer.from(content);
+    }
+
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Invalid asset format',
+    });
   } catch (err) {
     if (err && typeof err === 'object' && 'statusCode' in err) {
       throw err;
@@ -514,16 +542,16 @@ export async function readAssetFile(type: 'logos' | 'icons' | 'banners', filenam
  * Get the content type for an asset file
  */
 export function getAssetContentType(filename: string): string {
-  const ext = extname(filename).toLowerCase();
+  const ext = filename.toLowerCase().split('.').pop() || '';
 
   const mimeTypes: Record<string, string> = {
-    '.svg': 'image/svg+xml',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.gif': 'image/gif',
-    '.bmp': 'image/bmp',
-    '.webp': 'image/webp',
+    svg: 'image/svg+xml',
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    gif: 'image/gif',
+    bmp: 'image/bmp',
+    webp: 'image/webp',
   };
 
   return mimeTypes[ext] || 'application/octet-stream';

@@ -271,6 +271,14 @@ export default defineNuxtConfig({
 
   // Nitro configuration for build optimization
   nitro: {
+    // Bundle the specs directory as server assets for Vercel deployment
+    // Path is relative to Nitro srcDir (project root for Nuxt)
+    serverAssets: [
+      {
+        baseName: 'specs',
+        dir: '../specs',
+      },
+    ],
     prerender: {
       // Disable route crawling to prevent infinite loops and hanging
       crawlLinks: false,
