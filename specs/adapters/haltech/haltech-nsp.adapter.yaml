@@ -32,8 +32,7 @@ file_format:
   delimiter: ','
   header_row: -1 # No traditional header row; channel names from metadata
   data_start_row: -1 # Variable; starts after channel definitions
-  timestamp_column: null # First column is timestamp in HH:MM:SS.mmm format
-  timestamp_unit: null # Custom format, not raw seconds
+  # Note: timestamp is first column in HH:MM:SS.mmm format (custom, not standard)
 
 channels:
   # Engine Core
