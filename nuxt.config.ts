@@ -5,6 +5,25 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/ui', '@nuxt/fonts', '@nuxt/icon', '@nuxtjs/sitemap', '@nuxtjs/supabase'],
 
+  // Icon configuration - only bundle icons that are actually used
+  icon: {
+    serverBundle: {
+      collections: ['heroicons', 'lucide'],
+      // Remote fetch for large collections (simple-icons, mdi) to avoid 4MB+ bundles
+    },
+    // Explicitly include the few simple-icons and mdi icons we use
+    clientBundle: {
+      icons: [
+        'simple-icons:github',
+        'simple-icons:bambulab',
+        'simple-icons:printables',
+        'simple-icons:thingiverse',
+        'mdi:cube-outline',
+      ],
+      scan: true,
+    },
+  },
+
   // Supabase configuration
   supabase: {
     redirectOptions: {
