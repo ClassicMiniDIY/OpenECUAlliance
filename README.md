@@ -85,6 +85,7 @@ Adapters are available for:
 - Speeduino (MLG binary)
 - rusEFI (MLG binary)
 - RomRaider/Subaru (CSV)
+- MegaSquirt / Honda Tuning Studio (CSV from TunerStudio)
 
 **Planned:** MoTeC, AEM, Holley, FuelTech
 
