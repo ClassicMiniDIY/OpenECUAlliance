@@ -1,0 +1,126 @@
+=== GET /api/adapters headers (via -D-) ===
+HTTP/2 200 
+access-control-allow-origin: *
+age: 0
+cache-control: max-age=900
+content-type: application/json
+date: Fri, 21 Aug 2026 19:44:53 GMT
+etag: W/"QYLPRFysab"
+last-modified: Fri, 21 Aug 2026 19:44:07 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+vary: Origin
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-ratelimit-limit-hour: 300
+x-ratelimit-limit-minute: 30
+x-ratelimit-remaining-hour: 285
+x-ratelimit-remaining-minute: 15
+x-ratelimit-reset-hour: 1787345046
+x-ratelimit-reset-minute: 1787341506
+x-security-warning: Suspicious pattern detected
+x-vercel-cache: MISS
+x-vercel-id: iad1::iad1::4jvdw-1787341493925-d72270e273dd
+x-xss-protection: 1; mode=block
+content-length: 4824
+
+=== GET /api/assets/logos/aim-logo.png ===
+HTTP/2 200 
+access-control-allow-origin: *
+age: 0
+cache-control: max-age=86400
+content-type: image/png
+date: Fri, 21 Aug 2026 19:44:54 GMT
+etag: W/"CPCsgVy553"
+last-modified: Fri, 21 Aug 2026 19:44:54 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+vary: Origin
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-ratelimit-limit-hour: 1000
+x-ratelimit-limit-minute: 100
+x-ratelimit-remaining-hour: 984
+x-ratelimit-remaining-minute: 84
+x-ratelimit-reset-hour: 1787345046
+x-ratelimit-reset-minute: 1787341506
+x-security-warning: Suspicious pattern detected
+x-vercel-cache: MISS
+x-vercel-id: iad1::iad1::mw7h7-1787341494070-5a13f9533756
+x-xss-protection: 1; mode=block
+content-length: 4514
+
+=== GET raw spec download /api/specs/adapters/aim/aim-xrk/raw ===
+HTTP/2 200 
+access-control-allow-origin: *
+age: 0
+cache-control: max-age=900
+content-disposition: attachment; filename="aim-aim-xrk.adapter.yaml"
+content-type: text/yaml; charset=utf-8
+date: Fri, 21 Aug 2026 19:44:54 GMT
+etag: W/"tIUmMAnT89"
+last-modified: Fri, 21 Aug 2026 19:44:54 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+vary: Origin
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-ratelimit-limit-hour: 150
+x-ratelimit-limit-minute: 20
+x-ratelimit-remaining-hour: 133
+x-ratelimit-remaining-minute: 3
+x-ratelimit-reset-hour: 1787345046
+x-ratelimit-reset-minute: 1787341506
+x-security-warning: Suspicious pattern detected
+x-vercel-cache: MISS
+x-vercel-id: iad1::iad1::nt844-1787341494260-d823cf292686
+x-xss-protection: 1; mode=block
+content-length: 15539
+
+=== GET /og-image.png ===
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 0
+cache-control: public, max-age=0, must-revalidate
+content-disposition: inline; filename="og-image.png"
+content-type: image/png
+date: Fri, 21 Aug 2026 19:44:54 GMT
+etag: "c8af7c62437b607d25d8b90b6b192b97"
+last-modified: Fri, 21 Aug 2026 19:44:54 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-cache: HIT
+x-vercel-id: iad1::kq8t4-1787341494496-94ce7011b894
+content-length: 377986
+
+=== GET /robots.txt ===
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 366212
+cache-control: public, max-age=0, must-revalidate
+content-disposition: inline; filename="robots.txt"
+content-type: text/plain; charset=utf-8
+date: Fri, 21 Aug 2026 19:44:54 GMT
+etag: "8e2860234d4206bbc3bf07ce537b8f7d"
+last-modified: Mon, 17 Aug 2026 14:01:21 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-cache: HIT
+x-vercel-id: iad1::z4bfz-1787341494719-5a2d5d931101
+content-length: 244
+
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://openecualliance.org/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Block specific paths if needed
+Disallow: /api/
+Disallow: /_nuxt/

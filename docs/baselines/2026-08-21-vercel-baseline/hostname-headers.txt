@@ -1,0 +1,80 @@
+=== http://openecualliance.org/ ===
+HTTP/1.0 308 Permanent Redirect
+Content-Type: text/plain
+Location: https://openecualliance.org/
+Refresh: 0;url=https://openecualliance.org/
+server: Vercel
+
+
+=== https://openecualliance.org/ ===
+HTTP/2 307 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Fri, 21 Aug 2026 19:44:06 GMT
+location: https://www.openecualliance.org/
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: iad1::s65z7-1787341446150-4a7b9e3dc747
+
+
+=== http://www.openecualliance.org/ ===
+HTTP/1.0 308 Permanent Redirect
+Content-Type: text/plain
+Location: https://www.openecualliance.org/
+Refresh: 0;url=https://www.openecualliance.org/
+server: Vercel
+
+
+=== https://www.openecualliance.org/ ===
+HTTP/2 200 
+age: 0
+cache-control: public, max-age=0, must-revalidate
+content-type: text/html;charset=utf-8
+date: Fri, 21 Aug 2026 19:44:09 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+x-powered-by: Nuxt
+x-vercel-cache: MISS
+x-vercel-id: iad1::iad1::s6l24-1787341446719-a322c676cb4f
+
+
+=== http://oecua.org/ ===
+HTTP/1.0 308 Permanent Redirect
+Content-Type: text/plain
+Location: https://oecua.org/
+Refresh: 0;url=https://oecua.org/
+server: Vercel
+
+
+=== https://oecua.org/ ===
+HTTP/2 307 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Fri, 21 Aug 2026 19:44:09 GMT
+location: https://www.oecua.org/
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: iad1::p82hh-1787341449474-d312f542853e
+
+
+=== http://www.oecua.org/ ===
+HTTP/1.0 308 Permanent Redirect
+Content-Type: text/plain
+Location: https://www.oecua.org/
+Refresh: 0;url=https://www.oecua.org/
+server: Vercel
+
+
+=== https://www.oecua.org/ ===
+HTTP/2 200 
+age: 0
+cache-control: public, max-age=0, must-revalidate
+content-type: text/html;charset=utf-8
+date: Fri, 21 Aug 2026 19:44:11 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+x-powered-by: Nuxt
+x-vercel-cache: MISS
+x-vercel-id: iad1::iad1::c8vst-1787341451120-67ba752701f4
+
+

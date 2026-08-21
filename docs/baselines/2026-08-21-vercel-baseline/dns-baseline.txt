@@ -1,0 +1,31 @@
+=== dig NS openecualliance.org ===
+ns-136.awsdns-17.com.
+ns-1432.awsdns-51.org.
+ns-2004.awsdns-58.co.uk.
+ns-989.awsdns-59.net.
+=== dig NS oecua.org ===
+ns-1164.awsdns-17.org.
+ns-1809.awsdns-34.co.uk.
+ns-599.awsdns-10.net.
+ns-91.awsdns-11.com.
+=== dig A/CNAME all four hostnames ===
+-- openecualliance.org
+216.198.79.1
+-- www.openecualliance.org
+d60751f631ce6bfc.vercel-dns-017.com.
+216.150.1.193
+216.150.16.193
+d60751f631ce6bfc.vercel-dns-017.com.
+-- oecua.org
+216.198.79.1
+-- www.oecua.org
+d60751f631ce6bfc.vercel-dns-017.com.
+216.150.16.193
+216.150.1.193
+d60751f631ce6bfc.vercel-dns-017.com.
+=== dig SOA + full record sweep (MX/TXT) both apexes ===
+-- openecualliance.org MX
+10 inbound-smtp.us-east-1.amazonaws.com.
+-- openecualliance.org TXT
+-- oecua.org MX
+-- oecua.org TXT

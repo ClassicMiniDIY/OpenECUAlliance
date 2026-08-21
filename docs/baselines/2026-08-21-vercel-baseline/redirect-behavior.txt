@@ -1,0 +1,29 @@
+=== QUERY+PATH: https://openecualliance.org/adapters?vendor=haltech&x=1 ===
+HTTP/2 307 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Fri, 21 Aug 2026 19:44:32 GMT
+location: https://www.openecualliance.org/adapters?vendor=haltech&x=1
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: iad1::96wkl-1787341472580-42c81b58a879
+
+
+=== QUERY: https://oecua.org/spec?a=b ===
+HTTP/2 307 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Fri, 21 Aug 2026 19:44:32 GMT
+location: https://www.oecua.org/spec?a=b
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: iad1::vktsg-1787341472737-eab08b3b08fc
+
+
+=== QUERY on http: http://openecualliance.org/spec?a=b ===
+HTTP/1.0 308 Permanent Redirect
+Content-Type: text/plain
+Location: https://openecualliance.org/spec?a=b
+Refresh: 0;url=https://openecualliance.org/spec?a=b
+server: Vercel
+

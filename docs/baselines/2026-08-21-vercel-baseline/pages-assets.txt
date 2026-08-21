@@ -1,0 +1,26 @@
+=== homepage HTML: canonical + og + title lines ===
+<link rel="canonical" href="https://openecualliance.org">
+<title>OpenECU Alliance - Open Source Motorsports Community</title>
+=== adapter detail page /adapters/aim/aim-xrk: status + canonical ===
+HTTP 200
+<link rel="canonical" href="https://openecualliance.org">
+=== www.oecua.org homepage canonical (mirror check) ===
+<link rel="canonical" href="https://openecualliance.org">
+=== a /_nuxt/ asset headers ===
+asset: /_nuxt/D-EhTxxn.js
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 40531
+cache-control: public, max-age=31536000, immutable
+content-disposition: inline; filename="D-EhTxxn.js"
+content-type: application/javascript; charset=utf-8
+date: Fri, 21 Aug 2026 19:45:24 GMT
+etag: "a484947eaec00ce61f90994287e632ed"
+last-modified: Fri, 21 Aug 2026 08:29:53 GMT
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-cache: HIT
+x-vercel-id: iad1::7t7bq-1787341524960-5ac3ddcc1ba3
+content-length: 829019
+
