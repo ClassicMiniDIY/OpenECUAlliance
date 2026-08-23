@@ -23,6 +23,13 @@ export default defineEventHandler((event) => {
   const isDev = process.env.NODE_ENV === 'development';
   const method = event.node.req.method || 'GET';
 
+  // Baseline security headers for every /api/ response, set before any
+  // branch returns so the CORS policy chosen below cannot change them.
+  setResponseHeader(event, 'X-Content-Type-Options', 'nosniff');
+  setResponseHeader(event, 'X-Frame-Options', 'DENY');
+  setResponseHeader(event, 'X-XSS-Protection', '1; mode=block');
+  setResponseHeader(event, 'Vary', 'Origin');
+
   // Public read-only endpoints: the spec/docs pages tell third-party
   // developers to fetch() these from their own sites, so reads get a
   // credential-less wildcard. Never send Allow-Credentials with '*'.
@@ -43,7 +50,6 @@ export default defineEventHandler((event) => {
       return;
     }
 
-    setResponseHeader(event, 'X-Content-Type-Options', 'nosniff');
     return;
   }
 
@@ -100,14 +106,6 @@ export default defineEventHandler((event) => {
     event.node.res.end();
     return;
   }
-
-  // Set additional security headers
-  setResponseHeader(event, 'X-Content-Type-Options', 'nosniff');
-  setResponseHeader(event, 'X-Frame-Options', 'DENY');
-  setResponseHeader(event, 'X-XSS-Protection', '1; mode=block');
-
-  // Vary header to indicate response varies based on origin
-  setResponseHeader(event, 'Vary', 'Origin');
 
   // Continue to next handler
 });

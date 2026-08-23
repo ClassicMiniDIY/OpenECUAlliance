@@ -10,8 +10,8 @@ deliverable is knowledge: every phase writes findings back to the master plan's
 `[validates|contradicts|new-gotcha]` and `[transfers-to-cmdiy: yes/no/partial]`.
 
 - **Master plan (anchor, read fully before each phase, amendments are BINDING):**
-  `/Users/colegentry/Development/classicminidiy/.claude/worktrees/trusting-franklin-942536/docs/plans/2026-08-06-cloudflare-workers-migration.md`
-  (fallback: `classicminidiy/docs/plans/2026-08-06-cloudflare-workers-migration.md`)
+  `docs/plans/2026-08-06-cloudflare-workers-migration.md` in the sibling
+  `ClassicMiniDIY/classicminidiy` repository.
 - **Baseline snapshot (Phase 4 battery diffs against this):**
   `docs/baselines/2026-08-21-vercel-baseline/`
 
