@@ -36,19 +36,21 @@ deliverable is knowledge: every phase writes findings back to the master plan's
 - Known bug fixed in Phase 1: global hardcoded `rel=canonical` → apex homepage on every
   page (`nuxt.config.ts` app.head).
 
-## Open decisions (Cole)
+## Decisions (Cole, 2026-08-23)
 
-1. **Primary host: apex vs www.** Today: serves at www; canonical/sitemap/site.url say
-   apex; joined by a 307. Must be made consistent at cutover.
-2. **oecua.org disposition.** Today `www.oecua.org` is a full 200 duplicate-content
-   mirror. Redirect to primary at the zone edge, or keep mirroring?
+1. **Primary domain: `https://oecua.org` (apex).** Full domain change — all forms of
+   openecualliance.org and www.oecua.org 301 to oecua.org at the zone edge from Phase 4.
+   Accepted re-index risk: site traffic is minimal and auth was effectively broken.
+2. **CMDIY constraint recorded:** no registrar transfers ever; NS changes are fine.
+3. Workers Paid active. OECUA auth = its OWN Supabase project (`ljigjawvlwvciqvegptp`),
+   email magic link only — NOT the shared CMDIY auth instance (ecosystem docs are wrong).
 
 ## Phase status
 
 | Phase | Description | Status |
 |---|---|---|
 | Baseline | Vercel behavior snapshot committed to docs/baselines | **DONE 2026-08-21** |
-| 0 | Go/no-go spike on workers.dev (bundle, serverAssets, shiki, supabase auth, sitemap, rate limiter, env timing) | **local checks PASSED 2026-08-23** (see pathfinder log: setInterval boot blocker fixed, html_handling set, NUXT_ override proven, bundle 3.54 MB gzip). workers.dev deploy + Supabase login E2E blocked on Workers Paid activation (Cole). |
+| 0 | Go/no-go spike on workers.dev (bundle, serverAssets, shiki, supabase auth, sitemap, rate limiter, env timing) | **COMPLETE 2026-08-23 — GO.** All gates passed on the deployed worker incl. full magic-link PKCE login + SSR cookie session. Fixes found: module-scope setInterval (boot blocker), app-pinned auth redirect, html_handling. Bundle 3.54 MB gzip (Workers Paid). |
 | 1 | Platform-neutral fixes on main via Vercel (canonical bug, remoteAddress guard, spike findings) | not started |
 | 2 | wrangler.jsonc + GH Actions deploy + secrets + `wrangler dev` recipe (E4) + pinned wrangler/compat_date (E5) | not started |
 | 3 | Zone prep: BIND import from R53 (C2), record diff, DCV cert pre-provisioning (C1), Always Use HTTPS + HSTS (C3), proxied apex + preserve_query_string (C4), Supabase redirect-URL allowlist + workers.dev origin | not started |
