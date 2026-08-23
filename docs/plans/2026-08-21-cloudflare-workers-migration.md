@@ -48,7 +48,7 @@ deliverable is knowledge: every phase writes findings back to the master plan's
 | Phase | Description | Status |
 |---|---|---|
 | Baseline | Vercel behavior snapshot committed to docs/baselines | **DONE 2026-08-21** |
-| 0 | Go/no-go spike on workers.dev (bundle, serverAssets, shiki, supabase auth, sitemap, rate limiter, env timing) | not started — awaiting Cole batch (CF account/token) |
+| 0 | Go/no-go spike on workers.dev (bundle, serverAssets, shiki, supabase auth, sitemap, rate limiter, env timing) | **local checks PASSED 2026-08-23** (see pathfinder log: setInterval boot blocker fixed, html_handling set, NUXT_ override proven, bundle 3.54 MB gzip). workers.dev deploy + Supabase login E2E blocked on Workers Paid activation (Cole). |
 | 1 | Platform-neutral fixes on main via Vercel (canonical bug, remoteAddress guard, spike findings) | not started |
 | 2 | wrangler.jsonc + GH Actions deploy + secrets + `wrangler dev` recipe (E4) + pinned wrangler/compat_date (E5) | not started |
 | 3 | Zone prep: BIND import from R53 (C2), record diff, DCV cert pre-provisioning (C1), Always Use HTTPS + HSTS (C3), proxied apex + preserve_query_string (C4), Supabase redirect-URL allowlist + workers.dev origin | not started |
