@@ -1,0 +1,68 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cloudflare
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # NITRO_PRESET is what makes this a Worker bundle. A plain `nuxt build`
+      # emits a node-server entry that wrangler would happily deploy and that
+      # would 500 on every request.
+      - name: Build (cloudflare_module preset)
+        run: bun run build:cf
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          # Pinned to the version in devDependencies; bump wrangler first and
+          # compatibility_date in wrangler.jsonc second (amendment E5).
+          wranglerVersion: '4.125.0'
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Smoke test the deployment
+        env:
+          TARGET: https://open-ecu-alliance.classicminidiy.workers.dev
+        run: |
+          set -euo pipefail
+          fail=0
+          check() {
+            local path="$1" expected="$2"
+            local code
+            code=$(curl -s -o /dev/null -w '%{http_code}' -m 30 "$TARGET$path")
+            if [ "$code" != "$expected" ]; then
+              echo "FAIL $path -> $code (expected $expected)"
+              fail=1
+            else
+              echo "ok   $path -> $code"
+            fi
+          }
+          check / 200
+          check /spec 200
+          check /adapters 200
+          check /api/adapters 200
+          check /api/protocols 200
+          check /api/specs/adapters/aim/aim-xrk/raw 200
+          check /sitemap.xml 200
+          exit $fail
