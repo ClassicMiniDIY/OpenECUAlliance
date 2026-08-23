@@ -21,6 +21,31 @@ export default defineEventHandler((event) => {
 
   const origin = getHeader(event, 'origin');
   const isDev = process.env.NODE_ENV === 'development';
+  const method = event.node.req.method || 'GET';
+
+  // Public read-only endpoints: the spec/docs pages tell third-party
+  // developers to fetch() these from their own sites, so reads get a
+  // credential-less wildcard. Never send Allow-Credentials with '*'.
+  const publicReadPrefixes = ['/api/specs/', '/api/adapters', '/api/protocols', '/api/assets/'];
+  const isPublicRead =
+    (method === 'GET' || method === 'HEAD' || method === 'OPTIONS') &&
+    publicReadPrefixes.some((prefix) => path.startsWith(prefix));
+
+  if (isPublicRead) {
+    setResponseHeader(event, 'Access-Control-Allow-Origin', '*');
+
+    if (method === 'OPTIONS') {
+      setResponseHeader(event, 'Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+      setResponseHeader(event, 'Access-Control-Allow-Headers', 'Content-Type');
+      setResponseHeader(event, 'Access-Control-Max-Age', 86400);
+      event.node.res.statusCode = 204;
+      event.node.res.end();
+      return;
+    }
+
+    setResponseHeader(event, 'X-Content-Type-Options', 'nosniff');
+    return;
+  }
 
   // Allowed origins — oecua.org is the primary domain; the openecualliance.org
   // forms stay until its 301s have been live for a while.
