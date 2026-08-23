@@ -16,8 +16,9 @@ import type { H3Event } from 'h3';
  */
 export function getClientIp(event: H3Event, trustProxy = true): string {
   if (!trustProxy) {
-    // If we don't trust proxies, only use direct connection IP
-    return event.node.req.socket.remoteAddress || 'unknown';
+    // If we don't trust proxies, only use direct connection IP.
+    // socket is undefined on Cloudflare Workers — optional-chain it.
+    return event.node.req.socket?.remoteAddress || 'unknown';
   }
 
   // Check Cloudflare header first
@@ -44,8 +45,8 @@ export function getClientIp(event: H3Event, trustProxy = true): string {
     }
   }
 
-  // Fall back to direct connection IP
-  const remoteAddress = event.node.req.socket.remoteAddress;
+  // Fall back to direct connection IP (socket is undefined on Cloudflare Workers)
+  const remoteAddress = event.node.req.socket?.remoteAddress;
   if (remoteAddress && isValidIp(remoteAddress)) {
     return normalizeIp(remoteAddress);
   }

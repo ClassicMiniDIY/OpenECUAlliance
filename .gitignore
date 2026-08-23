@@ -26,3 +26,6 @@ logs
 # Supabase local development
 supabase/.branches
 supabase/.temp
+
+# Wrangler local state
+.wrangler

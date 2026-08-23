@@ -22,11 +22,13 @@ export default defineEventHandler((event) => {
   const origin = getHeader(event, 'origin');
   const isDev = process.env.NODE_ENV === 'development';
 
-  // Allowed origins
+  // Allowed origins — oecua.org is the primary domain; the openecualliance.org
+  // forms stay until its 301s have been live for a while.
   const allowedOrigins = [
+    'https://oecua.org',
+    'https://www.oecua.org',
     'https://openecualliance.org',
     'https://www.openecualliance.org',
-    // Add production domains here
   ];
 
   // In development, allow localhost origins
@@ -34,12 +36,13 @@ export default defineEventHandler((event) => {
     allowedOrigins.push('http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5173');
   }
 
-  // Check if origin is allowed
+  // Check if origin is allowed. Exact match only — a startsWith check would
+  // accept attacker domains like https://oecua.org.evil.com, and this branch
+  // also sets Allow-Credentials.
   const isAllowedOrigin =
     isDev || // Allow all origins in development
     !origin || // No origin header (same-origin request)
-    allowedOrigins.includes(origin) ||
-    (origin && allowedOrigins.some((allowed) => origin.startsWith(allowed)));
+    allowedOrigins.includes(origin);
 
   if (isAllowedOrigin && origin) {
     // Set CORS headers for allowed origins

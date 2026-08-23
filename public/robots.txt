@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://openecualliance.org/sitemap.xml
+Sitemap: https://oecua.org/sitemap.xml
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1
