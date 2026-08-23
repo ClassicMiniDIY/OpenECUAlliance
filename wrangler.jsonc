@@ -1,0 +1,22 @@
+{
+  // Phase 0 spike config — becomes the real deploy config in Phase 2.
+  // Pin wrangler + compatibility_date together (master plan amendment E5):
+  // bump wrangler first, compatibility_date second.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "open-ecu-alliance",
+  "main": ".output/server/index.mjs",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".output/public",
+    "binding": "ASSETS",
+    // Vercel serves prerendered routes at their no-slash URL (200). The Workers
+    // assets default (auto-trailing-slash) would 307 /spec -> /spec/ instead.
+    // drop-trailing-slash serves /spec as 200 and redirects /spec/ back to it,
+    // matching the canonical no-slash URLs in the sitemap.
+    "html_handling": "drop-trailing-slash"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
