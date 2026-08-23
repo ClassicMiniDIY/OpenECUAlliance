@@ -35,7 +35,7 @@ GET /api/specs/adapters
 GET /api/specs/adapters/:vendor/:id
 
 # Download raw YAML
-GET /api/specs/adapters-raw/:vendor/:id
+GET /api/specs/adapters/:vendor/:id/raw
 ```
 
 ### Protocols
@@ -48,18 +48,18 @@ GET /api/specs/protocols
 GET /api/specs/protocols/:vendor/:id
 
 # Download raw YAML
-GET /api/specs/protocols-raw/:vendor/:id
+GET /api/specs/protocols/:vendor/:id/raw
 ```
 
 ### Example Usage
 
 ```javascript
 // Fetch all adapters
-const response = await fetch('https://openecualliance.org/api/specs/adapters');
+const response = await fetch('https://oecua.org/api/specs/adapters');
 const adapters = await response.json();
 
 // Fetch specific adapter
-const adapter = await fetch('https://openecualliance.org/api/specs/adapters/haltech/haltech-nsp');
+const adapter = await fetch('https://oecua.org/api/specs/adapters/haltech/haltech-nsp');
 const haltechSpec = await adapter.json();
 ```
 

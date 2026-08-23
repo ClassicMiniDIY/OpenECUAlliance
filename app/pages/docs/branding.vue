@@ -98,10 +98,10 @@
   ];
 
   const logoDos = [
-    'Use official assets from openecualliance.org/brand',
+    'Use official assets from oecua.org/docs/branding',
     'Maintain minimum clear space around logos',
     'Use on white or light backgrounds',
-    'Link to openecualliance.org when possible',
+    'Link to oecua.org when possible',
   ];
 
   const logoDonts = [

@@ -4,7 +4,12 @@
   // homepage canonical that leaked onto every page.
   const route = useRoute();
   const siteConfig = useSiteConfig();
-  const canonicalUrl = computed(() => new URL(route.path, siteConfig.url).href);
+  // Strip trailing slashes (except the root) so slash-variant requests
+  // canonicalize to the no-slash URLs the sitemap declares.
+  const canonicalUrl = computed(() => {
+    const path = route.path.length > 1 ? route.path.replace(/\/+$/, '') : route.path;
+    return new URL(path, siteConfig.url).href;
+  });
 
   useHead({
     link: [{ rel: 'canonical', href: canonicalUrl }],
@@ -24,7 +29,7 @@
           '@type': 'Organization',
           name: 'OpenECU Alliance',
           url: 'https://oecua.org',
-          logo: 'https://oecua.org/android-chrome-512x512.png',
+          logo: 'https://oecua.org/android-chrome-192x192.png',
           description:
             'The OpenECU Alliance publishes the OpenECU Spec - an open specification for standardizing ECU log data formats.',
           sameAs: ['https://github.com/ClassicMiniDIY/OpenECUAlliance'],

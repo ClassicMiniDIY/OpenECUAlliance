@@ -68,15 +68,14 @@ export function useAuth() {
   /**
    * Auth redirect base: the origin the user is actually on, so magic links and
    * OAuth callbacks return to the same host (previews, workers.dev, www vs
-   * apex). siteConfig.url is a build-time constant and only a fallback —
-   * preferring it sent every preview/staging login back to production.
-   * Supabase's redirect-URL allowlist remains the security boundary.
+   * apex). The old siteConfig.url value was a build-time constant that sent
+   * every preview/staging login back to production. Both callers are
+   * client-only click handlers, so window is always available. Supabase's
+   * redirect-URL allowlist remains the security boundary — every origin that
+   * serves the site must be in it, or GoTrue silently falls back to SITE_URL.
    */
   function authRedirectBase(): string {
-    if (typeof window !== 'undefined') {
-      return window.location.origin;
-    }
-    return useSiteConfig().url;
+    return window.location.origin;
   }
 
   /**

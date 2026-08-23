@@ -313,3 +313,27 @@ Planned: MoTeC, AEM, Holley, FuelTech
 - **GitHub App**: Auto-validate adapter PRs
 - **API Keys**: For third-party adapter discovery
 - **Analytics**: Download counts, popular adapters
+
+## Domain Contract (2026-08-23 — load-bearing, do not "clean up")
+
+- **Primary domain: `https://oecua.org`** (apex). `site.url`, canonicals, sitemap,
+  JSON-LD, and robots all declare it. Decision recorded in
+  `docs/plans/2026-08-21-cloudflare-workers-migration.md`.
+- **openecualliance.org (and www of both domains) 301 to oecua.org** at the
+  Cloudflare zone edge from migration Phase 4. Until those 301s have soaked, the
+  legacy origins in `server/middleware/03.cors.ts` are INTENTIONAL — do not remove.
+- **Email stays on openecualliance.org** (`@openecualliance.org` addresses, SES
+  inbound MX on the apex). The web 301s must never touch MX records.
+- **Canonical/og:url are per-page**, computed in `app/app.vue` from `site.url` +
+  route path. Never add a static canonical or og:url to `nuxt.config.ts` head —
+  that reintroduces the homepage-canonical-on-every-page bug.
+- **Auth redirects use the current origin** (`app/composables/useAuth.ts`). Every
+  origin that serves the site (oecua.org, www, legacy domains until retired,
+  workers.dev previews) must be in the Supabase redirect-URL allowlist of the
+  OECUA Supabase project (`ljigjawvlwvciqvegptp` — its OWN project, NOT the shared
+  CMDIY auth instance). If an origin is missing, GoTrue silently falls back to
+  SITE_URL and login breaks on that origin.
+- **Cloudflare builds**: `bun run build:cf` (`NITRO_PRESET=cloudflare_module`);
+  a plain `bun run build` produces a node-server artifact that must never be
+  deployed with wrangler. wrangler is pinned in devDependencies — bump wrangler
+  first, `compatibility_date` in wrangler.jsonc second (amendment E5).
