@@ -53,7 +53,7 @@ deliverable is knowledge: every phase writes findings back to the master plan's
 | 0 | Go/no-go spike on workers.dev (bundle, serverAssets, shiki, supabase auth, sitemap, rate limiter, env timing) | **COMPLETE 2026-08-23 — GO.** All gates passed on the deployed worker incl. full magic-link PKCE login + SSR cookie session. Fixes found: module-scope setInterval (boot blocker), app-pinned auth redirect, html_handling. Bundle 3.54 MB gzip (Workers Paid). |
 | 1 | Platform-neutral fixes on main via Vercel (canonical bug, remoteAddress guard, spike findings) | not started |
 | 2 | wrangler.jsonc + GH Actions deploy + secrets + `wrangler dev` recipe (E4) + pinned wrangler/compat_date (E5) | not started |
-| 3 | Zone prep: BIND import from R53 (C2), record diff, DCV cert pre-provisioning (C1), Always Use HTTPS + HSTS (C3), proxied apex + preserve_query_string (C4), Supabase redirect-URL allowlist + workers.dev origin | not started |
+| 3 | Zone prep: BIND import from R53 (C2), record diff, DCV cert pre-provisioning (C1), Always Use HTTPS + HSTS (C3), proxied apex + preserve_query_string (C4). **HARD GATE (auth uses current origin): Supabase allowlist on project `ljigjawvlwvciqvegptp` must contain `https://oecua.org/**`, `https://www.oecua.org/**`, both openecualliance.org forms, and the workers.dev origin, and SITE_URL must become `https://oecua.org` — BEFORE Phase 4. Missing origin = silent GoTrue SITE_URL fallback = broken login on that origin.** | not started |
 | 4 | NS flip at Amazon Registrar + scripted battery (`scripts/verify-cf-deploy.sh`) + 1-week soak (C6: expect ~48 h dual-serve) | not started |
 | 5 | Remove domains from Vercel project (C8 gates), update CLAUDE.md, Transferability report | not started |
 
