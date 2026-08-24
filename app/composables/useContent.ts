@@ -1,4 +1,5 @@
 import type { ContentType, ContentListItem } from '~/types/content';
+import type { VendorOption } from '~/utils/vendors';
 
 export function useContent() {
   const { adapters, loading: adaptersLoading, refresh: refreshAdapters } = useAdapters();
@@ -71,17 +72,13 @@ export function useContent() {
   }));
 
   /**
-   * Get unique vendors across all content types
+   * Get unique vendors across all content types.
+   *
+   * Vendors are deduplicated by slug: specs store lowercase slugs while
+   * user-submitted models store display names, so the raw strings collide
+   * (`aim`/`AiM`, `haltech`/`Haltech`).
    */
-  const allVendors = computed(() => {
-    const vendorSet = new Set<string>();
-    for (const item of allContent.value) {
-      if (item.vendor) {
-        vendorSet.add(item.vendor);
-      }
-    }
-    return Array.from(vendorSet).sort();
-  });
+  const allVendors = computed((): VendorOption[] => toVendorOptions(allContent.value.map((item) => item.vendor)));
 
   /**
    * Filter content by type and search
@@ -93,8 +90,8 @@ export function useContent() {
         return false;
       }
 
-      // Vendor filter
-      if (options.vendor && item.vendor !== options.vendor) {
+      // Vendor filter (compares normalized slugs, not raw vendor strings)
+      if (options.vendor && (!item.vendor || vendorSlug(item.vendor) !== vendorSlug(options.vendor))) {
         return false;
       }
 

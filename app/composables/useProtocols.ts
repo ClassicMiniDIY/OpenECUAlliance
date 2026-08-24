@@ -1,4 +1,5 @@
 import type { Protocol } from '~/types/protocol';
+import type { VendorOption } from '~/utils/vendors';
 
 export function useProtocols() {
   const {
@@ -16,10 +17,7 @@ export function useProtocols() {
 
   const loading = computed(() => status.value === 'pending');
 
-  const vendors = computed(() => {
-    const vendorSet = new Set((protocols.value ?? []).map((p) => p.vendor));
-    return Array.from(vendorSet).sort();
-  });
+  const vendors = computed((): VendorOption[] => toVendorOptions((protocols.value ?? []).map((p) => p.vendor)));
 
   const protocolTypes = computed(() => {
     const typeSet = new Set((protocols.value ?? []).map((p) => p.protocolType));
@@ -44,7 +42,7 @@ export function useProtocols() {
       }
 
       // Vendor filter
-      if (options.vendor && protocol.vendor !== options.vendor) {
+      if (options.vendor && vendorSlug(protocol.vendor) !== vendorSlug(options.vendor)) {
         return false;
       }
 

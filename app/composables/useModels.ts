@@ -1,4 +1,5 @@
 import type { UserModel, ModelCategory } from '~/types/model';
+import type { VendorOption } from '~/utils/vendors';
 
 export function useModels() {
   const {
@@ -16,12 +17,7 @@ export function useModels() {
 
   const loading = computed(() => status.value === 'pending');
 
-  const vendors = computed(() => {
-    const vendorSet = new Set(
-      (models.value ?? []).map((m) => m.vendor).filter((v): v is string => v !== null && v !== undefined)
-    );
-    return Array.from(vendorSet).sort();
-  });
+  const vendors = computed((): VendorOption[] => toVendorOptions((models.value ?? []).map((m) => m.vendor)));
 
   const categories = computed((): ModelCategory[] => {
     const categorySet = new Set((models.value ?? []).map((m) => m.category));
@@ -47,7 +43,7 @@ export function useModels() {
       }
 
       // Vendor filter
-      if (options.vendor && model.vendor !== options.vendor) {
+      if (options.vendor && (!model.vendor || vendorSlug(model.vendor) !== vendorSlug(options.vendor))) {
         return false;
       }
 
