@@ -1,7 +1,7 @@
 # Adapter and Protocol Deep Pass — Audit and Plan
 
 **Date:** 2026-08-24
-**Status:** Audit complete. Implementation not started — scope decisions pending.
+**Status:** Audit complete. Phase 1 (correctness) shipped 2026-08-24. Phases 2-5 pending scope decisions in section 7.
 **Scope:** all 9 adapters and 9 protocols in `specs/`.
 
 The last content pass on these files was January 2025. This document records what
@@ -185,8 +185,9 @@ slower pass.
 
 Ordered by value per unit of risk. Phases 1–3 need no vendor research.
 
-**Phase 1 — correctness.** Fix the MaxxECU baud and message IDs and the
-ECUMaster baud. Ship on its own; it is a bug fix, not a content change.
+**Phase 1 — correctness. DONE (2026-08-24).** MaxxECU rebuilt from the vendor
+table at the correct IDs and baud (`2.0.0`, 22 messages / 100 signals);
+ECUMaster baud corrected (`1.0.1`). Verified on workerd.
 
 **Phase 2 — the spec's foundation.** Write `specs/SPECIFICATION.md` as the real
 canonical channel registry: one row per canonical ID with its single mandated
