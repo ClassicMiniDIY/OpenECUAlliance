@@ -57,7 +57,22 @@ deliverable is knowledge: every phase writes findings back to the master plan's
 | 4a | NS flip at Amazon Registrar (DNS authority only, no traffic change) | **COMPLETE 2026-08-24 00:52-00:53 UTC.** Both zones active. Propagation ~1 h (registry delegation TTL 3600, not the assumed 48 h). Zero downtime, zero user-visible change. |
 | 4b | Traffic switch to the Worker | **COMPLETE 2026-08-24.** Cert verified valid (`CN=oecua.org`, Google Trust Services, exp. Nov 22) before switching. Worker **route** `oecua.org/*` used instead of a custom domain — non-destructive (keeps the Vercel A record as origin fallback) and reversible by toggling `proxied`. Redirect hostnames proxied; all 301s verified with query preservation. Battery **36/37** (the one failure was a stale local resolver cache, disproved by forcing the edge IP). |
 | 4c | Soak | **SKIPPED** by Cole's decision 2026-08-24 — C8 preconditions (NS on Cloudflare + battery green) were already met. |
-| 5 | Decommission Vercel + docs | **IN PROGRESS 2026-08-24.** Done: Vercel origin dependency removed (apex origin is now a dummy; battery 37/37 with no Vercel fallback possible), CLAUDE.md rewritten with the Cloudflare deployment model and workerd constraints, Transferability report written into the master plan. Remaining: Cole removes the 4 domains from the Vercel project and deletes it. |
+| 5 | Decommission Vercel + docs | **COMPLETE 2026-08-24.** Vercel project deleted entirely; battery 37/37 after deletion; CI is Cloudflare-only. Done: Vercel origin dependency removed (apex origin is now a dummy; battery 37/37 with no Vercel fallback possible), CLAUDE.md rewritten with the Cloudflare deployment model and workerd constraints, Transferability report written into the master plan. Vercel project and all 4 domain attachments removed by Cole. |
+
+## MIGRATION COMPLETE — 2026-08-24
+
+`oecua.org` runs on Cloudflare Workers. Vercel is fully decommissioned for this repo.
+
+- **Zero downtime** across the entire cutover; no rollback used.
+- Battery **37/37** against production after Vercel deletion.
+- Mail intact and proven by Google's own `Authentication-Results` (dkim/spf/dmarc all pass)
+  on a message delivered after the nameserver change.
+- Deploys: push to `main` → GitHub Actions → Workers. No other CI remains.
+- **Rollback is no longer available via Vercel** — the project is deleted. Recovery from a
+  bad deploy is `wrangler rollback` or reverting the commit; recovery from a Cloudflare-level
+  problem means standing up a new origin.
+- Findings written back to the CMDIY master plan as a Transferability report; the five that
+  change cmdiy's plan are listed there, ranked by cost.
 
 ## Process rules (from the kickoff brief)
 
