@@ -9,7 +9,7 @@ truth — **edit that file, not this one.**
 Regenerate with:
 
 ```bash
-bun scripts/generate-spec-doc.ts
+bun run generate:spec-doc
 ```
 
 ---
@@ -52,7 +52,11 @@ ID alone got readings off by an order of magnitude.
 4. **Category must match the registry.** It drives grouping on the site.
 5. **Aliases still resolve** but are deprecated. New adapters should use the
    canonical ID.
-6. **Adding a channel?** Add it to `channels.yaml` first, then use it. Run
+6. **A protocol signal that is not a measurement** carries `reserved: true`
+   (padding, transport framing). One with no canonical equivalent carries
+   `vendor_specific: true`. Both are deliberate declarations — an unmarked
+   signal without an `id` is treated as an oversight.
+7. **Adding a channel?** Add it to `channels.yaml` first, then use it. Run
    `bun run validate:specs` before opening a PR — CI runs it too.
 
 ---

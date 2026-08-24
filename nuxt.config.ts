@@ -275,7 +275,9 @@ export default defineNuxtConfig({
 
   // Nitro configuration for build optimization
   nitro: {
-    // Bundle the specs directory as server assets for Vercel deployment
+    // Bundle the specs directory as server assets. This is what makes the YAML
+    // readable on workerd, which has no filesystem — without it every spec
+    // endpoint 500s in production while working fine in `bun dev`.
     // Path is relative to Nitro srcDir (project root for Nuxt)
     serverAssets: [
       {

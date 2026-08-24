@@ -1,26 +1,65 @@
+#!/usr/bin/env bun
+/**
+ * Generates specs/SPECIFICATION.md from specs/channels.yaml.
+ *
+ * channels.yaml is the source of truth; the Markdown is a rendering of it.
+ * Edit the YAML and re-run this — never hand-edit SPECIFICATION.md.
+ *
+ * Usage: bun scripts/generate-spec-doc.ts
+ */
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
-import { parse } from 'yaml';
 import { join } from 'node:path';
-const SPECS = '/Users/colegentry/Development/OpenECUAlliance/specs';
-const reg = parse(readFileSync(join(SPECS, 'channels.yaml'), 'utf8'));
+import { parse } from 'yaml';
 
-// usage counts, so the doc shows how established each id is
-function walk(d, out = []) { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p, out); else if (e.name.endsWith('.yaml')) out.push(p); } return out; }
-const use = new Map();
-const aliasOf = new Map();
+const SPECS = join(import.meta.dir, '..', 'specs');
+
+type Channel = {
+  id: string;
+  name: string;
+  category: string;
+  unit: string;
+  data_type: string;
+  description?: string;
+  aliases?: string[];
+  split_from?: string;
+};
+
+const reg = parse(readFileSync(join(SPECS, 'channels.yaml'), 'utf8')) as {
+  openecualliance: string;
+  version: string;
+  updated: string;
+  channels: Channel[];
+  unit_spellings?: Record<string, string>;
+  conversions?: Array<{ from: string; to: string; scale: number; offset: number }>;
+};
+
+function walk(dir: string, out: string[] = []): string[] {
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, e.name);
+    if (e.isDirectory()) walk(p, out);
+    else if (e.name.endsWith('.yaml')) out.push(p);
+  }
+  return out;
+}
+
+// "Used by" counts how many adapters map each channel, so the doc shows at a
+// glance which parts of the vocabulary are established and which are aspirational.
+const aliasOf = new Map<string, string>();
 for (const c of reg.channels) for (const a of c.aliases ?? []) aliasOf.set(a, c.id);
+
+const use = new Map<string, number>();
 for (const f of walk(join(SPECS, 'adapters'))) {
-  const y = parse(readFileSync(f, 'utf8'));
+  const y = parse(readFileSync(f, 'utf8')) as { channels?: Array<{ id: string }> };
   for (const ch of y.channels ?? []) {
     const id = aliasOf.get(ch.id) ?? ch.id;
     use.set(id, (use.get(id) ?? 0) + 1);
   }
 }
 
-const byCat = new Map();
+const byCat = new Map<string, Channel[]>();
 for (const c of reg.channels) byCat.set(c.category, [...(byCat.get(c.category) ?? []), c]);
 
-const L = [];
+const L: string[] = [];
 L.push(`# OpenECU Spec — Channel Reference
 
 **Spec version ${reg.openecualliance} · registry ${reg.version} · updated ${reg.updated}**
@@ -32,7 +71,7 @@ truth — **edit that file, not this one.**
 Regenerate with:
 
 \`\`\`bash
-bun scripts/generate-spec-doc.ts
+bun run generate:spec-doc
 \`\`\`
 
 ---
@@ -75,7 +114,11 @@ ID alone got readings off by an order of magnitude.
 4. **Category must match the registry.** It drives grouping on the site.
 5. **Aliases still resolve** but are deprecated. New adapters should use the
    canonical ID.
-6. **Adding a channel?** Add it to \`channels.yaml\` first, then use it. Run
+6. **A protocol signal that is not a measurement** carries \`reserved: true\`
+   (padding, transport framing). One with no canonical equivalent carries
+   \`vendor_specific: true\`. Both are deliberate declarations — an unmarked
+   signal without an \`id\` is treated as an oversight.
+7. **Adding a channel?** Add it to \`channels.yaml\` first, then use it. Run
    \`bun run validate:specs\` before opening a PR — CI runs it too.
 
 ---
@@ -134,7 +177,9 @@ for (const [cat, list] of [...byCat].sort()) {
   L.push(`| --- | --- | --- | --- | --- | --- |`);
   for (const c of list.sort((a, b) => a.id.localeCompare(b.id))) {
     const al = c.aliases ? `<br>_aliases: ${c.aliases.map((a) => `\`${a}\``).join(', ')}_` : '';
-    L.push(`| \`${c.id}\` | ${c.name}${al} | \`${c.unit || '—'}\` | ${c.data_type} | ${use.get(c.id) ?? 0} | ${c.description ?? ''} |`);
+    L.push(
+      `| \`${c.id}\` | ${c.name}${al} | \`${c.unit || '—'}\` | ${c.data_type} | ${use.get(c.id) ?? 0} | ${c.description ?? ''} |`
+    );
   }
   L.push('');
 }
@@ -165,4 +210,4 @@ conversion.
 for (const s of splits) L.push(`| \`${s.id}\` | \`${s.split_from}\` | \`${s.unit}\` | ${s.description} |`);
 
 writeFileSync(join(SPECS, 'SPECIFICATION.md'), L.join('\n') + '\n');
-console.log('wrote SPECIFICATION.md —', reg.channels.length, 'channels,', dep.length, 'aliases');
+console.log(`wrote SPECIFICATION.md — ${reg.channels.length} channels, ${dep.length} aliases`);

@@ -1,8 +1,9 @@
 import { parse as parseYaml } from 'yaml';
 
 /**
- * Filesystem utilities for reading adapter/protocol specs from Nitro server assets
- * Uses Nitro's useStorage API for cross-platform compatibility (local dev + Vercel)
+ * Filesystem utilities for reading adapter/protocol specs from Nitro server assets.
+ * Uses Nitro's useStorage API rather than node:fs because production runs on
+ * Cloudflare workerd, which has no filesystem. See nuxt.config.ts serverAssets.
  */
 
 /**

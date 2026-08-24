@@ -8,10 +8,15 @@
  * IDs that do not exist, and eight canonical IDs carried mutually incompatible
  * units. Every one of those is mechanically detectable.
  *
- * Usage:  bun scripts/validate-specs.ts [--json]
+ * Also enforces that any spec changed against a baseline ref carries a version
+ * bump and a matching changelog entry, so a silent edit to a published spec
+ * cannot ship. Consumers pin versions; an unversioned change is invisible to them.
+ *
+ * Usage:  bun scripts/validate-specs.ts [--json] [--since <ref>]
  * Exit 0 = clean, 1 = at least one error. Warnings do not fail the run.
  */
 import { readFileSync, readdirSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, relative } from 'node:path';
 import { parse } from 'yaml';
 import { AdapterYamlSchema } from '../server/schemas/adapter';
@@ -161,6 +166,47 @@ for (const f of protocolFiles) {
       }
     }
   }
+}
+
+// --- version bumps ----------------------------------------------------------
+// A spec that changed without a version bump is the failure this guards: a
+// consumer pinned to 1.0.0 silently gets different data. Skipped when the
+// baseline ref is unavailable (shallow clone, detached CI checkout), because a
+// missing baseline is not evidence of a missing bump.
+const sinceIdx = process.argv.indexOf('--since');
+const baseline = sinceIdx !== -1 ? process.argv[sinceIdx + 1] : 'origin/main';
+
+function git(args: string[]): string | null {
+  try {
+    return execFileSync('git', args, { encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore'] });
+  } catch {
+    return null;
+  }
+}
+
+if (git(['rev-parse', '--verify', '--quiet', `${baseline}^{commit}`])) {
+  const changed = (git(['diff', '--name-only', `${baseline}...HEAD`]) ?? '')
+    .split('\n')
+    .filter((p) => /^specs\/(adapters|protocols)\/.*\.yaml$/.test(p));
+
+  for (const p of changed) {
+    const rel = relative('specs', p);
+    const before = git(['show', `${baseline}:${p}`]);
+    if (before === null) continue; // newly added spec — nothing to bump from
+    const oldY = parse(before);
+    const newY = parse(readFileSync(join(SPECS, '..', p), 'utf8'));
+    if (oldY.version === newY.version) {
+      err(rel, `changed since ${baseline} but version is still ${newY.version} — bump it and add a changelog entry`);
+      continue;
+    }
+    const head = (newY.metadata?.changelog ?? [])[0];
+    if (!head) err(rel, `version ${newY.version} has no changelog entry`);
+    else if (head.version !== newY.version) {
+      err(rel, `version is ${newY.version} but the newest changelog entry is ${head.version}`);
+    }
+  }
+} else if (!process.argv.includes('--json')) {
+  console.log(`\n(skipping the version-bump check: baseline ref '${baseline}' not available)`);
 }
 
 // --- report -----------------------------------------------------------------
