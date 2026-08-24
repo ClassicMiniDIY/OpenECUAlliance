@@ -1,0 +1,46 @@
+name: Validate specs
+
+# Runs on pull requests, which is where spec validation actually matters.
+#
+# The deploy workflow also validates, but it only triggers on push to main —
+# by which point a bad spec is already merged. More importantly the version-bump
+# check diffs against the base branch, so on a main-branch push that diff is
+# empty and the check silently does nothing. It needs a PR to compare against.
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The version-bump check needs the base ref to diff against. A shallow
+          # clone has no baseline, and the check skips rather than false-passing.
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Validate specs against the canonical registry
+        run: bun run validate:specs --since origin/${{ github.base_ref }}
+
+      - name: Check the generated spec reference is current
+        run: |
+          bun run generate:spec-doc
+          if ! git diff --quiet -- specs/SPECIFICATION.md; then
+            echo "::error::specs/SPECIFICATION.md is stale. Run 'bun run generate:spec-doc' and commit the result."
+            git diff -- specs/SPECIFICATION.md
+            exit 1
+          fi
