@@ -1,7 +1,7 @@
 # Adapter and Protocol Deep Pass — Audit and Plan
 
 **Date:** 2026-08-24
-**Status:** Phases 1-3 shipped 2026-08-24. Phases 4-5 outstanding.
+**Status:** Phases 1-4 shipped 2026-08-24. Phase 5 outstanding.
 **Scope:** all 9 adapters and 9 protocols in `specs/`.
 
 The last content pass on these files was January 2025. This document records what
@@ -223,10 +223,30 @@ the mapping is now distinguishable from a deliberate exclusion.
 Per protocol: rusEFI 100%, MaxxECU 98%, ECUMaster 84%, MegaSquirt 83%, Syvecs
 81%, Haltech 78%, AEM 78%, Emtron 74%, Speeduino 64%.
 
-**Phase 4 — coverage.** Regenerate adapter channel lists from the authoritative
-sources, vendor by vendor, highest gap first: rusEFI, Speeduino, RomRaider,
-Link, then the rest. Refresh `tested_with` and re-verify every `known_issues`
-claim.
+**Phase 4 — coverage. DONE for the three vendors with machine-readable sources
+(2026-08-24).** Coverage target is curated, not full parity: every channel a
+tuner would plot, with debug, internal, CRC and spare fields left out.
+
+| adapter | before | after | source |
+| --- | --- | --- | --- |
+| `rusefi-mlg` | 46 | **133** | `LiveData.yaml` + 40 live-data structs |
+| `romraider-csv` | 27 | **95** | `definitions/log_defs.xml` |
+| `speeduino-mlg` | 22 | **92** | `[Datalog]` in `reference/speeduino.ini` |
+
+Existing `source_names` were preserved and merged, so column aliases that
+already worked keep working. Two defects surfaced during the rebuild and were
+fixed: RomRaider's `vehicle_speed` was declared in mph when RomRaider's own
+definition says `metric="KPH"` (mph is the converted display), and
+`duty_cycle` listed `"Fuel Injector #1 Pulse Width (ms)"` as a source name —
+a pulse width is not a duty cycle. The PLX external-gauge channels were also
+separated from the ECU's own (`afr_external`, `boost_external`, `egt_external`);
+they are distinct columns in the same log.
+
+**Not done — no machine-readable source.** Link, MegaSquirt, Haltech, ECUMaster,
+AiM and Emerald publish only PDFs or in-application help. Link alone exposes
+400+ runtime parameters against our 57 channels. These need a manual extraction
+pass; inventing channels for a document that cannot be read is exactly what
+produced the MaxxECU defect in section 2.1.
 
 **Phase 5 — keep it from rotting.** The open-source vendors (rusEFI, Speeduino,
 RomRaider, MegaSquirt) publish machine-readable definitions at stable URLs. A
