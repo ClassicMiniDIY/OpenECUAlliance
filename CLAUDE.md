@@ -422,3 +422,22 @@ It is not decoration — on its first run it found two real bugs nothing else ha
 a signal overflowing the rusEFI status frame and an overlap in Haltech `0x477`.
 Protocols had **no** schema at all until this date, which is how the MaxxECU
 file shipped with message IDs that matched no real bus.
+
+## Auth Email Templates (2026-08-24)
+
+Supabase stores auth email templates in **project config, not the repo**, so
+they are invisible to code review and to grep. The canonical copies live in
+`supabase/templates/` and must be pasted into the dashboard by hand — see that
+directory's README for the mapping and the deploy steps.
+
+- **The email logo must be a PNG on `https://oecua.org`.** Gmail and Outlook do
+  not render SVG in email, and `openecualliance.org` 301s to the primary domain.
+  The asset is `public/email-logo.png`, generated from `public/logo.svg` with
+  `rsvg-convert -w 96 -h 96`.
+- **A missing static asset does not 404 on this site.** Unknown paths fall
+  through to the Nuxt router, where `@nuxtjs/supabase` is deny-by-default
+  (`redirectOptions.exclude` in `nuxt.config.ts`), so they 302 to `/login` and
+  return a 200 HTML page. This is why the broken `logo.svg` went unnoticed —
+  every probe looked healthy. **Check `Content-Type`, never status code, when
+  verifying an asset URL.** The same trap applies to any new public page: if it
+  is not in the `exclude` list, it redirects logged-out visitors to `/login`.
