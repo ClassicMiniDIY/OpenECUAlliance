@@ -1,7 +1,7 @@
 # Adapter and Protocol Deep Pass — Audit and Plan
 
 **Date:** 2026-08-24
-**Status:** Audit complete. Phase 1 (correctness) shipped 2026-08-24. Phases 2-5 pending scope decisions in section 7.
+**Status:** Phases 1-3 shipped 2026-08-24. Phases 4-5 outstanding.
 **Scope:** all 9 adapters and 9 protocols in `specs/`.
 
 The last content pass on these files was January 2025. This document records what
@@ -189,16 +189,39 @@ Ordered by value per unit of risk. Phases 1–3 need no vendor research.
 table at the correct IDs and baud (`2.0.0`, 22 messages / 100 signals);
 ECUMaster baud corrected (`1.0.1`). Verified on workerd.
 
-**Phase 2 — the spec's foundation.** Write `specs/SPECIFICATION.md` as the real
-canonical channel registry: one row per canonical ID with its single mandated
-unit. Resolve the eight conflicts in 3.3 by picking one SI-ish unit per quantity
-and converting the outliers. Add a protocol zod schema and the missing
-`encoding` field.
+**Phase 2 — the spec's foundation. DONE (2026-08-24).** `specs/channels.yaml` is
+the machine-readable registry and `SPECIFICATION.md` is generated from it.
 
-**Phase 3 — canonical IDs on protocol signals.** Add `id` and `category` to all
-912 protocol signals, drawn from the registry Phase 2 establishes. Extend the
-registry where a CAN-only quantity has no adapter equivalent. This is what makes
-protocols first-class.
+One correction to the plan as written above: the unit mandate does **not** live
+in the adapter. An adapter's `unit` describes what the log file actually
+contains, so rewriting psi to kPa would make the spec lie about the file.
+Instead the registry mandates the canonical unit and the channel declares
+`to_canonical: {scale, offset}` — surfaced by the API as `toCanonical` and shown
+as a badge on the detail page. Two IDs were split rather than converted:
+`fuel_flow` (l/h) vs `fuel_flow_mass` (g/s), and `knock_level` (volts) vs
+`knock_level_db` (dB); neither pair is inter-convertible.
+
+`scripts/validate-specs.ts` enforces all of it and gates the deploy. On its first
+run it found two defects nothing else had: `Distance_Traveled` ran 8 bits past
+the end of rusEFI's `0x200` frame (fixed from the C struct — the status flags all
+pack into byte 4, which had pushed gear and distance a byte late), and Haltech
+`0x477` has two 16-bit signals starting 8 bits apart. Haltech's is genuinely
+ambiguous, so it is marked `disputed` rather than guessed. The protocol zod
+schema and the `encoding` field are in.
+
+**Phase 3 — canonical IDs on protocol signals. DONE (2026-08-24).** The registry
+grew from 140 to 371 channels to cover CAN-only quantities (status flags as a new
+`status` category, nitrous and anti-lag, per-cylinder ignition and knock, indexed
+analog/digital inputs, bank-2 cam positions, tyre sensors, cruise control).
+
+**741 of 905 signals (82%) now carry a canonical id**, up from zero. The rest are
+declared rather than left silent: 137 `vendor_specific` (a real measurement with
+no canonical equivalent — DSG, Haltech torque management, diagnostics) and 27
+`reserved` (padding and OBD transport framing). Nothing is unmarked, so a gap in
+the mapping is now distinguishable from a deliberate exclusion.
+
+Per protocol: rusEFI 100%, MaxxECU 98%, ECUMaster 84%, MegaSquirt 83%, Syvecs
+81%, Haltech 78%, AEM 78%, Emtron 74%, Speeduino 64%.
 
 **Phase 4 — coverage.** Regenerate adapter channel lists from the authoritative
 sources, vendor by vendor, highest gap first: rusEFI, Speeduino, RomRaider,

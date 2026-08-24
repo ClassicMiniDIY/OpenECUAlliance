@@ -360,6 +360,102 @@ channels:
     unit: 'volts'
     data_type: float
     description: 'Raw throttle position sensor voltage'
+  - id: user_channel_1
+    name: 'User Channel 1'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 1, source configured in the tuning software.'
+  - id: user_channel_10
+    name: 'User Channel 10'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 10, source configured in the tuning software.'
+  - id: user_channel_11
+    name: 'User Channel 11'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 11, source configured in the tuning software.'
+  - id: user_channel_12
+    name: 'User Channel 12'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 12, source configured in the tuning software.'
+  - id: user_channel_13
+    name: 'User Channel 13'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 13, source configured in the tuning software.'
+  - id: user_channel_14
+    name: 'User Channel 14'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 14, source configured in the tuning software.'
+  - id: user_channel_15
+    name: 'User Channel 15'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 15, source configured in the tuning software.'
+  - id: user_channel_16
+    name: 'User Channel 16'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 16, source configured in the tuning software.'
+  - id: user_channel_2
+    name: 'User Channel 2'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 2, source configured in the tuning software.'
+  - id: user_channel_3
+    name: 'User Channel 3'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 3, source configured in the tuning software.'
+  - id: user_channel_4
+    name: 'User Channel 4'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 4, source configured in the tuning software.'
+  - id: user_channel_5
+    name: 'User Channel 5'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 5, source configured in the tuning software.'
+  - id: user_channel_6
+    name: 'User Channel 6'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 6, source configured in the tuning software.'
+  - id: user_channel_7
+    name: 'User Channel 7'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 7, source configured in the tuning software.'
+  - id: user_channel_8
+    name: 'User Channel 8'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 8, source configured in the tuning software.'
+  - id: user_channel_9
+    name: 'User Channel 9'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'User-assignable channel 9, source configured in the tuning software.'
 
   # --- engine ---
   - id: antilag_fuel_adder
@@ -458,6 +554,12 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Drive-by-wire throttle motor duty cycle.'
+  - id: driveshaft_rpm
+    name: 'Driveshaft RPM'
+    category: engine
+    unit: 'rpm'
+    data_type: float
+    description: 'Driveshaft rotational speed.'
   - id: etb_error
     name: 'ETB Error'
     category: engine
@@ -478,6 +580,12 @@ channels:
     data_type: float
     description: 'Commanded electronic throttle body plate position.'
     aliases: [dbw_target, e_throttle_target]
+  - id: fuel_pump_duty
+    name: 'Fuel Pump Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Primary fuel pump duty cycle.'
   - id: fuel_trim_bank_1
     name: 'Fuel Trim Bank 1'
     category: engine
@@ -490,6 +598,30 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Closed-loop fuel trim for bank 2.'
+  - id: fuel_trim_long_bank_1
+    name: 'Long Term Fuel Trim Bank 1'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Long-term learned fuel trim, bank 1.'
+  - id: fuel_trim_long_bank_2
+    name: 'Long Term Fuel Trim Bank 2'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Long-term learned fuel trim, bank 2.'
+  - id: fuel_trim_short_bank_1
+    name: 'Short Term Fuel Trim Bank 1'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Short-term closed-loop fuel trim, bank 1.'
+  - id: fuel_trim_short_bank_2
+    name: 'Short Term Fuel Trim Bank 2'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Short-term closed-loop fuel trim, bank 2.'
   - id: idle_base
     name: 'Idle Base Position'
     category: engine
@@ -659,12 +791,36 @@ channels:
     unit: 'rpm'
     data_type: float
     description: 'Engine speed'
+  - id: torque_actual
+    name: 'Engine Torque'
+    category: engine
+    unit: 'nm'
+    data_type: float
+    description: 'Delivered engine torque.'
+  - id: torque_indicated
+    name: 'Indicated Engine Torque'
+    category: engine
+    unit: 'nm'
+    data_type: float
+    description: 'Indicated engine torque before losses.'
+  - id: torque_loss
+    name: 'Engine Torque Loss'
+    category: engine
+    unit: 'nm'
+    data_type: float
+    description: 'Torque lost to friction and accessories.'
   - id: torque_requested
     name: 'Torque Requested'
     category: engine
     unit: 'nm'
     data_type: float
     description: 'Requested torque from torque management'
+  - id: torque_theoretical
+    name: 'Theoretical Engine Torque'
+    category: engine
+    unit: 'nm'
+    data_type: float
+    description: 'Theoretical maximum engine torque.'
   - id: tps
     name: 'Throttle Position'
     category: engine
@@ -689,6 +845,12 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Secondary throttle position sensor'
+  - id: traction_slip_target
+    name: 'Target Slip'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Wheel slip target used by traction control.'
   - id: turbo_speed
     name: 'Turbo Speed'
     category: engine
@@ -759,6 +921,12 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Wastegate actuator position.'
+  - id: water_injection_duty
+    name: 'Water Injection Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Water/methanol injection solenoid duty cycle.'
 
   # --- fuel ---
   - id: afr
@@ -1080,6 +1248,12 @@ channels:
     unit: 'degrees'
     data_type: float
     description: 'Per-cylinder ignition advance for cylinder 9.'
+  - id: ignition_compensation
+    name: 'Total Ignition Compensation'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Total ignition advance adjustment from all corrections.'
   - id: ignition_table
     name: 'Ignition Table'
     category: ignition
@@ -1203,6 +1377,12 @@ channels:
     unit: 'degrees'
     data_type: float
     description: 'GPS longitude position'
+  - id: trip_distance
+    name: 'Trip Distance'
+    category: position
+    unit: 'meters'
+    data_type: float
+    description: 'Distance travelled since the trip meter was reset.'
 
   # --- pressure ---
   - id: barometric_pressure
@@ -1280,6 +1460,18 @@ channels:
     unit: 'kpa'
     data_type: float
     description: 'Fuel rail pressure'
+  - id: fuel_pressure_high
+    name: 'High Fuel Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Direct-injection high-pressure rail pressure.'
+  - id: gearbox_line_pressure
+    name: 'Gearbox Line Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Transmission hydraulic line pressure.'
   - id: map
     name: 'Manifold Pressure'
     category: pressure
@@ -1304,6 +1496,30 @@ channels:
     unit: 'kpa'
     data_type: float
     description: 'Engine oil pressure'
+  - id: tyre_pressure_fl
+    name: 'Tyre Pressure Front Left'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Front Left tyre pressure.'
+  - id: tyre_pressure_fr
+    name: 'Tyre Pressure Front Right'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Front Right tyre pressure.'
+  - id: tyre_pressure_rl
+    name: 'Tyre Pressure Rear Left'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Rear Left tyre pressure.'
+  - id: tyre_pressure_rr
+    name: 'Tyre Pressure Rear Right'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Rear Right tyre pressure.'
   - id: wastegate_pressure
     name: 'Wastegate Pressure'
     category: pressure
@@ -1356,6 +1572,12 @@ channels:
     unit: 'kph'
     data_type: float
     description: 'Vehicle ground speed'
+  - id: wheel_speed_driven
+    name: 'Driven Wheel Speed'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Average speed of the driven wheels.'
   - id: wheel_speed_fl
     name: 'Wheel Speed FL'
     category: speed
@@ -1380,6 +1602,12 @@ channels:
     unit: 'kph'
     data_type: float
     description: 'Rear right wheel speed'
+  - id: wheel_speed_undriven
+    name: 'Undriven Wheel Speed'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Average speed of the undriven wheels.'
 
   # --- status ---
   - id: ac_relay
@@ -1586,6 +1814,12 @@ channels:
     unit: ''
     data_type: bool
     description: 'Coolant temperature above the warning threshold.'
+  - id: knock_detected
+    name: 'Knock Detected'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Knock was detected on the most recent event.'
   - id: lambda_protect_active
     name: 'Lambda Protection Active'
     category: status
@@ -1610,6 +1844,12 @@ channels:
     unit: ''
     data_type: bool
     description: 'Left indicator output state.'
+  - id: logging_active
+    name: 'Logging Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'ECU internal logging is running.'
   - id: low_oil_pressure_warning
     name: 'Low Oil Pressure Warning'
     category: status
@@ -1646,6 +1886,12 @@ channels:
     unit: ''
     data_type: bool
     description: 'Oxygen sensor heater state.'
+  - id: overheat_warning
+    name: 'Overheat Warning'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Engine overheat warning is active.'
   - id: overrun_active
     name: 'Overrun Cut Active'
     category: status
@@ -1688,6 +1934,12 @@ channels:
     unit: ''
     data_type: bool
     description: 'Starter engaged.'
+  - id: throttle_blip_active
+    name: 'Throttle Blip Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Downshift throttle blip is active.'
   - id: traction_control_active
     name: 'Traction Control Active'
     category: status
@@ -1722,6 +1974,18 @@ channels:
     description: 'Rear right suspension travel'
 
   # --- system ---
+  - id: active_boost_table
+    name: 'Active Boost Table'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Index of the boost table currently selected.'
+  - id: active_tune
+    name: 'Active Tune'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Index of the tune or map currently selected.'
   - id: cpu_load
     name: 'CPU Load'
     category: system
@@ -1734,6 +1998,12 @@ channels:
     unit: 'celsius'
     data_type: float
     description: 'ECU internal temperature'
+  - id: engine_protection_severity
+    name: 'Engine Protection Severity'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Severity level of the active engine protection strategy.'
   - id: error_code
     name: 'Error Code'
     category: system
@@ -1764,6 +2034,12 @@ channels:
     unit: 'count'
     data_type: int
     description: 'Number of GPS satellites in view'
+  - id: knock_cylinder
+    name: 'Last Knock Cylinder'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Cylinder on which knock was last detected.'
   - id: loops_per_second
     name: 'Loops Per Second'
     category: system
@@ -1800,6 +2076,12 @@ channels:
     unit: 'count'
     data_type: int
     description: 'Trigger synchronization error count'
+  - id: warning_count
+    name: 'Warning Count'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Running count of warnings raised by the ECU.'
 
   # --- temperature ---
   - id: ambient_temp
@@ -1932,6 +2214,18 @@ channels:
     unit: 'celsius'
     data_type: float
     description: 'Exhaust gas temperature, cylinder or position 9.'
+  - id: egt_highest
+    name: 'EGT Highest'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Highest reading across all EGT sensors.'
+  - id: egt_spread
+    name: 'EGT Spread'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Difference between the highest and lowest EGT sensor.'
   - id: fuel_temp
     name: 'Fuel Temperature'
     category: temperature
@@ -1956,6 +2250,30 @@ channels:
     unit: 'celsius'
     data_type: float
     description: 'Engine oil temperature'
+  - id: tyre_temp_fl
+    name: 'Tyre Temperature Front Left'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Front Left tyre temperature.'
+  - id: tyre_temp_fr
+    name: 'Tyre Temperature Front Right'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Front Right tyre temperature.'
+  - id: tyre_temp_rl
+    name: 'Tyre Temperature Rear Left'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Rear Left tyre temperature.'
+  - id: tyre_temp_rr
+    name: 'Tyre Temperature Rear Right'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Rear Right tyre temperature.'
 
   # --- timing ---
   - id: best_lap_time
