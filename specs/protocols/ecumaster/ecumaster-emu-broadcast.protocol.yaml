@@ -7,7 +7,8 @@
 # IMPORTANT NOTES:
 # - Base CAN ID is configurable in ECU software (default 0x600)
 # - This protocol documents the default ADU CAN stream configuration
-# - Protocol operates at 1Mbit/s by default (configurable)
+# - CAN bus speed is 500 kbit/s (ECUMaster EMU/EMU Black CAN application note);
+#   1 Mbit/s applies only to the separate "EMU 1MB" hardware variant
 # - All values use little-endian byte order
 # - Temperatures are transmitted in Celsius (signed)
 # - Pressures are in kPa (absolute or gauge depending on sensor config)
@@ -17,7 +18,7 @@ type: protocol
 
 id: ecumaster-emu-broadcast
 name: 'ECUMaster EMU CAN Broadcast Protocol'
-version: '1.0.0'
+version: '1.0.1'
 vendor: ecumaster
 description: |
   CAN broadcast protocol for ECUMaster EMU BLACK and EMU PRO ECUs.
@@ -42,7 +43,7 @@ branding:
 
 protocol:
   type: can
-  baudrate: 1000000
+  baudrate: 500000
   extended_id: false
   configurable_base_id: true
   default_base_id: 0x600
@@ -1125,6 +1126,13 @@ metadata:
     - 'Some channels may not be populated if features are not enabled'
     - 'DSG support requires specific EMU BLACK configuration'
   changelog:
+    - version: '1.0.1'
+      date: '2026-08-24'
+      changes:
+        - 'Correct CAN bus speed to 500 kbit/s. 1.0.0 declared 1 Mbit/s, which
+          decodes nothing on a default EMU bus. 1 Mbit/s is the separate "EMU 1MB"
+          hardware variant, not the default. Source: ECUMaster EMU/EMU Black CAN
+          application note, "CAN Bus Speed: 500 Kbit/sec"'
     - version: '1.0.0'
       date: '2026-01-07'
       changes:
@@ -1145,7 +1153,7 @@ x_ecumaster:
       range: '0x000-0x7FF'
       description: 'Base CAN ID for all messages (offsets 0-15 added)'
     baudrate:
-      default: '1000000'
+      default: '500000'
       options: ['125000', '250000', '500000', '1000000']
     update_rate:
       default: '100Hz'
@@ -1159,7 +1167,7 @@ x_ecumaster:
 
     Important characteristics:
     - 11-bit CAN identifiers with configurable base address
-    - Default 1 Mbit/second baud rate (configurable)
+    - 500 kbit/second baud rate (1 Mbit/s only on the "EMU 1MB" variant)
     - Little-endian data encoding throughout
     - Temperatures in Celsius (signed integers with scaling)
     - Pressures in kPa (may be gauge or absolute per sensor config)
