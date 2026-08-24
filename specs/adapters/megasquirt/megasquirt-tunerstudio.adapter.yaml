@@ -305,7 +305,7 @@ channels:
     name: 'MIL'
     description: 'Malfunction indicator lamp status (ON/OFF)'
     category: diagnostics
-    data_type: boolean
+    data_type: bool
     unit: ''
     min: 0
     max: 1
