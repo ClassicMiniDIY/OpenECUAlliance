@@ -29,6 +29,11 @@ jobs:
       - name: Build (cloudflare_module preset)
         run: bun run build:cf
         env:
+          # The runner has 16 GB, but Node caps its own heap near 2 GB by
+          # default and the Nitro/rollup bundling step exceeds that — the
+          # first CI run died with "Ineffective mark-compacts near heap
+          # limit". Extra runner RAM does nothing without this.
+          NODE_OPTIONS: --max-old-space-size=6144
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
