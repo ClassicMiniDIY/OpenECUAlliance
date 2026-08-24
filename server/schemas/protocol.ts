@@ -44,6 +44,14 @@ export const ProtocolSignalSchema = z.object({
   comment: z.string().optional(),
   /** Set when the vendor's own documentation is self-contradictory here. Records the conflict rather than guessing. */
   disputed: z.string().optional(),
+  /** Padding or transport filler. Carries no measurement, so it gets no canonical id. */
+  reserved: z.boolean().optional(),
+  /**
+   * A real measurement with no canonical equivalent — vendor-specific gearbox,
+   * torque-management or diagnostic-transport fields. Marked deliberately so it
+   * is distinguishable from a signal nobody has mapped yet.
+   */
+  vendor_specific: z.boolean().optional(),
   to_canonical: ToCanonicalSchema,
   values: z.record(z.string(), z.string()).optional(),
 });

@@ -21,6 +21,13 @@ export interface ProtocolSpec {
 }
 
 export interface ProtocolSignal {
+  /** Canonical channel id from specs/channels.yaml. Absent when reserved or vendorSpecific. */
+  id?: string;
+  category?: string;
+  /** Padding or transport filler — carries no measurement. */
+  reserved?: boolean;
+  /** A real measurement with no canonical equivalent (vendor gearbox, torque management, diagnostics). */
+  vendorSpecific?: boolean;
   name: string;
   description?: string;
   startBit: number;

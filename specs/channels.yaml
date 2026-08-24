@@ -210,38 +210,126 @@ channels:
     unit: 'gear'
     data_type: int
     description: 'Current gear'
+  - id: gear_ratio
+    name: 'Gear Ratio'
+    category: drivetrain
+    unit: 'ratio'
+    data_type: float
+    description: 'Current calculated gear ratio.'
+  - id: gear_selector_position
+    name: 'Gear Selector Position'
+    category: drivetrain
+    unit: 'gear'
+    data_type: int
+    description: 'Position of the gear selector.'
 
   # --- electrical ---
-  - id: an_volt_1
-    name: 'Analog Voltage 1'
-    category: electrical
-    unit: 'volts'
-    data_type: float
-    description: 'Analog input 1 voltage'
-  - id: an_volt_2
-    name: 'Analog Voltage 2'
-    category: electrical
-    unit: 'volts'
-    data_type: float
-    description: 'Analog input 2 voltage'
-  - id: an_volt_3
-    name: 'Analog Voltage 3'
-    category: electrical
-    unit: 'volts'
-    data_type: float
-    description: 'Analog input 3 voltage'
-  - id: an_volt_4
-    name: 'Analog Voltage 4'
-    category: electrical
-    unit: 'volts'
-    data_type: float
-    description: 'Analog input 4 voltage'
   - id: analog_d14
     name: 'Analog D14'
     category: electrical
     unit: 'volts'
     data_type: float
     description: 'Analog input D14 voltage'
+  - id: analog_input_1
+    name: 'Analog Voltage 1'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input 1 voltage'
+    aliases: [an_volt_1]
+  - id: analog_input_10
+    name: 'Analog Input 10'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 10.'
+  - id: analog_input_11
+    name: 'Analog Input 11'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 11.'
+  - id: analog_input_12
+    name: 'Analog Input 12'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 12.'
+  - id: analog_input_13
+    name: 'Analog Input 13'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 13.'
+  - id: analog_input_14
+    name: 'Analog Input 14'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 14.'
+  - id: analog_input_15
+    name: 'Analog Input 15'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 15.'
+  - id: analog_input_16
+    name: 'Analog Input 16'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 16.'
+  - id: analog_input_2
+    name: 'Analog Voltage 2'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input 2 voltage'
+    aliases: [an_volt_2]
+  - id: analog_input_3
+    name: 'Analog Voltage 3'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input 3 voltage'
+    aliases: [an_volt_3]
+  - id: analog_input_4
+    name: 'Analog Voltage 4'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input 4 voltage'
+    aliases: [an_volt_4]
+  - id: analog_input_5
+    name: 'Analog Input 5'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 5.'
+  - id: analog_input_6
+    name: 'Analog Input 6'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 6.'
+  - id: analog_input_7
+    name: 'Analog Input 7'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 7.'
+  - id: analog_input_8
+    name: 'Analog Input 8'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 8.'
+  - id: analog_input_9
+    name: 'Analog Input 9'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Generic analog input 9.'
   - id: battery_voltage
     name: 'Battery Voltage'
     category: electrical
@@ -274,6 +362,12 @@ channels:
     description: 'Raw throttle position sensor voltage'
 
   # --- engine ---
+  - id: antilag_fuel_adder
+    name: 'Anti-Lag Fuel Adder'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Extra fuel added by anti-lag.'
   - id: ap_main
     name: 'Accelerator Position Main'
     category: engine
@@ -286,6 +380,84 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Secondary accelerator pedal position'
+  - id: aux_output_1_duty
+    name: 'Aux Output 1 Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of auxiliary output 1.'
+  - id: aux_output_2_duty
+    name: 'Aux Output 2 Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of auxiliary output 2.'
+  - id: aux_output_3_duty
+    name: 'Aux Output 3 Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of auxiliary output 3.'
+  - id: aux_output_4_duty
+    name: 'Aux Output 4 Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of auxiliary output 4.'
+  - id: aux_output_5_duty
+    name: 'Aux Output 5 Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of auxiliary output 5.'
+  - id: aux_output_6_duty
+    name: 'Aux Output 6 Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of auxiliary output 6.'
+  - id: aux_output_7_duty
+    name: 'Aux Output 7 Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of auxiliary output 7.'
+  - id: aux_output_8_duty
+    name: 'Aux Output 8 Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of auxiliary output 8.'
+  - id: clutch_position
+    name: 'Clutch Position'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Clutch pedal or actuator position.'
+  - id: coil_duty_cycle
+    name: 'Coil Duty Cycle'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Ignition coil duty cycle.'
+  - id: cut_percentage
+    name: 'Cut Percentage'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Proportion of ignition or fuel events being cut.'
+  - id: cylinder_air_mass
+    name: 'Cylinder Air Mass'
+    category: engine
+    unit: 'mg'
+    data_type: float
+    description: 'Air mass trapped per cylinder per cycle.'
+  - id: dbw_duty_cycle
+    name: 'Throttle Motor Duty'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Drive-by-wire throttle motor duty cycle.'
   - id: etb_error
     name: 'ETB Error'
     category: engine
@@ -306,6 +478,18 @@ channels:
     data_type: float
     description: 'Commanded electronic throttle body plate position.'
     aliases: [dbw_target, e_throttle_target]
+  - id: fuel_trim_bank_1
+    name: 'Fuel Trim Bank 1'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Closed-loop fuel trim for bank 1.'
+  - id: fuel_trim_bank_2
+    name: 'Fuel Trim Bank 2'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Closed-loop fuel trim for bank 2.'
   - id: idle_base
     name: 'Idle Base Position'
     category: engine
@@ -337,6 +521,54 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Idle air control valve position'
+  - id: ignition_load
+    name: 'Ignition Load'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Load axis used for the ignition table.'
+  - id: injector_duty_2
+    name: 'Injector Duty Stage 2'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Injector duty cycle for injection stage 2.'
+  - id: injector_duty_3
+    name: 'Injector Duty Stage 3'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Injector duty cycle for injection stage 3.'
+  - id: injector_duty_4
+    name: 'Injector Duty Stage 4'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Injector duty cycle for injection stage 4.'
+  - id: injector_duty_5
+    name: 'Injector Duty Stage 5'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Injector duty cycle for injection stage 5.'
+  - id: injector_duty_6
+    name: 'Injector Duty Stage 6'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Injector duty cycle for injection stage 6.'
+  - id: injector_duty_7
+    name: 'Injector Duty Stage 7'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Injector duty cycle for injection stage 7.'
+  - id: injector_duty_8
+    name: 'Injector Duty Stage 8'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Injector duty cycle for injection stage 8.'
   - id: launch_rpm_target
     name: 'Launch RPM Target'
     category: engine
@@ -355,12 +587,72 @@ channels:
     unit: 'g/s'
     data_type: float
     description: 'Mass airflow sensor reading'
+  - id: nitrous_fuel_adder
+    name: 'Nitrous Fuel Adder'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Extra fuel added while nitrous is flowing.'
   - id: pedal_position
     name: 'Accelerator Pedal'
     category: engine
     unit: 'percent'
     data_type: float
     description: 'Accelerator pedal position'
+  - id: pwm_output_1
+    name: 'PWM Output 1'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of PWM output 1.'
+  - id: pwm_output_2
+    name: 'PWM Output 2'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of PWM output 2.'
+  - id: pwm_output_3
+    name: 'PWM Output 3'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of PWM output 3.'
+  - id: pwm_output_4
+    name: 'PWM Output 4'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of PWM output 4.'
+  - id: pwm_output_5
+    name: 'PWM Output 5'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of PWM output 5.'
+  - id: pwm_output_6
+    name: 'PWM Output 6'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of PWM output 6.'
+  - id: pwm_output_7
+    name: 'PWM Output 7'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of PWM output 7.'
+  - id: pwm_output_8
+    name: 'PWM Output 8'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Duty cycle of PWM output 8.'
+  - id: rev_limit_rpm
+    name: 'Rev Limit'
+    category: engine
+    unit: 'rpm'
+    data_type: float
+    description: 'Currently enforced RPM limit.'
   - id: rpm
     name: 'Engine RPM'
     category: engine
@@ -397,38 +689,76 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Secondary throttle position sensor'
+  - id: turbo_speed
+    name: 'Turbo Speed'
+    category: engine
+    unit: 'rpm'
+    data_type: float
+    description: 'Turbocharger shaft speed.'
   - id: vvt_exhaust
     name: 'VVT Exhaust Position'
     category: engine
     unit: 'degrees'
     data_type: float
     description: 'Variable valve timing exhaust cam position'
-    aliases: [vvt_exhaust_actual]
+    aliases: [vvt_exhaust_actual, vvt_exhaust_bank1_actual]
+  - id: vvt_exhaust_bank2_actual
+    name: 'VVT Exhaust Bank 2 Actual'
+    category: engine
+    unit: 'degrees'
+    data_type: float
+    description: 'Measured exhaust cam position, bank 2.'
+  - id: vvt_exhaust_bank2_target
+    name: 'VVT Exhaust Bank 2 Target'
+    category: engine
+    unit: 'degrees'
+    data_type: float
+    description: 'Commanded exhaust cam position, bank 2.'
   - id: vvt_exhaust_target
     name: 'VVT Exhaust Target'
     category: engine
     unit: 'degrees'
     data_type: float
     description: 'Target exhaust cam position'
+    aliases: [vvt_exhaust_bank1_target]
   - id: vvt_intake
     name: 'VVT Intake Position'
     category: engine
     unit: 'degrees'
     data_type: float
     description: 'Variable valve timing intake cam position'
-    aliases: [vvt_intake_actual]
+    aliases: [vvt_intake_actual, vvt_intake_bank1_actual]
+  - id: vvt_intake_bank2_actual
+    name: 'VVT Intake Bank 2 Actual'
+    category: engine
+    unit: 'degrees'
+    data_type: float
+    description: 'Measured intake cam position, bank 2.'
+  - id: vvt_intake_bank2_target
+    name: 'VVT Intake Bank 2 Target'
+    category: engine
+    unit: 'degrees'
+    data_type: float
+    description: 'Commanded intake cam position, bank 2.'
   - id: vvt_intake_target
     name: 'VVT Intake Target'
     category: engine
     unit: 'degrees'
     data_type: float
     description: 'Target intake cam position'
+    aliases: [vvt_intake_bank1_target]
   - id: wastegate_duty
     name: 'Wastegate Duty Cycle'
     category: engine
     unit: 'percent'
     data_type: float
     description: 'Wastegate solenoid duty cycle'
+  - id: wastegate_position
+    name: 'Wastegate Position'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Wastegate actuator position.'
 
   # --- fuel ---
   - id: afr
@@ -462,13 +792,25 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Injector duty cycle'
-    aliases: [injector_duty]
+    aliases: [injector_duty, injector_duty_1]
+  - id: flex_ethanol
+    name: 'Ethanol Content'
+    category: fuel
+    unit: 'percent'
+    data_type: float
+    description: 'Ethanol content from the flex fuel sensor.'
   - id: fuel_cut
     name: 'Fuel Cut'
     category: fuel
     unit: ''
     data_type: bool
     description: 'Fuel cut active flag'
+  - id: fuel_economy
+    name: 'Fuel Economy'
+    category: fuel
+    unit: 'l/100km'
+    data_type: float
+    description: 'Average fuel economy.'
   - id: fuel_flow
     name: 'Fuel Flow Rate'
     category: fuel
@@ -482,24 +824,109 @@ channels:
     data_type: float
     description: 'Mass fuel flow. Not convertible to volumetric flow without fuel density.'
     split_from: fuel_flow
+  - id: fuel_level
+    name: 'Fuel Level'
+    category: fuel
+    unit: 'percent'
+    data_type: float
+    description: 'Fuel remaining in the tank.'
+  - id: fuel_load
+    name: 'Fuel Load'
+    category: fuel
+    unit: 'percent'
+    data_type: float
+    description: 'Load axis used for the fuel table.'
+  - id: fuel_used
+    name: 'Fuel Used'
+    category: fuel
+    unit: 'liters'
+    data_type: float
+    description: 'Cumulative fuel consumed this session.'
   - id: fuel_value
     name: 'Fuel Value'
     category: fuel
     unit: ''
     data_type: float
     description: 'Fuel enrichment / VE lookup value'
+  - id: humidity
+    name: 'Humidity'
+    category: fuel
+    unit: 'percent'
+    data_type: float
+    description: 'Relative or absolute humidity.'
   - id: lambda
     name: 'Lambda'
     category: fuel
     unit: 'lambda'
     data_type: float
     description: 'Lambda value from wideband O2'
+    aliases: [lambda_1]
+  - id: lambda_10
+    name: 'Lambda 10'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 10.'
+  - id: lambda_11
+    name: 'Lambda 11'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 11.'
+  - id: lambda_12
+    name: 'Lambda 12'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 12.'
   - id: lambda_2
     name: 'Lambda 2'
     category: fuel
     unit: 'lambda'
     data_type: float
     description: 'Lambda value from second wideband O2'
+  - id: lambda_3
+    name: 'Lambda 3'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 3.'
+  - id: lambda_4
+    name: 'Lambda 4'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 4.'
+  - id: lambda_5
+    name: 'Lambda 5'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 5.'
+  - id: lambda_6
+    name: 'Lambda 6'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 6.'
+  - id: lambda_7
+    name: 'Lambda 7'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 7.'
+  - id: lambda_8
+    name: 'Lambda 8'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 8.'
+  - id: lambda_9
+    name: 'Lambda 9'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Wideband lambda sensor 9.'
   - id: lambda_target
     name: 'Lambda Target'
     category: fuel
@@ -512,7 +939,49 @@ channels:
     unit: 'milliseconds'
     data_type: float
     description: 'Injector pulse width'
-    aliases: [injector_pw]
+    aliases: [injector_pw, pulse_width_1]
+  - id: pulse_width_2
+    name: 'Pulse Width 2'
+    category: fuel
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Injector pulse width for stage or bank 2.'
+  - id: pulse_width_3
+    name: 'Pulse Width 3'
+    category: fuel
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Injector pulse width for stage or bank 3.'
+  - id: pulse_width_4
+    name: 'Pulse Width 4'
+    category: fuel
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Injector pulse width for stage or bank 4.'
+  - id: pulse_width_5
+    name: 'Pulse Width 5'
+    category: fuel
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Injector pulse width for stage or bank 5.'
+  - id: pulse_width_6
+    name: 'Pulse Width 6'
+    category: fuel
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Injector pulse width for stage or bank 6.'
+  - id: pulse_width_7
+    name: 'Pulse Width 7'
+    category: fuel
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Injector pulse width for stage or bank 7.'
+  - id: pulse_width_8
+    name: 'Pulse Width 8'
+    category: fuel
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Injector pulse width for stage or bank 8.'
   - id: ve
     name: 'VE'
     category: fuel
@@ -521,6 +990,12 @@ channels:
     description: 'Volumetric Efficiency from VE table'
 
   # --- ignition ---
+  - id: antilag_timing_retard
+    name: 'Anti-Lag Timing Retard'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Ignition retard applied by anti-lag.'
   - id: dwell
     name: 'Dwell'
     category: ignition
@@ -533,6 +1008,78 @@ channels:
     unit: 'degrees'
     data_type: float
     description: 'Spark timing advance'
+  - id: ignition_advance_cyl_1
+    name: 'Ignition Advance Cylinder 1'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 1.'
+  - id: ignition_advance_cyl_10
+    name: 'Ignition Advance Cylinder 10'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 10.'
+  - id: ignition_advance_cyl_11
+    name: 'Ignition Advance Cylinder 11'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 11.'
+  - id: ignition_advance_cyl_12
+    name: 'Ignition Advance Cylinder 12'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 12.'
+  - id: ignition_advance_cyl_2
+    name: 'Ignition Advance Cylinder 2'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 2.'
+  - id: ignition_advance_cyl_3
+    name: 'Ignition Advance Cylinder 3'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 3.'
+  - id: ignition_advance_cyl_4
+    name: 'Ignition Advance Cylinder 4'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 4.'
+  - id: ignition_advance_cyl_5
+    name: 'Ignition Advance Cylinder 5'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 5.'
+  - id: ignition_advance_cyl_6
+    name: 'Ignition Advance Cylinder 6'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 6.'
+  - id: ignition_advance_cyl_7
+    name: 'Ignition Advance Cylinder 7'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 7.'
+  - id: ignition_advance_cyl_8
+    name: 'Ignition Advance Cylinder 8'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 8.'
+  - id: ignition_advance_cyl_9
+    name: 'Ignition Advance Cylinder 9'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Per-cylinder ignition advance for cylinder 9.'
   - id: ignition_table
     name: 'Ignition Table'
     category: ignition
@@ -563,6 +1110,42 @@ channels:
     unit: 'volts'
     data_type: float
     description: 'Knock sensor 2 signal level'
+  - id: knock_level_3
+    name: 'Knock Level 3'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor level for cylinder or sensor 3.'
+  - id: knock_level_4
+    name: 'Knock Level 4'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor level for cylinder or sensor 4.'
+  - id: knock_level_5
+    name: 'Knock Level 5'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor level for cylinder or sensor 5.'
+  - id: knock_level_6
+    name: 'Knock Level 6'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor level for cylinder or sensor 6.'
+  - id: knock_level_7
+    name: 'Knock Level 7'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor level for cylinder or sensor 7.'
+  - id: knock_level_8
+    name: 'Knock Level 8'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor level for cylinder or sensor 8.'
   - id: knock_level_db
     name: 'Knock Level (dB)'
     category: ignition
@@ -570,6 +1153,18 @@ channels:
     data_type: float
     description: 'Knock level on a logarithmic dB scale. Not linearly convertible to the voltage form.'
     split_from: knock_level
+  - id: launch_timing_retard
+    name: 'Launch Timing Retard'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Ignition retard applied by launch control.'
+  - id: nitrous_timing_retard
+    name: 'Nitrous Timing Retard'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Ignition retard applied while nitrous is flowing.'
   - id: spark_cut
     name: 'Spark Cut'
     category: ignition
@@ -630,6 +1225,18 @@ channels:
     unit: 'percent'
     data_type: float
     description: 'Boost solenoid duty cycle'
+  - id: boost_error
+    name: 'Boost Error'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Difference between boost target and actual.'
+  - id: boost_limit
+    name: 'Boost Limit'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Upper boost limit currently enforced.'
   - id: boost_target
     name: 'Boost Target'
     category: pressure
@@ -649,6 +1256,24 @@ channels:
     unit: 'kpa'
     data_type: float
     description: 'Rear brake line pressure'
+  - id: coolant_pressure
+    name: 'Coolant Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Coolant system pressure.'
+  - id: crank_case_pressure
+    name: 'Crankcase Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Crankcase pressure.'
+  - id: exhaust_manifold_pressure
+    name: 'Exhaust Manifold Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Pressure in the exhaust manifold.'
   - id: fuel_pressure
     name: 'Fuel Pressure'
     category: pressure
@@ -667,12 +1292,24 @@ channels:
     unit: 'kpa'
     data_type: float
     description: 'Manifold gauge pressure (relative)'
+  - id: nitrous_bottle_pressure
+    name: 'Nitrous Bottle Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Nitrous bottle pressure.'
   - id: oil_pressure
     name: 'Oil Pressure'
     category: pressure
     unit: 'kpa'
     data_type: float
     description: 'Engine oil pressure'
+  - id: wastegate_pressure
+    name: 'Wastegate Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Pressure at the wastegate actuator.'
 
   # --- rotation ---
   - id: gyro_pitch
@@ -695,6 +1332,24 @@ channels:
     description: 'Yaw rotation rate'
 
   # --- speed ---
+  - id: cruise_speed_error
+    name: 'Cruise Speed Error'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Cruise control speed error.'
+  - id: cruise_target_speed
+    name: 'Cruise Target Speed'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Cruise control target speed.'
+  - id: gps_speed
+    name: 'GPS Speed'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Ground speed from GPS.'
   - id: vehicle_speed
     name: 'Vehicle Speed'
     category: speed
@@ -725,6 +1380,320 @@ channels:
     unit: 'kph'
     data_type: float
     description: 'Rear right wheel speed'
+
+  # --- status ---
+  - id: ac_relay
+    name: 'A/C Relay'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Air conditioning clutch relay state.'
+  - id: ac_request
+    name: 'A/C Request'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Air conditioning has been requested.'
+  - id: antilag_active
+    name: 'Anti-Lag Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Anti-lag system is active.'
+  - id: boost_cut_active
+    name: 'Boost Cut Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Overboost cut is active.'
+  - id: brake_switch
+    name: 'Brake Switch'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Brake pedal switch state.'
+  - id: check_engine_light
+    name: 'Check Engine Light'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'MIL / check engine lamp is commanded on.'
+  - id: closed_loop_active
+    name: 'Closed Loop Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Closed-loop lambda control is active.'
+  - id: clutch_switch
+    name: 'Clutch Switch'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Clutch pedal switch state.'
+  - id: digital_input_1
+    name: 'Digital Input 1'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 1.'
+  - id: digital_input_10
+    name: 'Digital Input 10'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 10.'
+  - id: digital_input_11
+    name: 'Digital Input 11'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 11.'
+  - id: digital_input_12
+    name: 'Digital Input 12'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 12.'
+  - id: digital_input_13
+    name: 'Digital Input 13'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 13.'
+  - id: digital_input_14
+    name: 'Digital Input 14'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 14.'
+  - id: digital_input_15
+    name: 'Digital Input 15'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 15.'
+  - id: digital_input_16
+    name: 'Digital Input 16'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 16.'
+  - id: digital_input_2
+    name: 'Digital Input 2'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 2.'
+  - id: digital_input_3
+    name: 'Digital Input 3'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 3.'
+  - id: digital_input_4
+    name: 'Digital Input 4'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 4.'
+  - id: digital_input_5
+    name: 'Digital Input 5'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 5.'
+  - id: digital_input_6
+    name: 'Digital Input 6'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 6.'
+  - id: digital_input_7
+    name: 'Digital Input 7'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 7.'
+  - id: digital_input_8
+    name: 'Digital Input 8'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 8.'
+  - id: digital_input_9
+    name: 'Digital Input 9'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Generic digital input 9.'
+  - id: engine_protection_active
+    name: 'Engine Protection Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'An engine protection strategy is intervening.'
+  - id: engine_running
+    name: 'Engine Running'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Engine is running.'
+  - id: fan_relay_1
+    name: 'Fan Relay 1'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Cooling fan relay 1 state.'
+  - id: fan_relay_2
+    name: 'Fan Relay 2'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Cooling fan relay 2 state.'
+  - id: flat_shift_active
+    name: 'Flat Shift Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Flat shift / shift cut is active.'
+  - id: fuel_pump_relay
+    name: 'Fuel Pump Relay'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Fuel pump relay state.'
+  - id: head_light_state
+    name: 'Head Light'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Head light output state.'
+  - id: high_beam_light_state
+    name: 'High Beam'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'High beam output state.'
+  - id: high_egt_warning
+    name: 'High EGT Warning'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Exhaust gas temperature above the warning threshold.'
+  - id: high_water_temp_warning
+    name: 'High Coolant Temp Warning'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Coolant temperature above the warning threshold.'
+  - id: lambda_protect_active
+    name: 'Lambda Protection Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Lean-protection strategy is intervening.'
+  - id: launch_control_active
+    name: 'Launch Control Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Launch control is engaged.'
+  - id: launch_control_armed
+    name: 'Launch Control Armed'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Launch control is armed but not yet cutting.'
+  - id: left_indicator_state
+    name: 'Left Indicator'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Left indicator output state.'
+  - id: low_oil_pressure_warning
+    name: 'Low Oil Pressure Warning'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Oil pressure below the warning threshold.'
+  - id: main_relay
+    name: 'Main Relay'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'ECU main relay state.'
+  - id: nitrous_armed
+    name: 'Nitrous Armed'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Nitrous system is armed.'
+  - id: nitrous_stage_1_active
+    name: 'Nitrous Stage 1 Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Nitrous stage 1 is flowing.'
+  - id: nitrous_stage_2_active
+    name: 'Nitrous Stage 2 Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Nitrous stage 2 is flowing.'
+  - id: o2_heater
+    name: 'O2 Heater'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Oxygen sensor heater state.'
+  - id: overrun_active
+    name: 'Overrun Cut Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Deceleration fuel cut-off is active.'
+  - id: park_light_state
+    name: 'Park Light'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Park light output state.'
+  - id: rev_limiter_active
+    name: 'Rev Limiter Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'RPM limiter is cutting.'
+  - id: right_indicator_state
+    name: 'Right Indicator'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Right indicator output state.'
+  - id: shift_light
+    name: 'Shift Light'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Shift light is commanded on.'
+  - id: speed_limiter_active
+    name: 'Speed Limiter Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Vehicle speed limiter is active.'
+  - id: starter_signal
+    name: 'Starter Signal'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Starter engaged.'
+  - id: traction_control_active
+    name: 'Traction Control Active'
+    category: status
+    unit: ''
+    data_type: bool
+    description: 'Traction control is intervening.'
 
   # --- suspension ---
   - id: suspension_fl
@@ -771,6 +1740,18 @@ channels:
     unit: 'code'
     data_type: int
     description: 'Active error/fault code'
+  - id: error_count
+    name: 'Active Error Count'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Number of currently active error codes.'
+  - id: firmware_version
+    name: 'Firmware Version'
+    category: system
+    unit: 'version'
+    data_type: string
+    description: 'ECU firmware version.'
   - id: free_ram
     name: 'Free RAM'
     category: system
@@ -789,12 +1770,30 @@ channels:
     unit: 'hz'
     data_type: float
     description: 'ECU loop rate'
+  - id: sync_level
+    name: 'Sync Level'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Crank/cam synchronisation level.'
+  - id: sync_loss_count
+    name: 'Sync Loss Count'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Times the ECU lost engine position sync.'
   - id: time
     name: 'Time'
     category: system
     unit: 'seconds'
     data_type: float
     description: 'Log timestamp in seconds'
+  - id: trigger_counter
+    name: 'Trigger Counter'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Trigger tooth counter.'
   - id: trigger_error_counter
     name: 'Trigger Errors'
     category: system
@@ -803,6 +1802,12 @@ channels:
     description: 'Trigger synchronization error count'
 
   # --- temperature ---
+  - id: ambient_temp
+    name: 'Ambient Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Ambient air temperature.'
   - id: aux_temp_1
     name: 'Aux Temperature 1'
     category: temperature
@@ -815,18 +1820,42 @@ channels:
     unit: 'celsius'
     data_type: float
     description: 'Auxiliary temperature sensor 2'
+  - id: aux_temp_3
+    name: 'Aux Temperature 3'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Auxiliary temperature sensor 3.'
+  - id: aux_temp_4
+    name: 'Aux Temperature 4'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Auxiliary temperature sensor 4.'
   - id: charge_temp
     name: 'Charge Temperature'
     category: temperature
     unit: 'celsius'
     data_type: float
     description: 'Intake charge temperature estimate'
+  - id: compressor_outlet_temp
+    name: 'Compressor Outlet Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Air temperature at the compressor outlet.'
   - id: coolant_temp
     name: 'Coolant Temperature'
     category: temperature
     unit: 'celsius'
     data_type: float
     description: 'Engine coolant temperature'
+  - id: differential_temp
+    name: 'Differential Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Differential oil temperature.'
   - id: egt_1
     name: 'EGT Cylinder 1'
     category: temperature
@@ -834,6 +1863,24 @@ channels:
     data_type: float
     description: 'Exhaust gas temperature for cylinder 1'
     aliases: [egt, exhaust_temp, plx_egt]
+  - id: egt_10
+    name: 'EGT Cylinder 10'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 10.'
+  - id: egt_11
+    name: 'EGT Cylinder 11'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 11.'
+  - id: egt_12
+    name: 'EGT Cylinder 12'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 12.'
   - id: egt_2
     name: 'EGT Cylinder 2'
     category: temperature
@@ -855,6 +1902,36 @@ channels:
     data_type: float
     description: 'Exhaust gas temperature, cylinder or position 4.'
     aliases: [exhaust_temp_4]
+  - id: egt_5
+    name: 'EGT Cylinder 5'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 5.'
+  - id: egt_6
+    name: 'EGT Cylinder 6'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 6.'
+  - id: egt_7
+    name: 'EGT Cylinder 7'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 7.'
+  - id: egt_8
+    name: 'EGT Cylinder 8'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 8.'
+  - id: egt_9
+    name: 'EGT Cylinder 9'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 9.'
   - id: fuel_temp
     name: 'Fuel Temperature'
     category: temperature

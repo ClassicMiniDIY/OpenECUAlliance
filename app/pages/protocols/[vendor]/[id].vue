@@ -195,6 +195,7 @@
                   <thead class="bg-muted/30">
                     <tr>
                       <th class="text-left p-3 font-medium">Signal</th>
+                      <th class="text-left p-3 font-medium">Canonical ID</th>
                       <th class="text-left p-3 font-medium">Bits</th>
                       <th class="text-left p-3 font-medium">Type</th>
                       <th class="text-left p-3 font-medium">Scale</th>
@@ -208,6 +209,24 @@
                         <div v-if="sig.description" class="text-xs text-muted truncate max-w-xs">
                           {{ sig.description }}
                         </div>
+                      </td>
+                      <!-- The canonical id is what makes a CAN signal comparable
+                           to the same measurement from a log adapter. Signals
+                           without one are labelled rather than left blank, so a
+                           gap in the mapping is visibly different from padding. -->
+                      <td class="p-3">
+                        <NuxtLink
+                          v-if="sig.id"
+                          :to="`/spec#${sig.id}`"
+                          class="font-mono text-xs text-primary hover:underline"
+                        >
+                          {{ sig.id }}
+                        </NuxtLink>
+                        <UBadge v-else-if="sig.reserved" color="neutral" variant="subtle" size="sm">reserved</UBadge>
+                        <UTooltip v-else-if="sig.vendorSpecific" text="A real measurement with no canonical equivalent in the OpenECU Spec.">
+                          <UBadge color="warning" variant="subtle" size="sm">vendor-specific</UBadge>
+                        </UTooltip>
+                        <span v-else class="text-muted text-xs">—</span>
                       </td>
                       <td class="p-3 font-mono text-xs">{{ sig.startBit }}:{{ sig.length }}</td>
                       <td class="p-3 text-xs">

@@ -136,9 +136,17 @@ for (const f of protocolFiles) {
       }
       spans.push([s.start_bit, s.start_bit + s.length - 1, s.name, s.disputed]);
 
-      // Phase 3 target: every protocol signal should carry a canonical id.
-      if (!s.id) warn(rel, `signal '${s.name}' in 0x${id.toString(16).toUpperCase()} has no canonical id`);
-      else if (!resolve(s.id)) err(rel, `signal '${s.name}' has id '${s.id}' which is not in the registry`);
+      // Every signal must be accounted for: mapped to a canonical id, marked as
+      // padding, or explicitly declared vendor-specific. Silence is the failure
+      // mode we are removing — an unmarked signal is one nobody has looked at.
+      if (s.id) {
+        if (!resolve(s.id)) err(rel, `signal '${s.name}' has id '${s.id}' which is not in the registry`);
+        else if (s.vendor_specific || s.reserved) {
+          err(rel, `signal '${s.name}' has a canonical id and is also marked reserved/vendor_specific`);
+        }
+      } else if (!s.reserved && !s.vendor_specific) {
+        warn(rel, `signal '${s.name}' in 0x${id.toString(16).toUpperCase()} has no canonical id and is not marked reserved or vendor_specific`);
+      }
     }
     spans.sort((a, b) => a[0] - b[0]);
     for (let i = 1; i < spans.length; i++) {
