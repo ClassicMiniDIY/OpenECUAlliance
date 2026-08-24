@@ -282,13 +282,13 @@
           <div v-if="allVendors.length > 0" class="hidden sm:flex flex-wrap gap-1.5 justify-center">
             <UButton
               v-for="vendor in allVendors"
-              :key="vendor"
-              :label="vendor.charAt(0).toUpperCase() + vendor.slice(1)"
+              :key="vendor.slug"
+              :label="vendor.label"
               color="neutral"
-              :variant="selectedVendor === vendor ? 'subtle' : 'outline'"
-              :class="selectedVendor === vendor ? 'ring-2 ring-primary' : ''"
+              :variant="selectedVendor === vendor.slug ? 'subtle' : 'outline'"
+              :class="selectedVendor === vendor.slug ? 'ring-2 ring-primary' : ''"
               size="sm"
-              @click="selectedVendor = selectedVendor === vendor ? undefined : vendor"
+              @click="selectedVendor = selectedVendor === vendor.slug ? undefined : vendor.slug"
             />
           </div>
 
@@ -299,8 +299,8 @@
               :items="[
                 { label: 'All Vendors', value: undefined },
                 ...allVendors.map((v) => ({
-                  label: v.charAt(0).toUpperCase() + v.slice(1),
-                  value: v,
+                  label: v.label,
+                  value: v.slug,
                 })),
               ]"
               value-key="value"

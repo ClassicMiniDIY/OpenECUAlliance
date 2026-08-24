@@ -1,4 +1,5 @@
 import type { Adapter } from '~/types/adapter';
+import type { VendorOption } from '~/utils/vendors';
 
 export function useAdapters() {
   // Use useFetch with a unique key to ensure proper caching and SSR hydration
@@ -19,10 +20,7 @@ export function useAdapters() {
 
   const loading = computed(() => status.value === 'pending');
 
-  const vendors = computed(() => {
-    const vendorSet = new Set((adapters.value ?? []).map((a) => a.vendor));
-    return Array.from(vendorSet).sort();
-  });
+  const vendors = computed((): VendorOption[] => toVendorOptions((adapters.value ?? []).map((a) => a.vendor)));
 
   const categories = computed(() => {
     const categorySet = new Set((adapters.value ?? []).flatMap((a) => a.categories));
@@ -47,7 +45,7 @@ export function useAdapters() {
       }
 
       // Vendor filter
-      if (options.vendor && adapter.vendor !== options.vendor) {
+      if (options.vendor && vendorSlug(adapter.vendor) !== vendorSlug(options.vendor)) {
         return false;
       }
 

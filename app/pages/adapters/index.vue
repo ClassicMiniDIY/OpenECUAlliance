@@ -91,8 +91,8 @@
             :items="[
               { label: 'All Vendors', value: undefined },
               ...vendors.map((v) => ({
-                label: v.charAt(0).toUpperCase() + v.slice(1),
-                value: v,
+                label: v.label,
+                value: v.slug,
               })),
             ]"
             value-key="value"
