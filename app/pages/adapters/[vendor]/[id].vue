@@ -14,13 +14,35 @@
   });
 
   const { getVendorIcon } = useVendorIcons();
+  const { fuzzyScoreFields } = useFuzzySearch();
+
+  // Channel search. Matches the canonical id, the human name, the description,
+  // the unit, the category, and — the reason this exists — the vendor source
+  // names, which are what a user actually sees in their own log file.
+  const channelQuery = ref('');
+
+  const filteredChannels = computed(() => {
+    const channels = adapter.value?.channels ?? [];
+    const query = channelQuery.value.trim();
+    if (!query) return channels;
+
+    return channels
+      .map((channel) => ({
+        channel,
+        score: fuzzyScoreFields(
+          [channel.id, channel.name, channel.description, channel.unit, channel.category, ...channel.sourceNames],
+          query
+        ),
+      }))
+      .filter((result) => result.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map((result) => result.channel);
+  });
 
   // Group channels by category
   const channelsByCategory = computed(() => {
-    if (!adapter.value?.channels) return {};
-
-    const grouped: Record<string, typeof adapter.value.channels> = {};
-    for (const channel of adapter.value.channels) {
+    const grouped: Record<string, AdapterDetail['channels']> = {};
+    for (const channel of filteredChannels.value) {
       const category = channel.category;
       if (!grouped[category]) grouped[category] = [];
       grouped[category].push(channel);
@@ -168,9 +190,40 @@
 
         <!-- Channels -->
         <div class="mb-8">
-          <h2 class="text-xl font-semibold mb-4">Channels ({{ adapter.channels.length }})</h2>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h2 class="text-xl font-semibold">
+              Channels
+              <span class="text-muted font-normal">
+                ({{ channelQuery ? `${filteredChannels.length} of ${adapter.channels.length}` : adapter.channels.length }})
+              </span>
+            </h2>
+            <UInput
+              v-model="channelQuery"
+              icon="i-heroicons-magnifying-glass"
+              placeholder="Search channels, units, source names..."
+              variant="subtle"
+              class="w-full sm:w-80"
+              aria-label="Search channels"
+            >
+              <template #trailing>
+                <UButton
+                  v-if="channelQuery"
+                  color="neutral"
+                  variant="link"
+                  icon="i-heroicons-x-mark"
+                  aria-label="Clear channel search"
+                  @click="channelQuery = ''"
+                />
+              </template>
+            </UInput>
+          </div>
 
-          <div class="space-y-6">
+          <div v-if="channelQuery && !filteredChannels.length" class="text-center py-12 text-muted">
+            <UIcon name="i-heroicons-magnifying-glass" class="size-8 mb-2" />
+            <p>No channels match "{{ channelQuery }}".</p>
+          </div>
+
+          <div v-else class="space-y-6">
             <div v-for="category in categories" :key="category">
               <h3 class="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
                 {{ category }}
