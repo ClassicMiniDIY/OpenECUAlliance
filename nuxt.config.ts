@@ -67,9 +67,11 @@ export default defineNuxtConfig({
     classSuffix: '',
   },
 
-  // Site URL for sitemap and SEO
+  // Site URL for sitemap and SEO — oecua.org is the primary domain
+  // (openecualliance.org 301s to it; decision 2026-08-23, see
+  // docs/plans/2026-08-21-cloudflare-workers-migration.md)
   site: {
-    url: 'https://openecualliance.org',
+    url: 'https://oecua.org',
     name: 'OpenECU Alliance',
   },
 
@@ -112,8 +114,10 @@ export default defineNuxtConfig({
         },
 
         // Open Graph / Facebook
+        // og:url and the canonical link are per-page, set in app.vue from the
+        // current route — a static value here would claim the homepage URL on
+        // every page (the bug this replaced).
         { property: 'og:type', content: 'website' },
-        { property: 'og:url', content: 'https://openecualliance.org' },
         {
           property: 'og:title',
           content: 'OpenECU Alliance - Open Source Motorsports Community',
@@ -124,7 +128,7 @@ export default defineNuxtConfig({
         },
         {
           property: 'og:image',
-          content: 'https://openecualliance.org/og-image.png',
+          content: 'https://oecua.org/og-image.png',
         },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
@@ -135,9 +139,8 @@ export default defineNuxtConfig({
         { property: 'og:site_name', content: 'OpenECU Alliance' },
         { property: 'og:locale', content: 'en_US' },
 
-        // Twitter
+        // Twitter (twitter:url follows og:url, set per-page in app.vue)
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:url', content: 'https://openecualliance.org' },
         {
           name: 'twitter:title',
           content: 'OpenECU Alliance - Open Source Motorsports Community',
@@ -148,7 +151,7 @@ export default defineNuxtConfig({
         },
         {
           name: 'twitter:image',
-          content: 'https://openecualliance.org/og-image.png',
+          content: 'https://oecua.org/og-image.png',
         },
         {
           name: 'twitter:image:alt',
@@ -186,8 +189,9 @@ export default defineNuxtConfig({
         },
         { rel: 'manifest', href: '/site.webmanifest' },
 
-        // Canonical
-        { rel: 'canonical', href: 'https://openecualliance.org' },
+        // rel=canonical is per-page, set in app.vue from the current route.
+        // Never hardcode it here: a static href leaks the homepage canonical
+        // onto every page of the site.
 
         // Preconnect for performance
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

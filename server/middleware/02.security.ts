@@ -142,6 +142,8 @@ export default defineEventHandler(async (event) => {
     return;
   }
 
+  cleanupStaleEntries();
+
   const clientIp = getClientIp(event, config.security?.trustProxy ?? true);
   const userAgent = getHeader(event, 'user-agent');
 
@@ -195,25 +197,24 @@ export default defineEventHandler(async (event) => {
   // Continue to next handler
 });
 
-// Clean up old entries every hour
-// Use unref() so the interval doesn't prevent Node.js from exiting during build
-if (typeof setInterval !== 'undefined') {
-  const cleanupInterval = setInterval(
-    () => {
-      const now = Date.now();
-      const oneHour = 60 * 60 * 1000;
+// Lazy cleanup of stale entries, run at most once per hour from inside the
+// request path. A module-scope setInterval is not allowed on Cloudflare Workers
+// (global-scope timers abort worker startup) and unref() only existed for
+// Node.js builds, so the sweep happens on demand instead.
+let lastCleanup = 0;
 
-      for (const [ip, behavior] of suspiciousPatterns.entries()) {
-        if (now - behavior.lastRequest > oneHour) {
-          suspiciousPatterns.delete(ip);
-        }
-      }
-    },
-    60 * 60 * 1000
-  );
-  // Allow Node.js to exit even if this interval is still pending
-  // This is critical for Vercel/Nitro builds to complete
-  if (cleanupInterval.unref) {
-    cleanupInterval.unref();
+function cleanupStaleEntries(): void {
+  const now = Date.now();
+  const oneHour = 60 * 60 * 1000;
+
+  if (now - lastCleanup < oneHour) {
+    return;
+  }
+  lastCleanup = now;
+
+  for (const [ip, behavior] of suspiciousPatterns.entries()) {
+    if (now - behavior.lastRequest > oneHour) {
+      suspiciousPatterns.delete(ip);
+    }
   }
 }

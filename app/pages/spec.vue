@@ -124,7 +124,7 @@
     },
     {
       method: 'GET',
-      path: '/api/specs/adapters-raw/:vendor/:id',
+      path: '/api/specs/adapters/:vendor/:id/raw',
       description: 'Download raw YAML adapter file',
       response: 'Raw YAML file',
     },
@@ -142,7 +142,7 @@
     },
     {
       method: 'GET',
-      path: '/api/specs/protocols-raw/:vendor/:id',
+      path: '/api/specs/protocols/:vendor/:id/raw',
       description: 'Download raw YAML protocol file',
       response: 'Raw YAML file',
     },
@@ -178,25 +178,25 @@ channels:
       - "RPM"`;
 
   const apiExampleFetch = `// Fetch all adapters
-const response = await fetch('https://openecualliance.org/api/specs/adapters');
+const response = await fetch('https://oecua.org/api/specs/adapters');
 const adapters = await response.json();
 
 // Fetch specific adapter
-const adapter = await fetch('https://openecualliance.org/api/specs/adapters/haltech/haltech-nsp');
+const adapter = await fetch('https://oecua.org/api/specs/adapters/haltech/haltech-nsp');
 const haltechSpec = await adapter.json();
 
 // Download raw YAML
-const yaml = await fetch('https://openecualliance.org/api/specs/adapters-raw/haltech/haltech-nsp');
+const yaml = await fetch('https://oecua.org/api/specs/adapters/haltech/haltech-nsp/raw');
 const yamlText = await yaml.text();`;
 
   const apiExampleCurl = `# List all adapters
-curl https://openecualliance.org/api/specs/adapters
+curl https://oecua.org/api/specs/adapters
 
 # Get specific adapter (parsed JSON)
-curl https://openecualliance.org/api/specs/adapters/haltech/haltech-nsp
+curl https://oecua.org/api/specs/adapters/haltech/haltech-nsp
 
 # Download raw YAML
-curl https://openecualliance.org/api/specs/adapters-raw/haltech/haltech-nsp`;
+curl https://oecua.org/api/specs/adapters/haltech/haltech-nsp/raw`;
 </script>
 
 <template>

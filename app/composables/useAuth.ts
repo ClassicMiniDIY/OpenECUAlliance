@@ -66,11 +66,23 @@ export function useAuth() {
   }
 
   /**
+   * Auth redirect base: the origin the user is actually on, so magic links and
+   * OAuth callbacks return to the same host (previews, workers.dev, www vs
+   * apex). The old siteConfig.url value was a build-time constant that sent
+   * every preview/staging login back to production. Both callers are
+   * client-only click handlers, so window is always available. Supabase's
+   * redirect-URL allowlist remains the security boundary — every origin that
+   * serves the site must be in it, or GoTrue silently falls back to SITE_URL.
+   */
+  function authRedirectBase(): string {
+    return window.location.origin;
+  }
+
+  /**
    * Sign in with OAuth provider (Google or Apple)
    */
   async function signInWithOAuth(provider: 'google' | 'apple') {
-    const siteConfig = useSiteConfig();
-    const redirectUrl = siteConfig.url || window.location.origin;
+    const redirectUrl = authRedirectBase();
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -88,8 +100,7 @@ export function useAuth() {
    * Sign in with magic link (passwordless email)
    */
   async function signInWithEmail(email: string) {
-    const siteConfig = useSiteConfig();
-    const redirectUrl = siteConfig.url || window.location.origin;
+    const redirectUrl = authRedirectBase();
 
     const { error } = await supabase.auth.signInWithOtp({
       email,

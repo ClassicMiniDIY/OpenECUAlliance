@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "build:cf": "NITRO_PRESET=cloudflare_module nuxt build",
+    "deploy:cf": "bun run build:cf && wrangler deploy"
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
-    "@types/node": "^25.0.9"
+    "@types/node": "^25.0.9",
+    "wrangler": "4.125.0"
   }
 }

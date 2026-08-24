@@ -1,4 +1,24 @@
 <script setup lang="ts">
+  // Per-page canonical + og:url/twitter:url, derived from the primary domain
+  // (site.url) and the current route path. Replaces the old hardcoded
+  // homepage canonical that leaked onto every page.
+  const route = useRoute();
+  const siteConfig = useSiteConfig();
+  // Strip trailing slashes (except the root) so slash-variant requests
+  // canonicalize to the no-slash URLs the sitemap declares.
+  const canonicalUrl = computed(() => {
+    const path = route.path.length > 1 ? route.path.replace(/\/+$/, '') : route.path;
+    return new URL(path, siteConfig.url).href;
+  });
+
+  useHead({
+    link: [{ rel: 'canonical', href: canonicalUrl }],
+    meta: [
+      { property: 'og:url', content: canonicalUrl },
+      { name: 'twitter:url', content: canonicalUrl },
+    ],
+  });
+
   // Add structured data for organization
   useHead({
     script: [
@@ -8,8 +28,8 @@
           '@context': 'https://schema.org',
           '@type': 'Organization',
           name: 'OpenECU Alliance',
-          url: 'https://openecualliance.org',
-          logo: 'https://openecualliance.org/android-chrome-512x512.png',
+          url: 'https://oecua.org',
+          logo: 'https://oecua.org/android-chrome-192x192.png',
           description:
             'The OpenECU Alliance publishes the OpenECU Spec - an open specification for standardizing ECU log data formats.',
           sameAs: ['https://github.com/ClassicMiniDIY/OpenECUAlliance'],
@@ -23,12 +43,12 @@
           '@context': 'https://schema.org',
           '@type': 'WebSite',
           name: 'OpenECU Alliance',
-          url: 'https://openecualliance.org',
+          url: 'https://oecua.org',
           potentialAction: {
             '@type': 'SearchAction',
             target: {
               '@type': 'EntryPoint',
-              urlTemplate: 'https://openecualliance.org/?search={search_term_string}',
+              urlTemplate: 'https://oecua.org/?search={search_term_string}',
             },
             'query-input': 'required name=search_term_string',
           },
