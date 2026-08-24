@@ -28,6 +28,8 @@ This is the **OpenECU Alliance** website - a Nuxt 4 application that serves as t
 - **Icons**: Heroicons, Lucide, Simple Icons (via @nuxt/icon)
 - **Fonts**: @nuxt/fonts
 - **Data**: Server API reads YAML from local `specs/` directory (migrated from OECUASpecs repo)
+- **Hosting**: Cloudflare Workers (migrated off Vercel 2026-08-24) — see Deployment below
+- **Primary domain**: `https://oecua.org` — see Domain Contract below
 
 ## Repository Structure
 
@@ -234,12 +236,52 @@ bun install
 # Development server (http://localhost:3000)
 bun dev
 
-# Build for production
+# Build for production (node preset — local preview only, NOT deployable)
 bun run build
 
 # Preview production build
 bun preview
+
+# Build the Cloudflare Workers bundle (what production runs)
+bun run build:cf
+
+# Build + deploy to Cloudflare manually (CI normally does this)
+bun run deploy:cf
+
+# Run the worker locally on workerd — catches Node-vs-workerd bugs that
+# `bun dev` cannot. wrangler auto-loads .env, so no .dev.vars needed.
+bun run build:cf && bunx wrangler dev
 ```
+
+## Deployment (Cloudflare Workers)
+
+Production is **Cloudflare Workers**, migrated off Vercel 2026-08-24. See
+`docs/plans/2026-08-21-cloudflare-workers-migration.md`.
+
+- **Pipeline**: push to `main` → `.github/workflows/deploy-cloudflare.yml` builds with
+  `NITRO_PRESET=cloudflare_module`, deploys via wrangler, then smoke-tests. Repo secrets:
+  `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `SUPABASE_URL`, `SUPABASE_KEY`,
+  `SUPABASE_SECRET_KEY`.
+- **CI needs `NODE_OPTIONS=--max-old-space-size=6144`** on the build step. Node caps its own
+  heap near 2 GB regardless of runner RAM, and Nitro bundling exceeds it. Removing this
+  breaks deploys with "Ineffective mark-compacts near heap limit" — and it only fails in
+  CI, never locally.
+- **Traffic routing**: a Worker **route** `oecua.org/*`, not a custom domain. The apex A
+  record is a proxied dummy (`192.0.2.1`, RFC 5737) that exists only so the route can
+  intercept — **the origin is never reached; never point it at a real host.** Rollback is
+  `proxied: false` on that record.
+- **Redirects** are Cloudflare Single Redirects at the zone edge (301, query preserved),
+  not app code. They only fire on **proxied** hostnames — grey-clouding a host silently
+  disables its redirect.
+- **Verification**: `scripts/verify-cf-deploy.sh` (37 checks) diffs live behavior against
+  the pre-migration Vercel baseline in `docs/baselines/`. Run it after any infra change.
+  Pass an origin argument to check a non-production target.
+- **Runtime constraints on workerd** (both of these were real outages during migration):
+  no module-scope `setInterval`/`setTimeout` — a global-scope timer aborts worker startup
+  entirely; and `event.node.req.socket` is undefined, so always optional-chain it.
+- **A negative result is not a failure until confirmed at the edge.** Local resolver caches
+  and mailbox search both produced confident false alarms during cutover. Confirm with
+  `curl --resolve <host>:443:<edge-ip>` and a public resolver before acting.
 
 ## Design Guidelines
 
