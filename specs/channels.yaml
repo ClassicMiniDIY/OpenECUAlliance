@@ -1,0 +1,960 @@
+# OpenECU Alliance — Canonical Channel Registry
+#
+# The machine-readable source of truth for canonical channel IDs. Human-readable
+# form: SPECIFICATION.md (generated from this file — edit here, not there).
+#
+# CONTRACT
+#   - An adapter channel's 'id' MUST appear here (as an id or an alias).
+#   - 'unit' here is the CANONICAL unit for the quantity.
+#   - An adapter's own 'unit' stays truthful to what the log file contains. When
+#     it differs from the canonical unit, the channel MUST carry 'to_canonical'
+#     with scale/offset: canonical = raw * scale + offset.
+#   - Protocol signals MUST carry 'id' and 'category' drawn from this registry.
+#
+# Validate with: bun scripts/validate-specs.ts
+
+openecualliance: '1.0'
+version: '1.0.0'
+updated: '2026-08-24'
+
+channels:
+
+  # --- acceleration ---
+  - id: g_lateral
+    name: 'Lateral G'
+    category: acceleration
+    unit: 'g'
+    data_type: float
+    description: 'Lateral acceleration (positive = right)'
+  - id: g_longitudinal
+    name: 'Longitudinal G'
+    category: acceleration
+    unit: 'g'
+    data_type: float
+    description: 'Longitudinal acceleration (positive = acceleration)'
+  - id: g_vertical
+    name: 'Vertical G'
+    category: acceleration
+    unit: 'g'
+    data_type: float
+    description: 'Vertical acceleration'
+
+  # --- correction ---
+  - id: accel_enrichment
+    name: 'Acceleration Enrichment'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Transient fuel enrichment'
+  - id: af_learning
+    name: 'A/F Learning'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Long-term fuel trim / A/F Learning value'
+  - id: afr_correction
+    name: 'A/F Correction'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Short-term fuel trim from A/F sensor'
+  - id: barometric_correction
+    name: 'Barometric Correction'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Altitude/barometric fuel correction'
+  - id: clt_correction
+    name: 'CLT Correction'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Coolant temperature fuel correction'
+  - id: dam
+    name: 'DAM'
+    category: correction
+    unit: 'multiplier'
+    data_type: float
+    description: 'Dynamic Advance Multiplier'
+  - id: ect_fuel_trim
+    name: 'ECT Fuel Trim'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Coolant temperature fuel trim'
+  - id: ego_correction
+    name: 'EGO Correction'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Closed-loop O2 correction'
+  - id: ego_correction_1
+    name: 'EGO Correction Bank 1'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'EGO correction for bank 1'
+  - id: ego_correction_2
+    name: 'EGO Correction Bank 2'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'EGO correction for bank 2'
+  - id: feedback_knock
+    name: 'Feedback Knock Correction'
+    category: correction
+    unit: 'degrees'
+    data_type: float
+    description: 'Real-time knock retard'
+  - id: fine_knock_learning
+    name: 'Fine Knock Learning'
+    category: correction
+    unit: 'degrees'
+    data_type: float
+    description: 'Fine knock learning value per cylinder'
+  - id: fuel_correction
+    name: 'Fuel Correction'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Active fuel correction percentage'
+  - id: fuel_trim
+    name: 'Closed Loop Trim'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Closed loop fuel trim'
+  - id: gamma_enrichment
+    name: 'Gamma Enrichment'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Total fuel correction multiplier'
+  - id: iam
+    name: 'IAM'
+    category: correction
+    unit: 'multiplier'
+    data_type: float
+    description: 'Ignition Advance Multiplier (Subaru learning value)'
+  - id: iat_correction
+    name: 'IAT Correction'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Intake air temperature fuel correction'
+  - id: iat_fuel_trim
+    name: 'IAT Fuel Trim'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Intake air temperature fuel trim'
+  - id: knock_retard
+    name: 'Knock Retard'
+    category: correction
+    unit: 'degrees'
+    data_type: float
+    description: 'Timing retard from knock detection'
+  - id: warmup_enrichment
+    name: 'Warmup Enrichment'
+    category: correction
+    unit: 'percent'
+    data_type: float
+    description: 'Cold engine fuel enrichment'
+
+  # --- custom ---
+  - id: accel_x
+    name: 'Acceleration X'
+    category: custom
+    unit: 'g'
+    data_type: float
+    description: 'Lateral acceleration'
+  - id: accel_y
+    name: 'Acceleration Y'
+    category: custom
+    unit: 'g'
+    data_type: float
+    description: 'Longitudinal acceleration'
+  - id: aux_input_1
+    name: 'Auxiliary Input 1'
+    category: custom
+    unit: ''
+    data_type: float
+    description: 'Generic auxiliary input channel'
+  - id: aux_input_2
+    name: 'Auxiliary Input 2'
+    category: custom
+    unit: ''
+    data_type: float
+    description: 'Generic auxiliary input channel'
+
+  # --- diagnostics ---
+  - id: mil
+    name: 'MIL'
+    category: diagnostics
+    unit: ''
+    data_type: bool
+    description: 'Malfunction indicator lamp status (ON/OFF)'
+
+  # --- driver_input ---
+  - id: steering_angle
+    name: 'Steering Angle'
+    category: driver_input
+    unit: 'degrees'
+    data_type: float
+    description: 'Steering wheel angle'
+
+  # --- drivetrain ---
+  - id: gear
+    name: 'Gear Position'
+    category: drivetrain
+    unit: 'gear'
+    data_type: int
+    description: 'Current gear'
+
+  # --- electrical ---
+  - id: an_volt_1
+    name: 'Analog Voltage 1'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input 1 voltage'
+  - id: an_volt_2
+    name: 'Analog Voltage 2'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input 2 voltage'
+  - id: an_volt_3
+    name: 'Analog Voltage 3'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input 3 voltage'
+  - id: an_volt_4
+    name: 'Analog Voltage 4'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input 4 voltage'
+  - id: analog_d14
+    name: 'Analog D14'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Analog input D14 voltage'
+  - id: battery_voltage
+    name: 'Battery Voltage'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'System voltage'
+  - id: eld_voltage
+    name: 'ELD Voltage'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Electrical load detector voltage'
+  - id: maf_voltage
+    name: 'MAF Voltage'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Mass airflow sensor voltage'
+  - id: map_voltage
+    name: 'MAP Voltage'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Raw MAP sensor voltage'
+  - id: tps_voltage
+    name: 'TPS Voltage'
+    category: electrical
+    unit: 'volts'
+    data_type: float
+    description: 'Raw throttle position sensor voltage'
+
+  # --- engine ---
+  - id: ap_main
+    name: 'Accelerator Position Main'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Main accelerator pedal position'
+  - id: ap_sub
+    name: 'Accelerator Position Sub'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Secondary accelerator pedal position'
+  - id: etb_error
+    name: 'ETB Error'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Electronic throttle body position error'
+  - id: etb_position
+    name: 'Electronic Throttle Position'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Measured electronic throttle body plate position.'
+    aliases: [dbw_position, e_throttle_position]
+  - id: etb_target
+    name: 'Electronic Throttle Target'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Commanded electronic throttle body plate position.'
+    aliases: [dbw_target, e_throttle_target]
+  - id: idle_base
+    name: 'Idle Base Position'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Idle stepper or solenoid base position'
+  - id: idle_load
+    name: 'Idle Load'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Idle air control position'
+  - id: idle_position
+    name: 'Idle Position'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Idle air control position'
+  - id: idle_target_rpm
+    name: 'Idle Target RPM'
+    category: engine
+    unit: 'rpm'
+    data_type: float
+    description: 'Target idle speed'
+    aliases: [idle_target]
+  - id: idle_valve
+    name: 'Idle Valve Position'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Idle air control valve position'
+  - id: launch_rpm_target
+    name: 'Launch RPM Target'
+    category: engine
+    unit: 'rpm'
+    data_type: float
+    description: 'Launch control target RPM'
+  - id: load
+    name: 'Engine Load'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Calculated engine load'
+  - id: maf
+    name: 'Mass Airflow'
+    category: engine
+    unit: 'g/s'
+    data_type: float
+    description: 'Mass airflow sensor reading'
+  - id: pedal_position
+    name: 'Accelerator Pedal'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Accelerator pedal position'
+  - id: rpm
+    name: 'Engine RPM'
+    category: engine
+    unit: 'rpm'
+    data_type: float
+    description: 'Engine speed'
+  - id: torque_requested
+    name: 'Torque Requested'
+    category: engine
+    unit: 'nm'
+    data_type: float
+    description: 'Requested torque from torque management'
+  - id: tps
+    name: 'Throttle Position'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Throttle position sensor'
+  - id: tps_2
+    name: 'Throttle Position 2'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Secondary throttle position sensor'
+  - id: tps_main
+    name: 'Throttle Position Main'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Main throttle position sensor'
+  - id: tps_sub
+    name: 'Throttle Position Sub'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Secondary throttle position sensor'
+  - id: vvt_exhaust
+    name: 'VVT Exhaust Position'
+    category: engine
+    unit: 'degrees'
+    data_type: float
+    description: 'Variable valve timing exhaust cam position'
+    aliases: [vvt_exhaust_actual]
+  - id: vvt_exhaust_target
+    name: 'VVT Exhaust Target'
+    category: engine
+    unit: 'degrees'
+    data_type: float
+    description: 'Target exhaust cam position'
+  - id: vvt_intake
+    name: 'VVT Intake Position'
+    category: engine
+    unit: 'degrees'
+    data_type: float
+    description: 'Variable valve timing intake cam position'
+    aliases: [vvt_intake_actual]
+  - id: vvt_intake_target
+    name: 'VVT Intake Target'
+    category: engine
+    unit: 'degrees'
+    data_type: float
+    description: 'Target intake cam position'
+  - id: wastegate_duty
+    name: 'Wastegate Duty Cycle'
+    category: engine
+    unit: 'percent'
+    data_type: float
+    description: 'Wastegate solenoid duty cycle'
+
+  # --- fuel ---
+  - id: afr
+    name: 'Air-Fuel Ratio'
+    category: fuel
+    unit: 'afr'
+    data_type: float
+    description: 'Measured AFR from O2 sensor'
+    aliases: [plx_afr]
+  - id: afr_1
+    name: 'AFR Bank 1'
+    category: fuel
+    unit: 'afr'
+    data_type: float
+    description: 'Air-fuel ratio from bank 1 / sensor 1'
+  - id: afr_2
+    name: 'AFR Bank 2'
+    category: fuel
+    unit: 'afr'
+    data_type: float
+    description: 'Air-fuel ratio from bank 2 / sensor 2'
+  - id: afr_target
+    name: 'AFR Target'
+    category: fuel
+    unit: 'afr'
+    data_type: float
+    description: 'Target AFR from tune'
+  - id: duty_cycle
+    name: 'Injector Duty Cycle'
+    category: fuel
+    unit: 'percent'
+    data_type: float
+    description: 'Injector duty cycle'
+    aliases: [injector_duty]
+  - id: fuel_cut
+    name: 'Fuel Cut'
+    category: fuel
+    unit: ''
+    data_type: bool
+    description: 'Fuel cut active flag'
+  - id: fuel_flow
+    name: 'Fuel Flow Rate'
+    category: fuel
+    unit: 'l/h'
+    data_type: float
+    description: 'Instantaneous fuel flow rate'
+  - id: fuel_flow_mass
+    name: 'Fuel Flow Rate (Mass)'
+    category: fuel
+    unit: 'g/s'
+    data_type: float
+    description: 'Mass fuel flow. Not convertible to volumetric flow without fuel density.'
+    split_from: fuel_flow
+  - id: fuel_value
+    name: 'Fuel Value'
+    category: fuel
+    unit: ''
+    data_type: float
+    description: 'Fuel enrichment / VE lookup value'
+  - id: lambda
+    name: 'Lambda'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Lambda value from wideband O2'
+  - id: lambda_2
+    name: 'Lambda 2'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Lambda value from second wideband O2'
+  - id: lambda_target
+    name: 'Lambda Target'
+    category: fuel
+    unit: 'lambda'
+    data_type: float
+    description: 'Target lambda from ECU tuning'
+  - id: pulse_width
+    name: 'Injector Pulse Width'
+    category: fuel
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Injector pulse width'
+    aliases: [injector_pw]
+  - id: ve
+    name: 'VE'
+    category: fuel
+    unit: 'percent'
+    data_type: float
+    description: 'Volumetric Efficiency from VE table'
+
+  # --- ignition ---
+  - id: dwell
+    name: 'Dwell'
+    category: ignition
+    unit: 'milliseconds'
+    data_type: float
+    description: 'Coil dwell time'
+  - id: ignition_advance
+    name: 'Ignition Advance'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Spark timing advance'
+  - id: ignition_table
+    name: 'Ignition Table'
+    category: ignition
+    unit: 'degrees'
+    data_type: float
+    description: 'Base ignition timing from table lookup'
+  - id: knock_count
+    name: 'Knock Count'
+    category: ignition
+    unit: 'count'
+    data_type: int
+    description: 'Number of knock events detected'
+  - id: knock_level
+    name: 'Knock Level'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor signal level'
+  - id: knock_level_1
+    name: 'Knock Level 1'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor 1 signal level'
+  - id: knock_level_2
+    name: 'Knock Level 2'
+    category: ignition
+    unit: 'volts'
+    data_type: float
+    description: 'Knock sensor 2 signal level'
+  - id: knock_level_db
+    name: 'Knock Level (dB)'
+    category: ignition
+    unit: 'decibels'
+    data_type: float
+    description: 'Knock level on a logarithmic dB scale. Not linearly convertible to the voltage form.'
+    split_from: knock_level
+  - id: spark_cut
+    name: 'Spark Cut'
+    category: ignition
+    unit: ''
+    data_type: bool
+    description: 'Spark cut active flag'
+
+  # --- position ---
+  - id: distance
+    name: 'Distance'
+    category: position
+    unit: 'meters'
+    data_type: float
+    description: 'Total distance traveled'
+  - id: gps_altitude
+    name: 'GPS Altitude'
+    category: position
+    unit: 'meters'
+    data_type: float
+    description: 'GPS altitude above sea level'
+  - id: gps_heading
+    name: 'GPS Heading'
+    category: position
+    unit: 'degrees'
+    data_type: float
+    description: 'GPS heading/course'
+  - id: gps_latitude
+    name: 'GPS Latitude'
+    category: position
+    unit: 'degrees'
+    data_type: float
+    description: 'GPS latitude position'
+  - id: gps_longitude
+    name: 'GPS Longitude'
+    category: position
+    unit: 'degrees'
+    data_type: float
+    description: 'GPS longitude position'
+
+  # --- pressure ---
+  - id: barometric_pressure
+    name: 'Barometric Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Atmospheric pressure'
+    aliases: [baro, barometric]
+  - id: boost
+    name: 'Boost Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Boost pressure (gauge)'
+    aliases: [plx_boost]
+  - id: boost_duty
+    name: 'Boost Duty'
+    category: pressure
+    unit: 'percent'
+    data_type: float
+    description: 'Boost solenoid duty cycle'
+  - id: boost_target
+    name: 'Boost Target'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Target boost from boost control'
+    aliases: [target_boost]
+  - id: brake_pressure_front
+    name: 'Brake Pressure Front'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Front brake line pressure'
+  - id: brake_pressure_rear
+    name: 'Brake Pressure Rear'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Rear brake line pressure'
+  - id: fuel_pressure
+    name: 'Fuel Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Fuel rail pressure'
+  - id: map
+    name: 'Manifold Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Manifold absolute pressure'
+  - id: mgp
+    name: 'Manifold Gauge Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Manifold gauge pressure (relative)'
+  - id: oil_pressure
+    name: 'Oil Pressure'
+    category: pressure
+    unit: 'kpa'
+    data_type: float
+    description: 'Engine oil pressure'
+
+  # --- rotation ---
+  - id: gyro_pitch
+    name: 'Pitch Rate'
+    category: rotation
+    unit: 'deg/s'
+    data_type: float
+    description: 'Pitch rotation rate'
+  - id: gyro_roll
+    name: 'Roll Rate'
+    category: rotation
+    unit: 'deg/s'
+    data_type: float
+    description: 'Roll rotation rate'
+  - id: gyro_yaw
+    name: 'Yaw Rate'
+    category: rotation
+    unit: 'deg/s'
+    data_type: float
+    description: 'Yaw rotation rate'
+
+  # --- speed ---
+  - id: vehicle_speed
+    name: 'Vehicle Speed'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Vehicle ground speed'
+  - id: wheel_speed_fl
+    name: 'Wheel Speed FL'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Front left wheel speed'
+  - id: wheel_speed_fr
+    name: 'Wheel Speed FR'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Front right wheel speed'
+  - id: wheel_speed_rl
+    name: 'Wheel Speed RL'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Rear left wheel speed'
+  - id: wheel_speed_rr
+    name: 'Wheel Speed RR'
+    category: speed
+    unit: 'kph'
+    data_type: float
+    description: 'Rear right wheel speed'
+
+  # --- suspension ---
+  - id: suspension_fl
+    name: 'Suspension FL'
+    category: suspension
+    unit: 'millimeters'
+    data_type: float
+    description: 'Front left suspension travel'
+  - id: suspension_fr
+    name: 'Suspension FR'
+    category: suspension
+    unit: 'millimeters'
+    data_type: float
+    description: 'Front right suspension travel'
+  - id: suspension_rl
+    name: 'Suspension RL'
+    category: suspension
+    unit: 'millimeters'
+    data_type: float
+    description: 'Rear left suspension travel'
+  - id: suspension_rr
+    name: 'Suspension RR'
+    category: suspension
+    unit: 'millimeters'
+    data_type: float
+    description: 'Rear right suspension travel'
+
+  # --- system ---
+  - id: cpu_load
+    name: 'CPU Load'
+    category: system
+    unit: 'percent'
+    data_type: float
+    description: 'ECU CPU utilization'
+  - id: ecu_temp
+    name: 'ECU Temperature'
+    category: system
+    unit: 'celsius'
+    data_type: float
+    description: 'ECU internal temperature'
+  - id: error_code
+    name: 'Error Code'
+    category: system
+    unit: 'code'
+    data_type: int
+    description: 'Active error/fault code'
+  - id: free_ram
+    name: 'Free RAM'
+    category: system
+    unit: 'bytes'
+    data_type: float
+    description: 'Available memory'
+  - id: gps_satellites
+    name: 'GPS Satellites'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Number of GPS satellites in view'
+  - id: loops_per_second
+    name: 'Loops Per Second'
+    category: system
+    unit: 'hz'
+    data_type: float
+    description: 'ECU loop rate'
+  - id: time
+    name: 'Time'
+    category: system
+    unit: 'seconds'
+    data_type: float
+    description: 'Log timestamp in seconds'
+  - id: trigger_error_counter
+    name: 'Trigger Errors'
+    category: system
+    unit: 'count'
+    data_type: int
+    description: 'Trigger synchronization error count'
+
+  # --- temperature ---
+  - id: aux_temp_1
+    name: 'Aux Temperature 1'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Auxiliary temperature sensor 1'
+  - id: aux_temp_2
+    name: 'Aux Temperature 2'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Auxiliary temperature sensor 2'
+  - id: charge_temp
+    name: 'Charge Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Intake charge temperature estimate'
+  - id: coolant_temp
+    name: 'Coolant Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Engine coolant temperature'
+  - id: egt_1
+    name: 'EGT Cylinder 1'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature for cylinder 1'
+    aliases: [egt, exhaust_temp, plx_egt]
+  - id: egt_2
+    name: 'EGT Cylinder 2'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature for cylinder 2'
+    aliases: [exhaust_temp_2]
+  - id: egt_3
+    name: 'EGT Cylinder 3'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 3.'
+    aliases: [exhaust_temp_3]
+  - id: egt_4
+    name: 'EGT Cylinder 4'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Exhaust gas temperature, cylinder or position 4.'
+    aliases: [exhaust_temp_4]
+  - id: fuel_temp
+    name: 'Fuel Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Fuel temperature'
+  - id: gearbox_temp
+    name: 'Gearbox Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Transmission oil temperature'
+  - id: iat
+    name: 'Intake Air Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Intake air temperature'
+  - id: oil_temp
+    name: 'Oil Temperature'
+    category: temperature
+    unit: 'celsius'
+    data_type: float
+    description: 'Engine oil temperature'
+
+  # --- timing ---
+  - id: best_lap_time
+    name: 'Best Lap Time'
+    category: timing
+    unit: 'seconds'
+    data_type: float
+    description: 'Best lap time in session'
+  - id: lap_number
+    name: 'Lap Number'
+    category: timing
+    unit: 'lap'
+    data_type: int
+    description: 'Current lap number'
+  - id: lap_time
+    name: 'Lap Time'
+    category: timing
+    unit: 'seconds'
+    data_type: float
+    description: 'Current lap time'
+
+  # --- traction ---
+  - id: traction_cut
+    name: 'Traction Cut'
+    category: traction
+    unit: 'percent'
+    data_type: float
+    description: 'Traction control ignition cut percentage'
+  - id: traction_slip
+    name: 'Traction Slip'
+    category: traction
+    unit: 'percent'
+    data_type: float
+    description: 'Wheel slip percentage'
+
+# Recognised unit spellings that normalise with no numeric change.
+unit_spellings:
+  '%': 'percent'
+  'c': 'celsius'
+  'deg': 'degrees'
+  'deg/sec': 'deg/s'
+  'kPa': 'kpa'
+  'km/h': 'kph'
+  'ms': 'milliseconds'
+  'pct': 'percent'
+  's': 'seconds'
+  'v': 'volts'
+  '°c': 'celsius'
+
+# Unit conversions to canonical. canonical = raw * scale + offset.
+conversions:
+  - from: 'psi'
+    to: 'kpa'
+    scale: 6.89475729
+    offset: 0
+  - from: 'bar'
+    to: 'kpa'
+    scale: 100
+    offset: 0
+  - from: 'mbar'
+    to: 'kpa'
+    scale: 0.1
+    offset: 0
+  - from: 'mph'
+    to: 'kph'
+    scale: 1.609344
+    offset: 0
+  - from: 'milliseconds'
+    to: 'seconds'
+    scale: 0.001
+    offset: 0
+  - from: 'cc/min'
+    to: 'l/h'
+    scale: 0.06
+    offset: 0
+  - from: 'fahrenheit'
+    to: 'celsius'
+    scale: 0.5555555556
+    offset: -17.7777778

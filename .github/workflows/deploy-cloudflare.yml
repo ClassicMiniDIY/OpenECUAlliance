@@ -23,6 +23,12 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # Gate the deploy on the spec corpus being internally consistent. Two
+      # protocols shipped an unusable baud rate and one shipped nonexistent
+      # message IDs because nothing checked. All of it is mechanical.
+      - name: Validate specs against the canonical registry
+        run: bun run validate:specs
+
       # NITRO_PRESET is what makes this a Worker bundle. A plain `nuxt build`
       # emits a node-server entry that wrangler would happily deploy and that
       # would 500 on every request.

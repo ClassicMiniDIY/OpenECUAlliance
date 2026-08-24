@@ -192,6 +192,23 @@
                         <UBadge color="neutral" variant="subtle" size="md">
                           {{ channel.unit }}
                         </UBadge>
+                        <!-- Present only when the log's unit is not the canonical
+                             one for this channel id. Shows the conversion so the
+                             unit badge above is never mistaken for canonical. -->
+                        <UTooltip
+                          v-if="channel.toCanonical"
+                          :text="`This log stores ${channel.name} in ${channel.unit}. Multiply by ${channel.toCanonical.scale}${
+                            channel.toCanonical.offset ? ` then add ${channel.toCanonical.offset}` : ''
+                          } for the canonical unit.`"
+                        >
+                          <UBadge color="primary" variant="subtle" size="md">
+                            <UIcon name="i-heroicons-arrows-right-left" class="size-3 mr-1" aria-hidden="true" />
+                            &times;{{ channel.toCanonical.scale }}
+                            <span v-if="channel.toCanonical.offset">{{
+                              channel.toCanonical.offset > 0 ? ` +${channel.toCanonical.offset}` : ` ${channel.toCanonical.offset}`
+                            }}</span>
+                          </UBadge>
+                        </UTooltip>
                         <UBadge color="neutral" variant="subtle" size="md">
                           {{ channel.dataType }}
                         </UBadge>

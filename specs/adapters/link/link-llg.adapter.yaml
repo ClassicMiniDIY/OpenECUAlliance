@@ -4,7 +4,7 @@
 openecualliance: '1.0'
 id: link-llg
 name: 'Link ECU LLG Binary'
-version: '1.0.0'
+version: '1.1.0'
 vendor: link
 description: |
   Binary log files from Link ECU standalone engine management systems.
@@ -557,7 +557,7 @@ channels:
   - id: boost_duty
     name: 'Boost Duty'
     description: 'Wastegate solenoid duty cycle'
-    category: engine
+    category: pressure
     data_type: float
     unit: percent
     min: 0
@@ -869,6 +869,11 @@ metadata:
     - 'Channel data uses sample-and-hold for sparse data'
     - 'File format has evolved across ECU generations'
   changelog:
+    - version: '1.1.0'
+      date: '2026-08-24'
+      changes:
+        - 'Move boost_duty to the ''pressure'' category to match the registry; it was
+          ''engine'' here and ''pressure'' elsewhere.'
     - version: '1.0.0'
       date: '2025-01-04'
       changes:

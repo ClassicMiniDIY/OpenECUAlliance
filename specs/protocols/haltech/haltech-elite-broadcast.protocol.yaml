@@ -1835,6 +1835,11 @@ messages:
         scale: 0.1
         offset: 0
         unit: '%'
+        disputed: 'Overlaps Engine_Limiter_Max_RPM (bits 0-15). Both available
+          transcriptions of the Haltech protocol — ours and rusEFI''s
+          can_dash_haltech.dbc — record bit 8, but two 16-bit fields cannot both
+          start 8 bits apart. Byte 2 (start_bit 16) is the likely intent.
+          Unresolved until Haltech''s own protocol PDF can be checked.'
 
   # 0x6F7 - Generic Outputs and Misc (10Hz)
   - id: 0x6F7

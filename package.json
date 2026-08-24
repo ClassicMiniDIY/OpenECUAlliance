@@ -9,7 +9,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "build:cf": "NITRO_PRESET=cloudflare_module nuxt build",
-    "deploy:cf": "bun run build:cf && wrangler deploy"
+    "deploy:cf": "bun run build:cf && wrangler deploy",
+    "validate:specs": "bun scripts/validate-specs.ts",
+    "generate:spec-doc": "bun scripts/generate-spec-doc.ts"
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",

@@ -160,7 +160,7 @@ messages:
 
       - name: 'Fan_Relay'
         description: 'Fan relay 1 state'
-        start_bit: 40
+        start_bit: 38
         length: 1
         byte_order: little_endian
         data_type: unsigned
@@ -171,7 +171,7 @@ messages:
 
       - name: 'Fan_Relay_2'
         description: 'Fan relay 2 state'
-        start_bit: 41
+        start_bit: 39
         length: 1
         byte_order: little_endian
         data_type: unsigned
@@ -182,7 +182,7 @@ messages:
 
       - name: 'Gear'
         description: 'Detected gear position'
-        start_bit: 48
+        start_bit: 40
         length: 8
         byte_order: little_endian
         data_type: unsigned
@@ -194,7 +194,7 @@ messages:
 
       - name: 'Distance_Traveled'
         description: 'Distance traveled in 0.1km units'
-        start_bit: 56
+        start_bit: 48
         length: 16
         byte_order: little_endian
         data_type: unsigned

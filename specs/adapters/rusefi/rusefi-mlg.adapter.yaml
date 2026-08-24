@@ -4,7 +4,7 @@
 openecualliance: '1.0'
 id: rusefi-mlg
 name: 'rusEFI MLG Binary'
-version: '1.0.0'
+version: '2.0.0'
 vendor: rusefi
 description: |
   Binary log files from rusEFI open-source ECU in MegaLogViewer format.
@@ -245,7 +245,7 @@ channels:
       - 'fuelPressure'
       - 'FP'
 
-  - id: fuel_flow
+  - id: fuel_flow_mass
     name: 'Fuel Flow'
     description: 'Instantaneous fuel flow rate'
     category: fuel
@@ -505,7 +505,7 @@ channels:
   - id: boost_duty
     name: 'Boost Duty'
     description: 'Boost solenoid duty cycle'
-    category: engine
+    category: pressure
     data_type: float
     unit: percent
     min: 0
@@ -701,6 +701,13 @@ metadata:
     - 'Channel names/units defined in firmware build'
     - 'Format version 2 has extended field definitions'
   changelog:
+    - version: '2.0.0'
+      date: '2026-08-24'
+      changes:
+        - 'BREAKING: rename fuel_flow to fuel_flow_mass. rusEFI reports mass flow in
+          g/s; canonical fuel_flow is volumetric l/h and the two are not convertible
+          without fuel density.'
+        - 'Move boost_duty to the ''pressure'' category to match the registry.'
     - version: '1.0.0'
       date: '2025-01-04'
       changes:

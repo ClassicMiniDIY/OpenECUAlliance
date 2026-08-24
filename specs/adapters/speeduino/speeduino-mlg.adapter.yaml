@@ -4,7 +4,7 @@
 openecualliance: '1.0'
 id: speeduino-mlg
 name: 'Speeduino MLG Binary'
-version: '1.0.0'
+version: '1.1.0'
 vendor: speeduino
 description: |
   Binary log files from Speeduino open-source ECU in MegaLogViewer format.
@@ -287,7 +287,7 @@ channels:
   - id: boost_duty
     name: 'Boost Duty'
     description: 'Boost solenoid duty cycle'
-    category: engine
+    category: pressure
     data_type: float
     unit: percent
     min: 0
@@ -349,6 +349,10 @@ metadata:
     - 'Timestamp wraps at ~65.5 seconds'
     - 'Channel names/units defined in firmware'
   changelog:
+    - version: '1.1.0'
+      date: '2026-08-24'
+      changes:
+        - 'Move boost_duty to the ''pressure'' category to match the registry.'
     - version: '1.0.0'
       date: '2025-01-04'
       changes:

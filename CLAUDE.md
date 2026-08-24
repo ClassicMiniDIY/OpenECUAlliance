@@ -331,7 +331,9 @@ Adapters map vendor-specific names to canonical IDs:
 | `g_lateral`        | Lateral G-Force     | acceleration |
 | `gps_latitude`     | GPS Latitude        | position     |
 
-See `specs/SPECIFICATION.md` for complete reference.
+The full vocabulary is **140 canonical channels** in
+[`specs/channels.yaml`](specs/channels.yaml) (machine-readable source of truth),
+rendered to `specs/SPECIFICATION.md`. See the Channel Registry contract below.
 
 ## Supported Vendors
 
@@ -379,3 +381,44 @@ Planned: MoTeC, AEM, Holley, FuelTech
   a plain `bun run build` produces a node-server artifact that must never be
   deployed with wrangler. wrangler is pinned in devDependencies — bump wrangler
   first, `compatibility_date` in wrangler.jsonc second (amendment E5).
+
+
+## Channel Registry Contract (2026-08-24 — load-bearing)
+
+`specs/channels.yaml` is the canonical channel vocabulary and the **source of
+truth**. `specs/SPECIFICATION.md` is generated from it — edit the YAML and run
+`bun run generate:spec-doc`; never hand-edit the Markdown.
+
+- **`unit` on an adapter channel describes the log file, not the ideal.** If the
+  vendor writes psi, the adapter says `psi`. Rewriting it to look canonical
+  makes the spec lie about the file it is describing.
+- **The mandate lives in the registry.** When a channel's log unit differs from
+  the canonical one, the channel declares `to_canonical: {scale, offset}` and a
+  consumer computes `canonical = raw * scale + offset`. This is surfaced by the
+  API as `toCanonical` and rendered as a badge on the adapter detail page — if
+  you add a field to the spec, **add it to the API transform too**, or it is
+  silently dropped and the data may as well not exist.
+- **Two IDs were split, not converted**: `fuel_flow` (l/h) vs `fuel_flow_mass`
+  (g/s), and `knock_level` (volts) vs `knock_level_db` (decibels). Mass and
+  volume flow are not inter-convertible without fuel density, and a dB scale is
+  not linear in volts. Do not "unify" these.
+- **Aliases resolve but are deprecated** (20 of them, e.g. `baro` →
+  `barometric_pressure`, `dbw_position` → `etb_position`). New adapters use the
+  canonical ID.
+- **A signal may carry `disputed: '<reason>'`** when the vendor's own
+  documentation is self-contradictory. The validator downgrades that signal's
+  overlap error to a warning. Use it to record a conflict, never to silence one
+  you could resolve. Currently used once: Haltech `0x477 Cut_Percentage`.
+
+### Validation
+
+`bun run validate:specs` checks every adapter and protocol against the registry
+and the zod schemas in `server/schemas/`. **It gates the deploy workflow.** It
+catches: unknown channel IDs, category mismatches, missing conversions, unit
+misspellings, implausible baud rates, duplicate or out-of-range CAN IDs,
+overlapping signals, and signals that overflow their frame.
+
+It is not decoration — on its first run it found two real bugs nothing else had:
+a signal overflowing the rusEFI status frame and an overlap in Haltech `0x477`.
+Protocols had **no** schema at all until this date, which is how the MaxxECU
+file shipped with message IDs that matched no real bus.
