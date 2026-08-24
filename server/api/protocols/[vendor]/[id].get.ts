@@ -37,6 +37,11 @@ interface ProtocolYaml {
     interval_ms?: number;
     transmitter?: string;
     signals: Array<{
+      /** Canonical channel id from specs/channels.yaml. Absent on reserved and vendor-specific signals. */
+      id?: string;
+      category?: string;
+      reserved?: boolean;
+      vendor_specific?: boolean;
       name: string;
       description?: string;
       start_bit: number;
@@ -127,6 +132,13 @@ export default defineCachedEventHandler(
           intervalMs: msg.interval_ms,
           transmitter: msg.transmitter,
           signals: msg.signals.map((sig) => ({
+            // The canonical id is what lets a consumer line a CAN signal up
+            // with the same measurement from a log adapter. Dropping it here
+            // would make the whole registry invisible to API clients.
+            id: sig.id,
+            category: sig.category,
+            reserved: sig.reserved,
+            vendorSpecific: sig.vendor_specific,
             name: sig.name,
             description: sig.description,
             startBit: sig.start_bit,

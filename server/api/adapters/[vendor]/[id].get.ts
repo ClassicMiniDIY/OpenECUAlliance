@@ -78,6 +78,10 @@ export default defineCachedEventHandler(
           max: c.max,
           precision: c.precision,
           sourceNames: c.source_names,
+          // Present only when the log's unit is not the canonical one for this
+          // channel (see specs/SPECIFICATION.md). canonical = raw * scale + offset.
+          // Consumers read this from the API, so it must not be dropped here.
+          toCanonical: c.to_canonical ? { scale: c.to_canonical.scale, offset: c.to_canonical.offset } : undefined,
         })),
         metadata: yaml.metadata
           ? {

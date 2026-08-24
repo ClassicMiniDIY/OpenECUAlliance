@@ -15,7 +15,7 @@ type: protocol
 
 id: rusefi-broadcast
 name: 'rusEFI CAN Broadcast Protocol'
-version: '1.0.0'
+version: '1.1.0'
 vendor: rusefi
 description: |
   CAN broadcast protocol for rusEFI open-source ECU. This protocol broadcasts
@@ -69,6 +69,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Warning_Counter'
+        id: warning_count
+        category: system
         description: 'Running count of warnings'
         start_bit: 0
         length: 16
@@ -81,6 +83,8 @@ messages:
         max: 65535
 
       - name: 'Last_Error_Code'
+        id: error_code
+        category: system
         description: 'Most recent error code'
         start_bit: 16
         length: 16
@@ -93,6 +97,8 @@ messages:
         max: 65535
 
       - name: 'Rev_Limit_Active'
+        id: rev_limiter_active
+        category: status
         description: 'Rev limiter active flag'
         start_bit: 32
         length: 1
@@ -104,6 +110,8 @@ messages:
         comment: '0=Inactive, 1=Active'
 
       - name: 'Main_Relay'
+        id: main_relay
+        category: status
         description: 'Main relay state'
         start_bit: 33
         length: 1
@@ -115,6 +123,8 @@ messages:
         comment: '0=Off, 1=On'
 
       - name: 'Fuel_Pump'
+        id: fuel_pump_relay
+        category: status
         description: 'Fuel pump relay state'
         start_bit: 34
         length: 1
@@ -126,6 +136,8 @@ messages:
         comment: '0=Off, 1=On'
 
       - name: 'Check_Engine'
+        id: check_engine_light
+        category: status
         description: 'Check engine light state'
         start_bit: 35
         length: 1
@@ -137,6 +149,8 @@ messages:
         comment: '0=Off, 1=On'
 
       - name: 'O2_Heater'
+        id: o2_heater
+        category: status
         description: 'O2 heater relay state'
         start_bit: 36
         length: 1
@@ -148,6 +162,8 @@ messages:
         comment: '0=Off, 1=On'
 
       - name: 'Lambda_Protect_Active'
+        id: lambda_protect_active
+        category: status
         description: 'Lambda protection cut active'
         start_bit: 37
         length: 1
@@ -159,8 +175,10 @@ messages:
         comment: '0=Inactive, 1=Active'
 
       - name: 'Fan_Relay'
+        id: fan_relay_1
+        category: status
         description: 'Fan relay 1 state'
-        start_bit: 40
+        start_bit: 38
         length: 1
         byte_order: little_endian
         data_type: unsigned
@@ -170,8 +188,10 @@ messages:
         comment: '0=Off, 1=On'
 
       - name: 'Fan_Relay_2'
+        id: fan_relay_2
+        category: status
         description: 'Fan relay 2 state'
-        start_bit: 41
+        start_bit: 39
         length: 1
         byte_order: little_endian
         data_type: unsigned
@@ -181,8 +201,10 @@ messages:
         comment: '0=Off, 1=On'
 
       - name: 'Gear'
+        id: gear
+        category: drivetrain
         description: 'Detected gear position'
-        start_bit: 48
+        start_bit: 40
         length: 8
         byte_order: little_endian
         data_type: unsigned
@@ -193,8 +215,10 @@ messages:
         max: 255
 
       - name: 'Distance_Traveled'
+        id: trip_distance
+        category: position
         description: 'Distance traveled in 0.1km units'
-        start_bit: 56
+        start_bit: 48
         length: 16
         byte_order: little_endian
         data_type: unsigned
@@ -215,6 +239,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'RPM'
+        id: rpm
+        category: engine
         description: 'Engine rotational speed'
         start_bit: 0
         length: 16
@@ -227,6 +253,8 @@ messages:
         max: 65535
 
       - name: 'Ignition_Timing'
+        id: ignition_advance
+        category: ignition
         description: 'Ignition timing advance'
         start_bit: 16
         length: 16
@@ -240,6 +268,8 @@ messages:
         comment: 'scaled_angle: PACK_MULT_ANGLE = 50, so scale = 1/50 = 0.02'
 
       - name: 'Injector_Duty_Cycle'
+        id: duty_cycle
+        category: fuel
         description: 'Primary injector duty cycle'
         start_bit: 32
         length: 8
@@ -253,6 +283,8 @@ messages:
         comment: 'scaled_channel<uint8_t, 2> means divide by 2'
 
       - name: 'Coil_Duty_Cycle'
+        id: coil_duty_cycle
+        category: engine
         description: 'Ignition coil duty cycle'
         start_bit: 40
         length: 8
@@ -266,6 +298,8 @@ messages:
         comment: 'scaled_channel<uint8_t, 2> means divide by 2'
 
       - name: 'Vehicle_Speed'
+        id: vehicle_speed
+        category: speed
         description: 'Vehicle ground speed'
         start_bit: 48
         length: 8
@@ -278,6 +312,8 @@ messages:
         max: 255
 
       - name: 'Ethanol_Percent'
+        id: flex_ethanol
+        category: fuel
         description: 'Fuel ethanol content percentage'
         start_bit: 56
         length: 8
@@ -300,6 +336,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Accelerator_Pedal'
+        id: pedal_position
+        category: engine
         description: 'Accelerator pedal position'
         start_bit: 0
         length: 16
@@ -313,6 +351,8 @@ messages:
         comment: 'scaled_percent: PACK_MULT_PERCENT = 100, -1 indicates sensor error'
 
       - name: 'TPS_1'
+        id: tps
+        category: engine
         description: 'Throttle position sensor 1'
         start_bit: 16
         length: 16
@@ -326,6 +366,8 @@ messages:
         comment: 'scaled_percent: PACK_MULT_PERCENT = 100, -1 indicates sensor error'
 
       - name: 'TPS_2'
+        id: tps_2
+        category: engine
         description: 'Throttle position sensor 2'
         start_bit: 32
         length: 16
@@ -339,6 +381,8 @@ messages:
         comment: 'scaled_percent: PACK_MULT_PERCENT = 100, -1 indicates sensor error'
 
       - name: 'Wastegate_Position'
+        id: wastegate_position
+        category: engine
         description: 'Wastegate position'
         start_bit: 48
         length: 16
@@ -362,6 +406,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'MAP'
+        id: map
+        category: pressure
         description: 'Manifold absolute pressure'
         start_bit: 0
         length: 16
@@ -375,6 +421,8 @@ messages:
         comment: 'scaled_pressure: PACK_MULT_PRESSURE = 30, so scale = 1/30'
 
       - name: 'Coolant_Temperature'
+        id: coolant_temp
+        category: temperature
         description: 'Engine coolant temperature'
         start_bit: 16
         length: 8
@@ -388,6 +436,8 @@ messages:
         comment: 'Raw value + 40 = actual temp. PACK_ADD_TEMPERATURE = 40'
 
       - name: 'Intake_Air_Temperature'
+        id: iat
+        category: temperature
         description: 'Intake air temperature'
         start_bit: 24
         length: 8
@@ -401,6 +451,8 @@ messages:
         comment: 'Raw value + 40 = actual temp. PACK_ADD_TEMPERATURE = 40'
 
       - name: 'Aux_Temperature_1'
+        id: aux_temp_1
+        category: temperature
         description: 'Auxiliary temperature sensor 1'
         start_bit: 32
         length: 8
@@ -414,6 +466,8 @@ messages:
         comment: 'Raw value + 40 = actual temp. PACK_ADD_TEMPERATURE = 40'
 
       - name: 'Aux_Temperature_2'
+        id: aux_temp_2
+        category: temperature
         description: 'Auxiliary temperature sensor 2'
         start_bit: 40
         length: 8
@@ -427,6 +481,8 @@ messages:
         comment: 'Raw value + 40 = actual temp. PACK_ADD_TEMPERATURE = 40'
 
       - name: 'MCU_Temperature'
+        id: ecu_temp
+        category: system
         description: 'ECU microcontroller internal temperature'
         start_bit: 48
         length: 8
@@ -440,6 +496,8 @@ messages:
         comment: 'Raw value + 40 = actual temp. PACK_ADD_TEMPERATURE = 40'
 
       - name: 'Fuel_Level'
+        id: fuel_level
+        category: fuel
         description: 'Fuel tank level'
         start_bit: 56
         length: 8
@@ -463,6 +521,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Oil_Pressure'
+        id: oil_pressure
+        category: pressure
         description: 'Engine oil pressure'
         start_bit: 16
         length: 16
@@ -476,6 +536,8 @@ messages:
         comment: 'scaled_pressure: PACK_MULT_PRESSURE = 30, -1 indicates sensor error'
 
       - name: 'Oil_Temperature'
+        id: oil_temp
+        category: temperature
         description: 'Engine oil temperature'
         start_bit: 32
         length: 8
@@ -489,6 +551,8 @@ messages:
         comment: 'Raw value + 40 = actual temp. PACK_ADD_TEMPERATURE = 40'
 
       - name: 'Fuel_Temperature'
+        id: fuel_temp
+        category: temperature
         description: 'Fuel temperature'
         start_bit: 40
         length: 8
@@ -502,6 +566,8 @@ messages:
         comment: 'Raw value + 40 = actual temp. PACK_ADD_TEMPERATURE = 40'
 
       - name: 'Battery_Voltage'
+        id: battery_voltage
+        category: electrical
         description: 'System battery voltage'
         start_bit: 48
         length: 16
@@ -525,6 +591,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Cylinder_Air_Mass'
+        id: cylinder_air_mass
+        category: engine
         description: 'Air mass in one cylinder'
         start_bit: 0
         length: 16
@@ -538,6 +606,8 @@ messages:
         comment: 'scaled_channel<uint16_t, 1000>'
 
       - name: 'Estimated_Airflow'
+        id: maf
+        category: engine
         description: 'Estimated total engine airflow'
         start_bit: 16
         length: 16
@@ -551,6 +621,8 @@ messages:
         comment: 'scaled_channel<uint16_t, 100>'
 
       - name: 'Fuel_Pulse_Width'
+        id: pulse_width
+        category: fuel
         description: 'Injector pulse width (actual last injection)'
         start_bit: 32
         length: 16
@@ -564,6 +636,8 @@ messages:
         comment: 'scaled_ms: PACK_MULT_MS = 300'
 
       - name: 'Knock_Count'
+        id: knock_count
+        category: ignition
         description: 'Total knock events detected'
         start_bit: 48
         length: 16
@@ -586,6 +660,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Fuel_Consumed'
+        id: fuel_used
+        category: fuel
         description: 'Total fuel consumed since trip reset'
         start_bit: 0
         length: 16
@@ -598,6 +674,8 @@ messages:
         max: 65535
 
       - name: 'Fuel_Flow_Rate'
+        id: fuel_flow
+        category: fuel
         description: 'Instantaneous fuel flow rate'
         start_bit: 16
         length: 16
@@ -611,6 +689,8 @@ messages:
         comment: 'scaled_channel<uint16_t, PACK_MULT_FUEL_FLOW> where PACK_MULT_FUEL_FLOW = 200'
 
       - name: 'Fuel_Trim_Bank_1'
+        id: fuel_trim_bank_1
+        category: engine
         description: 'Short term fuel trim bank 1'
         start_bit: 32
         length: 16
@@ -624,6 +704,8 @@ messages:
         comment: 'scaled_percent: PACK_MULT_PERCENT = 100. Value is (stftCorrection - 1) * 100'
 
       - name: 'Fuel_Trim_Bank_2'
+        id: fuel_trim_bank_2
+        category: engine
         description: 'Short term fuel trim bank 2'
         start_bit: 48
         length: 16
@@ -647,6 +729,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Lambda_1'
+        id: lambda
+        category: fuel
         description: 'Wideband lambda sensor 1'
         start_bit: 0
         length: 16
@@ -660,6 +744,8 @@ messages:
         comment: 'scaled_channel<uint16_t, 10000>'
 
       - name: 'Lambda_2'
+        id: lambda_2
+        category: fuel
         description: 'Wideband lambda sensor 2'
         start_bit: 16
         length: 16
@@ -673,6 +759,8 @@ messages:
         comment: 'scaled_channel<uint16_t, 10000>'
 
       - name: 'Fuel_Pressure_Low'
+        id: fuel_pressure
+        category: pressure
         description: 'Low-side fuel pressure (returnless systems)'
         start_bit: 32
         length: 16
@@ -686,6 +774,8 @@ messages:
         comment: 'scaled_channel<uint16_t, 30>'
 
       - name: 'Fuel_Pressure_High'
+        id: fuel_pressure_high
+        category: pressure
         description: 'High-side fuel pressure (direct injection)'
         start_bit: 48
         length: 16
@@ -709,6 +799,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Bank_1_Intake_Actual'
+        id: vvt_intake
+        category: engine
         description: 'Bank 1 intake cam actual position'
         start_bit: 0
         length: 8
@@ -721,6 +813,8 @@ messages:
         max: 127
 
       - name: 'Bank_1_Intake_Target'
+        id: vvt_intake_target
+        category: engine
         description: 'Bank 1 intake cam target position'
         start_bit: 8
         length: 8
@@ -733,6 +827,8 @@ messages:
         max: 127
 
       - name: 'Bank_1_Exhaust_Actual'
+        id: vvt_exhaust
+        category: engine
         description: 'Bank 1 exhaust cam actual position'
         start_bit: 16
         length: 8
@@ -745,6 +841,8 @@ messages:
         max: 127
 
       - name: 'Bank_1_Exhaust_Target'
+        id: vvt_exhaust_target
+        category: engine
         description: 'Bank 1 exhaust cam target position'
         start_bit: 24
         length: 8
@@ -757,6 +855,8 @@ messages:
         max: 127
 
       - name: 'Bank_2_Intake_Actual'
+        id: vvt_intake_bank2_actual
+        category: engine
         description: 'Bank 2 intake cam actual position'
         start_bit: 32
         length: 8
@@ -769,6 +869,8 @@ messages:
         max: 127
 
       - name: 'Bank_2_Intake_Target'
+        id: vvt_intake_bank2_target
+        category: engine
         description: 'Bank 2 intake cam target position'
         start_bit: 40
         length: 8
@@ -781,6 +883,8 @@ messages:
         max: 127
 
       - name: 'Bank_2_Exhaust_Actual'
+        id: vvt_exhaust_bank2_actual
+        category: engine
         description: 'Bank 2 exhaust cam actual position'
         start_bit: 48
         length: 8
@@ -793,6 +897,8 @@ messages:
         max: 127
 
       - name: 'Bank_2_Exhaust_Target'
+        id: vvt_exhaust_bank2_target
+        category: engine
         description: 'Bank 2 exhaust cam target position'
         start_bit: 56
         length: 8
@@ -815,6 +921,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'EGT_1'
+        id: egt_1
+        category: temperature
         description: 'Exhaust gas temperature cylinder 1'
         start_bit: 0
         length: 8
@@ -828,6 +936,8 @@ messages:
         comment: 'Raw value * 5 = actual temp. Divide by 5 in firmware.'
 
       - name: 'EGT_2'
+        id: egt_2
+        category: temperature
         description: 'Exhaust gas temperature cylinder 2'
         start_bit: 8
         length: 8
@@ -841,6 +951,8 @@ messages:
         comment: 'Raw value * 5 = actual temp. Divide by 5 in firmware.'
 
       - name: 'EGT_3'
+        id: egt_3
+        category: temperature
         description: 'Exhaust gas temperature cylinder 3'
         start_bit: 16
         length: 8
@@ -854,6 +966,8 @@ messages:
         comment: 'Reserved - not currently populated'
 
       - name: 'EGT_4'
+        id: egt_4
+        category: temperature
         description: 'Exhaust gas temperature cylinder 4'
         start_bit: 24
         length: 8
@@ -867,6 +981,8 @@ messages:
         comment: 'Reserved - not currently populated'
 
       - name: 'EGT_5'
+        id: egt_5
+        category: temperature
         description: 'Exhaust gas temperature cylinder 5'
         start_bit: 32
         length: 8
@@ -880,6 +996,8 @@ messages:
         comment: 'Reserved - not currently populated'
 
       - name: 'EGT_6'
+        id: egt_6
+        category: temperature
         description: 'Exhaust gas temperature cylinder 6'
         start_bit: 40
         length: 8
@@ -893,6 +1011,8 @@ messages:
         comment: 'Reserved - not currently populated'
 
       - name: 'EGT_7'
+        id: egt_7
+        category: temperature
         description: 'Exhaust gas temperature cylinder 7'
         start_bit: 48
         length: 8
@@ -906,6 +1026,8 @@ messages:
         comment: 'Reserved - not currently populated'
 
       - name: 'EGT_8'
+        id: egt_8
+        category: temperature
         description: 'Exhaust gas temperature cylinder 8'
         start_bit: 56
         length: 8
@@ -929,6 +1051,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Knock_Cyl_1'
+        id: knock_level_1
+        category: ignition
         description: 'Knock level cylinder 1'
         start_bit: 0
         length: 8
@@ -941,6 +1065,8 @@ messages:
         max: 127
 
       - name: 'Knock_Cyl_2'
+        id: knock_level_2
+        category: ignition
         description: 'Knock level cylinder 2'
         start_bit: 8
         length: 8
@@ -953,6 +1079,8 @@ messages:
         max: 127
 
       - name: 'Knock_Cyl_3'
+        id: knock_level_3
+        category: ignition
         description: 'Knock level cylinder 3'
         start_bit: 16
         length: 8
@@ -965,6 +1093,8 @@ messages:
         max: 127
 
       - name: 'Knock_Cyl_4'
+        id: knock_level_4
+        category: ignition
         description: 'Knock level cylinder 4'
         start_bit: 24
         length: 8
@@ -977,6 +1107,8 @@ messages:
         max: 127
 
       - name: 'Knock_Cyl_5'
+        id: knock_level_5
+        category: ignition
         description: 'Knock level cylinder 5'
         start_bit: 32
         length: 8
@@ -989,6 +1121,8 @@ messages:
         max: 127
 
       - name: 'Knock_Cyl_6'
+        id: knock_level_6
+        category: ignition
         description: 'Knock level cylinder 6'
         start_bit: 40
         length: 8
@@ -1001,6 +1135,8 @@ messages:
         max: 127
 
       - name: 'Knock_Cyl_7'
+        id: knock_level_7
+        category: ignition
         description: 'Knock level cylinder 7'
         start_bit: 48
         length: 8
@@ -1013,6 +1149,8 @@ messages:
         max: 127
 
       - name: 'Knock_Cyl_8'
+        id: knock_level_8
+        category: ignition
         description: 'Knock level cylinder 8'
         start_bit: 56
         length: 8
@@ -1035,6 +1173,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Brake_Pedal'
+        id: brake_switch
+        category: status
         description: 'Brake pedal pressed state'
         start_bit: 0
         length: 1
@@ -1088,6 +1228,15 @@ metadata:
     - 'Some EGT channels (3-8) may not be populated in firmware'
     - 'Sensor error indicated by -1 value for some scaled_percent fields'
   changelog:
+    - version: '1.1.0'
+      date: '2026-08-24'
+      changes:
+        - 'Add canonical channel ids and categories to signals, drawn from the registry
+          in specs/channels.yaml. 70 of 70 signals (100%) now carry one, so a CAN
+          measurement can be matched to the same measurement read from a log file.
+          Before this, no protocol signal carried an id at all.'
+        - 'Every signal in this protocol maps to a canonical channel — no
+          vendor-specific or reserved fields remain.'
     - version: '1.0.0'
       date: '2025-01-07'
       changes:

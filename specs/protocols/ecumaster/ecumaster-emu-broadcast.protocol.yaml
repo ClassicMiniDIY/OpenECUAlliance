@@ -7,7 +7,8 @@
 # IMPORTANT NOTES:
 # - Base CAN ID is configurable in ECU software (default 0x600)
 # - This protocol documents the default ADU CAN stream configuration
-# - Protocol operates at 1Mbit/s by default (configurable)
+# - CAN bus speed is 500 kbit/s (ECUMaster EMU/EMU Black CAN application note);
+#   1 Mbit/s applies only to the separate "EMU 1MB" hardware variant
 # - All values use little-endian byte order
 # - Temperatures are transmitted in Celsius (signed)
 # - Pressures are in kPa (absolute or gauge depending on sensor config)
@@ -17,7 +18,7 @@ type: protocol
 
 id: ecumaster-emu-broadcast
 name: 'ECUMaster EMU CAN Broadcast Protocol'
-version: '1.0.0'
+version: '1.1.0'
 vendor: ecumaster
 description: |
   CAN broadcast protocol for ECUMaster EMU BLACK and EMU PRO ECUs.
@@ -42,7 +43,7 @@ branding:
 
 protocol:
   type: can
-  baudrate: 1000000
+  baudrate: 500000
   extended_id: false
   configurable_base_id: true
   default_base_id: 0x600
@@ -60,6 +61,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'RPM'
+        id: rpm
+        category: engine
         description: 'Engine rotational speed'
         start_bit: 0
         length: 16
@@ -72,6 +75,8 @@ messages:
         max: 20000
 
       - name: 'TPS'
+        id: tps
+        category: engine
         description: 'Throttle position sensor'
         start_bit: 16
         length: 16
@@ -85,6 +90,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'IAT'
+        id: iat
+        category: temperature
         description: 'Intake air temperature'
         start_bit: 32
         length: 16
@@ -98,6 +105,8 @@ messages:
         comment: 'y = x * 0.1 for Celsius'
 
       - name: 'MAP'
+        id: map
+        category: pressure
         description: 'Manifold absolute pressure'
         start_bit: 48
         length: 16
@@ -122,6 +131,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Injector_PW'
+        id: pulse_width
+        category: fuel
         description: 'Injector pulse width'
         start_bit: 0
         length: 16
@@ -135,6 +146,8 @@ messages:
         comment: 'y = x / 300 (x in 1/300ms units)'
 
       - name: 'Ignition_Angle'
+        id: ignition_advance
+        category: ignition
         description: 'Ignition timing advance'
         start_bit: 16
         length: 16
@@ -148,6 +161,8 @@ messages:
         comment: 'y = x * 0.1, positive = advance BTDC'
 
       - name: 'Lambda'
+        id: lambda
+        category: fuel
         description: 'Wideband lambda value'
         start_bit: 32
         length: 16
@@ -161,6 +176,8 @@ messages:
         comment: 'y = x * 0.001'
 
       - name: 'AFR'
+        id: afr
+        category: fuel
         description: 'Air-fuel ratio (for gasoline, lambda * 14.7)'
         start_bit: 48
         length: 16
@@ -185,6 +202,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'CLT'
+        id: coolant_temp
+        category: temperature
         description: 'Coolant temperature'
         start_bit: 0
         length: 16
@@ -198,6 +217,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Oil_Temp'
+        id: oil_temp
+        category: temperature
         description: 'Engine oil temperature'
         start_bit: 16
         length: 16
@@ -211,6 +232,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Fuel_Pressure'
+        id: fuel_pressure
+        category: pressure
         description: 'Fuel rail pressure'
         start_bit: 32
         length: 16
@@ -224,6 +247,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Oil_Pressure'
+        id: oil_pressure
+        category: pressure
         description: 'Engine oil pressure'
         start_bit: 48
         length: 16
@@ -248,6 +273,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Vehicle_Speed'
+        id: vehicle_speed
+        category: speed
         description: 'Vehicle ground speed'
         start_bit: 0
         length: 16
@@ -261,6 +288,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Battery_Voltage'
+        id: battery_voltage
+        category: electrical
         description: 'System battery voltage'
         start_bit: 16
         length: 16
@@ -274,6 +303,8 @@ messages:
         comment: 'y = x * 0.01'
 
       - name: 'Gear'
+        id: gear
+        category: drivetrain
         description: 'Current gear position'
         start_bit: 32
         length: 8
@@ -287,6 +318,7 @@ messages:
         comment: '-1 = Reverse, 0 = Neutral, 1-8 = Forward gears'
 
       - name: 'ECU_Flags'
+        vendor_specific: true
         description: 'ECU status flags'
         start_bit: 40
         length: 8
@@ -298,6 +330,8 @@ messages:
         comment: 'Bit field: bit0=CEL, bit1=FuelPump, bit2=Fan, bit3=RevLimiter'
 
       - name: 'Barometric_Pressure'
+        id: barometric_pressure
+        category: pressure
         description: 'Barometric pressure'
         start_bit: 48
         length: 16
@@ -322,6 +356,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Boost_Pressure'
+        id: boost
+        category: pressure
         description: 'Boost pressure (gauge)'
         start_bit: 0
         length: 16
@@ -335,6 +371,8 @@ messages:
         comment: 'y = x * 0.1 (gauge pressure, negative = vacuum)'
 
       - name: 'Boost_Target'
+        id: boost_target
+        category: pressure
         description: 'Target boost pressure'
         start_bit: 16
         length: 16
@@ -348,6 +386,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Boost_Duty'
+        id: boost_duty
+        category: pressure
         description: 'Boost solenoid duty cycle'
         start_bit: 32
         length: 16
@@ -361,6 +401,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Injector_Duty'
+        id: duty_cycle
+        category: fuel
         description: 'Injector duty cycle'
         start_bit: 48
         length: 16
@@ -385,6 +427,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Knock_Level'
+        id: knock_level
+        category: ignition
         description: 'Knock sensor signal level'
         start_bit: 0
         length: 16
@@ -398,6 +442,8 @@ messages:
         comment: 'y = x * 0.01'
 
       - name: 'Knock_Retard'
+        id: knock_retard
+        category: correction
         description: 'Knock-induced timing retard'
         start_bit: 16
         length: 16
@@ -411,6 +457,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'VVT_Intake_Position'
+        id: vvt_intake
+        category: engine
         description: 'VVT intake cam position'
         start_bit: 32
         length: 16
@@ -424,6 +472,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'VVT_Exhaust_Position'
+        id: vvt_exhaust
+        category: engine
         description: 'VVT exhaust cam position'
         start_bit: 48
         length: 16
@@ -448,6 +498,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Lambda_2'
+        id: lambda_2
+        category: fuel
         description: 'Second wideband lambda sensor'
         start_bit: 0
         length: 16
@@ -461,6 +513,8 @@ messages:
         comment: 'y = x * 0.001'
 
       - name: 'Lambda_Target'
+        id: lambda_target
+        category: fuel
         description: 'Target lambda value'
         start_bit: 16
         length: 16
@@ -474,6 +528,8 @@ messages:
         comment: 'y = x * 0.001'
 
       - name: 'EGT_1'
+        id: egt_1
+        category: temperature
         description: 'Exhaust gas temperature 1'
         start_bit: 32
         length: 16
@@ -487,6 +543,8 @@ messages:
         comment: 'Direct Celsius value'
 
       - name: 'EGT_2'
+        id: egt_2
+        category: temperature
         description: 'Exhaust gas temperature 2'
         start_bit: 48
         length: 16
@@ -511,6 +569,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Fuel_Consumption'
+        id: fuel_flow
+        category: fuel
         description: 'Instantaneous fuel consumption'
         start_bit: 0
         length: 16
@@ -524,6 +584,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Fuel_Level'
+        id: fuel_level
+        category: fuel
         description: 'Fuel tank level'
         start_bit: 16
         length: 16
@@ -537,6 +599,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'DBW_Position'
+        id: etb_position
+        category: engine
         description: 'Drive-by-wire throttle actual position'
         start_bit: 32
         length: 16
@@ -550,6 +614,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'DBW_Target'
+        id: etb_target
+        category: engine
         description: 'Drive-by-wire throttle target position'
         start_bit: 48
         length: 16
@@ -575,6 +641,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'EGT_3'
+        id: egt_3
+        category: temperature
         description: 'Exhaust gas temperature 3'
         start_bit: 0
         length: 16
@@ -587,6 +655,8 @@ messages:
         max: 1200
 
       - name: 'EGT_4'
+        id: egt_4
+        category: temperature
         description: 'Exhaust gas temperature 4'
         start_bit: 16
         length: 16
@@ -599,6 +669,8 @@ messages:
         max: 1200
 
       - name: 'Fuel_Temp'
+        id: fuel_temp
+        category: temperature
         description: 'Fuel temperature'
         start_bit: 32
         length: 16
@@ -612,6 +684,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Gearbox_Oil_Temp'
+        id: gearbox_temp
+        category: temperature
         description: 'Gearbox oil temperature'
         start_bit: 48
         length: 16
@@ -632,6 +706,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Dwell'
+        id: dwell
+        category: ignition
         description: 'Coil dwell time'
         start_bit: 0
         length: 16
@@ -645,6 +721,8 @@ messages:
         comment: 'y = x * 0.01'
 
       - name: 'Fuel_Correction'
+        id: fuel_correction
+        category: correction
         description: 'Total fuel correction'
         start_bit: 16
         length: 16
@@ -658,6 +736,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Analog_Input_1'
+        id: analog_input_1
+        category: electrical
         description: 'Analog input 1 voltage'
         start_bit: 32
         length: 16
@@ -671,6 +751,8 @@ messages:
         comment: 'y = x * 0.001'
 
       - name: 'Analog_Input_2'
+        id: analog_input_2
+        category: electrical
         description: 'Analog input 2 voltage'
         start_bit: 48
         length: 16
@@ -691,6 +773,7 @@ messages:
     transmitter: ECU
     signals:
       - name: 'DSG_Gear'
+        vendor_specific: true
         description: 'DSG current gear'
         start_bit: 0
         length: 8
@@ -704,6 +787,7 @@ messages:
         comment: '-1 = Reverse, 0 = Neutral'
 
       - name: 'DSG_Next_Gear'
+        vendor_specific: true
         description: 'DSG next gear (during shift)'
         start_bit: 8
         length: 8
@@ -716,6 +800,7 @@ messages:
         max: 7
 
       - name: 'DSG_State'
+        vendor_specific: true
         description: 'DSG gearbox state'
         start_bit: 16
         length: 8
@@ -727,6 +812,8 @@ messages:
         comment: '0=Idle, 1=Upshift, 2=Downshift, 3=Clutch'
 
       - name: 'Gear_Selector_Position'
+        id: gear_selector_position
+        category: drivetrain
         description: 'Gear selector position'
         start_bit: 24
         length: 8
@@ -738,6 +825,7 @@ messages:
         comment: '0=P, 1=R, 2=N, 3=D, 4=S, 5=Manual'
 
       - name: 'DSG_Torque_Request'
+        vendor_specific: true
         description: 'DSG requested engine torque'
         start_bit: 32
         length: 16
@@ -751,6 +839,7 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Gearbox_State_Timer'
+        vendor_specific: true
         description: 'Time in current gearbox state'
         start_bit: 48
         length: 16
@@ -771,6 +860,7 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Engine_Torque_Percent'
+        vendor_specific: true
         description: 'Engine torque as percentage of maximum'
         start_bit: 0
         length: 16
@@ -784,6 +874,7 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Requested_Torque'
+        vendor_specific: true
         description: 'Requested engine torque'
         start_bit: 16
         length: 16
@@ -797,6 +888,7 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Torque_Reduction'
+        vendor_specific: true
         description: 'Total torque reduction'
         start_bit: 32
         length: 16
@@ -810,6 +902,7 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'DBW_Torque_Reduction'
+        vendor_specific: true
         description: 'Torque reduction via DBW'
         start_bit: 48
         length: 16
@@ -830,6 +923,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Launch_Control_Active'
+        id: launch_control_active
+        category: status
         description: 'Launch control active flag'
         start_bit: 0
         length: 8
@@ -841,6 +936,8 @@ messages:
         comment: '0 = Off, 1 = Active'
 
       - name: 'Launch_RPM_Limit'
+        id: launch_rpm_target
+        category: engine
         description: 'Launch control RPM limit'
         start_bit: 8
         length: 16
@@ -853,6 +950,8 @@ messages:
         max: 15000
 
       - name: 'Traction_Control_Active'
+        id: traction_control_active
+        category: status
         description: 'Traction control active flag'
         start_bit: 24
         length: 8
@@ -864,6 +963,7 @@ messages:
         comment: '0 = Off, 1 = Active'
 
       - name: 'Traction_Cut_Percent'
+        vendor_specific: true
         description: 'Traction control cut percentage'
         start_bit: 32
         length: 16
@@ -877,6 +977,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Rev_Limiter_Active'
+        id: rev_limiter_active
+        category: status
         description: 'Rev limiter active flag'
         start_bit: 48
         length: 8
@@ -895,6 +997,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Wheel_Speed_FL'
+        id: wheel_speed_fl
+        category: speed
         description: 'Front left wheel speed'
         start_bit: 0
         length: 16
@@ -908,6 +1012,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Wheel_Speed_FR'
+        id: wheel_speed_fr
+        category: speed
         description: 'Front right wheel speed'
         start_bit: 16
         length: 16
@@ -921,6 +1027,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Wheel_Speed_RL'
+        id: wheel_speed_rl
+        category: speed
         description: 'Rear left wheel speed'
         start_bit: 32
         length: 16
@@ -934,6 +1042,8 @@ messages:
         comment: 'y = x * 0.1'
 
       - name: 'Wheel_Speed_RR'
+        id: wheel_speed_rr
+        category: speed
         description: 'Rear right wheel speed'
         start_bit: 48
         length: 16
@@ -954,6 +1064,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'EGT_5'
+        id: egt_5
+        category: temperature
         description: 'Exhaust gas temperature 5'
         start_bit: 0
         length: 16
@@ -966,6 +1078,8 @@ messages:
         max: 1200
 
       - name: 'EGT_6'
+        id: egt_6
+        category: temperature
         description: 'Exhaust gas temperature 6'
         start_bit: 16
         length: 16
@@ -978,6 +1092,8 @@ messages:
         max: 1200
 
       - name: 'EGT_7'
+        id: egt_7
+        category: temperature
         description: 'Exhaust gas temperature 7'
         start_bit: 32
         length: 16
@@ -990,6 +1106,8 @@ messages:
         max: 1200
 
       - name: 'EGT_8'
+        id: egt_8
+        category: temperature
         description: 'Exhaust gas temperature 8'
         start_bit: 48
         length: 16
@@ -1009,6 +1127,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Analog_Input_3'
+        id: analog_input_3
+        category: electrical
         description: 'Analog input 3 voltage'
         start_bit: 0
         length: 16
@@ -1022,6 +1142,8 @@ messages:
         comment: 'y = x * 0.001'
 
       - name: 'Analog_Input_4'
+        id: analog_input_4
+        category: electrical
         description: 'Analog input 4 voltage'
         start_bit: 16
         length: 16
@@ -1035,6 +1157,8 @@ messages:
         comment: 'y = x * 0.001'
 
       - name: 'User_Channel_1'
+        id: user_channel_1
+        category: electrical
         description: 'User-defined channel 1'
         start_bit: 32
         length: 16
@@ -1046,6 +1170,8 @@ messages:
         comment: 'User-configurable scaling'
 
       - name: 'User_Channel_2'
+        id: user_channel_2
+        category: electrical
         description: 'User-defined channel 2'
         start_bit: 48
         length: 16
@@ -1125,6 +1251,24 @@ metadata:
     - 'Some channels may not be populated if features are not enabled'
     - 'DSG support requires specific EMU BLACK configuration'
   changelog:
+    - version: '1.1.0'
+      date: '2026-08-24'
+      changes:
+        - 'Add canonical channel ids and categories to signals, drawn from the registry
+          in specs/channels.yaml. 57 of 68 signals (84%) now carry one, so a CAN
+          measurement can be matched to the same measurement read from a log file.
+          Before this, no protocol signal carried an id at all.'
+        - 'Account for the rest explicitly instead of leaving them silent: 11 marked
+          vendor_specific (a real measurement with no canonical equivalent) and 0
+          marked reserved (padding or diagnostic transport framing, which carry no
+          measurement).'
+    - version: '1.0.1'
+      date: '2026-08-24'
+      changes:
+        - 'Correct CAN bus speed to 500 kbit/s. 1.0.0 declared 1 Mbit/s, which
+          decodes nothing on a default EMU bus. 1 Mbit/s is the separate "EMU 1MB"
+          hardware variant, not the default. Source: ECUMaster EMU/EMU Black CAN
+          application note, "CAN Bus Speed: 500 Kbit/sec"'
     - version: '1.0.0'
       date: '2026-01-07'
       changes:
@@ -1145,7 +1289,7 @@ x_ecumaster:
       range: '0x000-0x7FF'
       description: 'Base CAN ID for all messages (offsets 0-15 added)'
     baudrate:
-      default: '1000000'
+      default: '500000'
       options: ['125000', '250000', '500000', '1000000']
     update_rate:
       default: '100Hz'
@@ -1159,7 +1303,7 @@ x_ecumaster:
 
     Important characteristics:
     - 11-bit CAN identifiers with configurable base address
-    - Default 1 Mbit/second baud rate (configurable)
+    - 500 kbit/second baud rate (1 Mbit/s only on the "EMU 1MB" variant)
     - Little-endian data encoding throughout
     - Temperatures in Celsius (signed integers with scaling)
     - Pressures in kPa (may be gauge or absolute per sensor config)

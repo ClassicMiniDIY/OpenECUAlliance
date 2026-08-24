@@ -15,6 +15,14 @@ export const AdapterBrandingSchema = z
   })
   .optional();
 
+/** canonical = raw * scale + offset. Declared when the log's unit is not the canonical one. */
+export const ToCanonicalSchema = z
+  .object({
+    scale: z.number(),
+    offset: z.number(),
+  })
+  .optional();
+
 export const AdapterChannelSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
@@ -26,11 +34,13 @@ export const AdapterChannelSchema = z.object({
   max: z.number().optional(),
   precision: z.number().optional(),
   source_names: z.array(z.string()).min(1),
+  to_canonical: ToCanonicalSchema,
 });
 
 export const AdapterFileFormatSchema = z.object({
   type: z.enum(['csv', 'binary']),
   extensions: z.array(z.string()).min(1),
+  encoding: z.string().optional(),
   delimiter: z.string().optional(),
   endianness: z.enum(['little', 'big']).optional(),
   magic_bytes: z.array(z.number()).optional(),

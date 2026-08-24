@@ -20,6 +20,12 @@ export interface Adapter {
   branding?: AdapterBranding;
 }
 
+/** canonical = raw * scale + offset. See specs/SPECIFICATION.md. */
+export interface ToCanonical {
+  scale: number;
+  offset: number;
+}
+
 export interface AdapterChannel {
   id: string;
   name: string;
@@ -31,6 +37,8 @@ export interface AdapterChannel {
   max?: number;
   precision?: number;
   sourceNames: string[];
+  /** Set only when `unit` is not the canonical unit for this channel id. */
+  toCanonical?: ToCanonical;
 }
 
 export interface AdapterFileFormat {

@@ -23,6 +23,24 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # Gate the deploy on the spec corpus being internally consistent. Two
+      # protocols shipped an unusable baud rate and one shipped nonexistent
+      # message IDs because nothing checked. All of it is mechanical.
+      - name: Validate specs against the canonical registry
+        run: bun run validate:specs
+
+      # SPECIFICATION.md is generated from channels.yaml. If someone edits the
+      # Markdown by hand, or edits the YAML and forgets to regenerate, the
+      # published reference stops matching what the validator enforces.
+      - name: Check the generated spec reference is current
+        run: |
+          bun run generate:spec-doc
+          if ! git diff --quiet -- specs/SPECIFICATION.md; then
+            echo "::error::specs/SPECIFICATION.md is stale. Run 'bun run generate:spec-doc' and commit the result."
+            git diff -- specs/SPECIFICATION.md
+            exit 1
+          fi
+
       # NITRO_PRESET is what makes this a Worker bundle. A plain `nuxt build`
       # emits a node-server entry that wrangler would happily deploy and that
       # would 500 on every request.

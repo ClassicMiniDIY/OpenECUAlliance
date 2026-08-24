@@ -84,6 +84,9 @@ curl -s -m 30 -A "$UA" "$PRIMARY/" | grep -q '"@type":"Organization"' \
 
 echo "== Assets =="
 expect_header "$PRIMARY/og-image.png" 'content-type: image/png' "og-image serves"
+# Auth email header logo. Must be asserted on content-type, not status: unknown
+# paths 302 to /login and return 200 HTML, so a missing asset looks healthy.
+expect_header "$PRIMARY/email-logo.png" 'content-type: image/png' "auth email logo serves"
 asset=$(curl -s -m 30 -A "$UA" "$PRIMARY/" | grep -oE '/_nuxt/[A-Za-z0-9._-]+\.js' | head -1)
 if [ -n "$asset" ]; then
   expect_header "$PRIMARY$asset" 'cache-control:.*immutable' "immutable caching on /_nuxt/*"

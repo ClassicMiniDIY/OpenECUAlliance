@@ -16,7 +16,7 @@ type: protocol
 
 id: speeduino-broadcast
 name: 'Speeduino CAN Broadcast Protocol'
-version: '1.0.0'
+version: '1.1.0'
 vendor: speeduino
 description: |
   CAN broadcast protocol for Speeduino open-source ECU when configured for
@@ -58,6 +58,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'RPM'
+        id: rpm
+        category: engine
         description: 'Engine rotational speed'
         start_bit: 0
         length: 16
@@ -70,6 +72,8 @@ messages:
         max: 65535
 
       - name: 'Manifold_Pressure'
+        id: map
+        category: pressure
         description: 'Manifold absolute pressure'
         start_bit: 16
         length: 16
@@ -83,6 +87,8 @@ messages:
         comment: 'MAP * 10, divide by 10 for kPa'
 
       - name: 'Throttle_Position'
+        id: tps
+        category: engine
         description: 'Throttle position sensor'
         start_bit: 32
         length: 16
@@ -96,6 +102,8 @@ messages:
         comment: 'TPS * 5 (TPS stored in 0.5% increments)'
 
       - name: 'Coolant_Pressure'
+        id: coolant_pressure
+        category: pressure
         description: 'Coolant system pressure (not implemented in Speeduino)'
         start_bit: 48
         length: 16
@@ -117,6 +125,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Fuel_Pressure'
+        id: fuel_pressure
+        category: pressure
         description: 'Fuel rail pressure'
         start_bit: 0
         length: 16
@@ -128,6 +138,8 @@ messages:
         comment: 'Converted from PSI: (PSI * 6.894 / 10) + 1013'
 
       - name: 'Oil_Pressure'
+        id: oil_pressure
+        category: pressure
         description: 'Engine oil pressure'
         start_bit: 16
         length: 16
@@ -139,6 +151,8 @@ messages:
         comment: 'Converted from PSI: (PSI * 6.894 / 10) + 1013'
 
       - name: 'Fuel_Load'
+        id: fuel_load
+        category: fuel
         description: 'Current fuel load value'
         start_bit: 32
         length: 16
@@ -150,6 +164,8 @@ messages:
         comment: 'fuelLoad * 10'
 
       - name: 'Wastegate_Pressure'
+        id: wastegate_pressure
+        category: pressure
         description: 'Wastegate actuator pressure (not implemented)'
         start_bit: 48
         length: 16
@@ -169,6 +185,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Injection_Stage_1_Duty_Cycle'
+        id: duty_cycle
+        category: fuel
         description: 'Primary injector duty cycle'
         start_bit: 0
         length: 16
@@ -180,6 +198,8 @@ messages:
         comment: 'Calculated from PW1, nSquirts, revolutionTime'
 
       - name: 'Injection_Stage_2_Duty_Cycle'
+        id: injector_duty_2
+        category: engine
         description: 'Secondary injector duty cycle (staging)'
         start_bit: 16
         length: 16
@@ -191,6 +211,8 @@ messages:
         comment: 'Always 0x0000 - not yet implemented'
 
       - name: 'Ignition_Advance'
+        id: ignition_advance
+        category: ignition
         description: 'Current ignition timing advance'
         start_bit: 32
         length: 16
@@ -202,6 +224,7 @@ messages:
         comment: 'advance * 10, negative values indicate retard'
 
       - name: 'Unused'
+        reserved: true
         description: 'Unused bytes'
         start_bit: 48
         length: 16
@@ -221,6 +244,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Pulse_Width_1'
+        id: pulse_width
+        category: fuel
         description: 'Injector 1 pulse width'
         start_bit: 0
         length: 16
@@ -232,6 +257,8 @@ messages:
         comment: 'PW1 in microseconds, divide by 1000 for ms'
 
       - name: 'Pulse_Width_2'
+        id: pulse_width_2
+        category: fuel
         description: 'Injector 2 pulse width'
         start_bit: 16
         length: 16
@@ -242,6 +269,8 @@ messages:
         unit: 'ms'
 
       - name: 'Pulse_Width_3'
+        id: pulse_width_3
+        category: fuel
         description: 'Injector 3 pulse width'
         start_bit: 32
         length: 16
@@ -252,6 +281,8 @@ messages:
         unit: 'ms'
 
       - name: 'Pulse_Width_4'
+        id: pulse_width_4
+        category: fuel
         description: 'Injector 4 pulse width'
         start_bit: 48
         length: 16
@@ -274,6 +305,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Lambda_1'
+        id: lambda
+        category: fuel
         description: 'Primary wideband lambda sensor'
         start_bit: 0
         length: 16
@@ -285,6 +318,8 @@ messages:
         comment: '(O2 * 1000) / stoich'
 
       - name: 'Lambda_2'
+        id: lambda_2
+        category: fuel
         description: 'Secondary wideband lambda sensor'
         start_bit: 16
         length: 16
@@ -296,6 +331,8 @@ messages:
         comment: '(O2_2 * 1000) / stoich'
 
       - name: 'Lambda_3'
+        id: lambda_3
+        category: fuel
         description: 'Wideband lambda sensor 3 (not implemented)'
         start_bit: 32
         length: 16
@@ -307,6 +344,8 @@ messages:
         comment: 'Always 0x0000'
 
       - name: 'Lambda_4'
+        id: lambda_4
+        category: fuel
         description: 'Wideband lambda sensor 4 (not implemented)'
         start_bit: 48
         length: 16
@@ -326,6 +365,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Trigger_Error_Count'
+        id: trigger_error_counter
+        category: system
         description: 'Trigger system error count'
         start_bit: 0
         length: 16
@@ -337,6 +378,8 @@ messages:
         comment: 'Not currently implemented in Speeduino'
 
       - name: 'Trigger_Counter'
+        id: trigger_counter
+        category: system
         description: 'Trigger pulse count'
         start_bit: 16
         length: 16
@@ -348,6 +391,7 @@ messages:
         comment: 'Not currently implemented in Speeduino'
 
       - name: 'Unused'
+        reserved: true
         description: 'Reserved bytes'
         start_bit: 32
         length: 16
@@ -358,6 +402,8 @@ messages:
         unit: ''
 
       - name: 'Sync_Level'
+        id: sync_level
+        category: system
         description: 'Trigger synchronization level'
         start_bit: 48
         length: 16
@@ -377,6 +423,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Vehicle_Speed'
+        id: vehicle_speed
+        category: speed
         description: 'Vehicle speed'
         start_bit: 0
         length: 16
@@ -388,6 +436,7 @@ messages:
         comment: 'VSS * 10'
 
       - name: 'Reserved'
+        reserved: true
         description: 'Reserved byte'
         start_bit: 16
         length: 8
@@ -399,6 +448,8 @@ messages:
         comment: 'Always 0x00'
 
       - name: 'Gear'
+        id: gear
+        category: drivetrain
         description: 'Current gear position'
         start_bit: 24
         length: 8
@@ -410,6 +461,8 @@ messages:
         comment: 'Calculated from VSS'
 
       - name: 'VVT1_Angle'
+        id: vvt_intake
+        category: engine
         description: 'VVT intake cam angle bank 1'
         start_bit: 32
         length: 16
@@ -421,6 +474,8 @@ messages:
         comment: 'vvt1Angle * 10'
 
       - name: 'VVT2_Angle'
+        id: vvt_intake_bank2_actual
+        category: engine
         description: 'VVT intake cam angle bank 2'
         start_bit: 48
         length: 16
@@ -444,6 +499,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Battery_Voltage_High'
+        id: battery_voltage
+        category: electrical
         description: 'Battery voltage high byte (unused)'
         start_bit: 0
         length: 8
@@ -455,6 +512,8 @@ messages:
         comment: 'Always 0x00 (max voltage is 25.5V)'
 
       - name: 'Battery_Voltage'
+        id: battery_voltage
+        category: electrical
         description: 'System battery voltage'
         start_bit: 8
         length: 8
@@ -468,6 +527,7 @@ messages:
         comment: 'battery10 value (already multiplied by 10)'
 
       - name: 'Unused_1'
+        reserved: true
         description: 'Unused bytes'
         start_bit: 16
         length: 16
@@ -479,6 +539,8 @@ messages:
         comment: 'Always 0x0000'
 
       - name: 'Target_Boost'
+        id: boost_target
+        category: pressure
         description: 'Target boost pressure'
         start_bit: 32
         length: 16
@@ -490,6 +552,8 @@ messages:
         comment: 'boostTarget * 10'
 
       - name: 'Barometric_Pressure'
+        id: barometric_pressure
+        category: pressure
         description: 'Atmospheric pressure (absolute)'
         start_bit: 48
         length: 16
@@ -509,6 +573,8 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Coolant_Temperature'
+        id: coolant_temp
+        category: temperature
         description: 'Engine coolant temperature'
         start_bit: 0
         length: 16
@@ -520,6 +586,8 @@ messages:
         comment: '(coolant + 273) * 10 for Kelvin'
 
       - name: 'Air_Temperature'
+        id: iat
+        category: temperature
         description: 'Intake air temperature'
         start_bit: 16
         length: 16
@@ -531,6 +599,8 @@ messages:
         comment: '(IAT + 273) * 10 for Kelvin'
 
       - name: 'Fuel_Temperature'
+        id: fuel_temp
+        category: temperature
         description: 'Fuel temperature'
         start_bit: 32
         length: 16
@@ -542,6 +612,8 @@ messages:
         comment: '(fuelTemp + 273) * 10 for Kelvin'
 
       - name: 'Oil_Temperature'
+        id: oil_temp
+        category: temperature
         description: 'Engine oil temperature (not implemented)'
         start_bit: 48
         length: 16
@@ -565,6 +637,7 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Status_Bitfield'
+        reserved: true
         description: 'Status bits: Bit0=Terminal15, Bit2=ASC1 received'
         start_bit: 0
         length: 8
@@ -576,6 +649,8 @@ messages:
         comment: 'Usually 0x05'
 
       - name: 'Indexed_Engine_Torque'
+        id: torque_actual
+        category: engine
         description: 'Indexed engine torque percentage'
         start_bit: 8
         length: 8
@@ -586,6 +661,8 @@ messages:
         unit: '%'
 
       - name: 'RPM'
+        id: rpm
+        category: engine
         description: 'Engine RPM'
         start_bit: 16
         length: 16
@@ -597,6 +674,8 @@ messages:
         comment: 'RPM * 6.4 (or RPM * 64 / 10)'
 
       - name: 'Indicated_Engine_Torque'
+        id: torque_indicated
+        category: engine
         description: 'Indicated engine torque percentage'
         start_bit: 32
         length: 8
@@ -607,6 +686,8 @@ messages:
         unit: '%'
 
       - name: 'Engine_Torque_Loss'
+        id: torque_loss
+        category: engine
         description: 'Engine torque loss due to friction/accessories'
         start_bit: 40
         length: 8
@@ -617,6 +698,7 @@ messages:
         unit: '%'
 
       - name: 'Unused'
+        reserved: true
         description: 'Unused byte'
         start_bit: 48
         length: 8
@@ -627,6 +709,8 @@ messages:
         unit: ''
 
       - name: 'Theoretical_Engine_Torque'
+        id: torque_theoretical
+        category: engine
         description: 'Theoretical engine torque after charge intervention'
         start_bit: 56
         length: 8
@@ -645,6 +729,7 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Multiplexed_Info'
+        reserved: true
         description: 'Multiplexed information byte'
         start_bit: 0
         length: 8
@@ -656,6 +741,8 @@ messages:
         comment: 'Usually 0x11'
 
       - name: 'Coolant_Temperature'
+        id: coolant_temp
+        category: temperature
         description: 'Engine coolant temperature'
         start_bit: 8
         length: 8
@@ -667,6 +754,8 @@ messages:
         comment: '(coolant + 48.373) * 4 / 3'
 
       - name: 'Barometric_Pressure'
+        id: barometric_pressure
+        category: pressure
         description: 'Barometric pressure'
         start_bit: 16
         length: 8
@@ -677,6 +766,7 @@ messages:
         unit: 'kPa'
 
       - name: 'Status_Bitfield'
+        reserved: true
         description: 'Status bits: Bit0=Clutch, Bit3=Engine running'
         start_bit: 24
         length: 8
@@ -688,6 +778,8 @@ messages:
         comment: 'Usually 0x08'
 
       - name: 'TPS_Virtual_Cruise'
+        id: tps
+        category: engine
         description: 'Virtual TPS for cruise control'
         start_bit: 32
         length: 8
@@ -699,6 +791,8 @@ messages:
         comment: 'Not used - 0x00'
 
       - name: 'Throttle_Position'
+        id: tps
+        category: engine
         description: 'Throttle position'
         start_bit: 40
         length: 8
@@ -710,6 +804,8 @@ messages:
         comment: 'TPS mapped from 0-200 to 1-254'
 
       - name: 'Brake_Status'
+        id: brake_switch
+        category: status
         description: 'Brake system status bitfield'
         start_bit: 48
         length: 8
@@ -721,6 +817,7 @@ messages:
         comment: '0x00'
 
       - name: 'Unused'
+        reserved: true
         description: 'Unused byte'
         start_bit: 56
         length: 8
@@ -739,6 +836,7 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Warning_Lights'
+        reserved: true
         description: 'Warning light bitfield: Bit1=CEL, Bit3=Cruise, Bit4=EML'
         start_bit: 0
         length: 8
@@ -750,6 +848,8 @@ messages:
         comment: 'Usually 0x00'
 
       - name: 'Fuel_Consumption'
+        id: fuel_flow
+        category: fuel
         description: 'Fuel consumption'
         start_bit: 8
         length: 16
@@ -761,6 +861,8 @@ messages:
         comment: 'Not implemented - 0x0000'
 
       - name: 'Overheat_Warning'
+        id: overheat_warning
+        category: status
         description: 'Overheat warning status'
         start_bit: 24
         length: 8
@@ -772,6 +874,8 @@ messages:
         comment: '0x08 if coolant > 120C, else 0x00'
 
       - name: 'Oil_Temperature'
+        id: oil_temp
+        category: temperature
         description: 'Engine oil temperature indicator'
         start_bit: 32
         length: 8
@@ -795,6 +899,7 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Prefix_1'
+        reserved: true
         description: 'Message prefix byte 1'
         start_bit: 0
         length: 8
@@ -806,6 +911,7 @@ messages:
         comment: 'Always 0x49'
 
       - name: 'Prefix_2'
+        reserved: true
         description: 'Message prefix byte 2'
         start_bit: 8
         length: 8
@@ -817,6 +923,8 @@ messages:
         comment: 'Always 0x0E'
 
       - name: 'RPM'
+        id: rpm
+        category: engine
         description: 'Engine RPM'
         start_bit: 16
         length: 16
@@ -828,6 +936,7 @@ messages:
         comment: 'RPM * 4'
 
       - name: 'Suffix_1'
+        reserved: true
         description: 'Message suffix byte 1'
         start_bit: 32
         length: 8
@@ -839,6 +948,7 @@ messages:
         comment: 'Always 0x0E'
 
       - name: 'Suffix_2'
+        reserved: true
         description: 'Message suffix byte 2'
         start_bit: 40
         length: 8
@@ -850,6 +960,7 @@ messages:
         comment: 'Always 0x00'
 
       - name: 'Suffix_3'
+        reserved: true
         description: 'Message suffix byte 3'
         start_bit: 48
         length: 8
@@ -861,6 +972,7 @@ messages:
         comment: 'Always 0x1B'
 
       - name: 'Suffix_4'
+        reserved: true
         description: 'Message suffix byte 4'
         start_bit: 56
         length: 8
@@ -880,6 +992,7 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Prefix'
+        reserved: true
         description: 'Message prefix'
         start_bit: 0
         length: 8
@@ -891,6 +1004,8 @@ messages:
         comment: 'Always 0xFF'
 
       - name: 'Vehicle_Speed'
+        id: vehicle_speed
+        category: speed
         description: 'Vehicle speed'
         start_bit: 8
         length: 16
@@ -902,6 +1017,7 @@ messages:
         comment: 'VSS * 133'
 
       - name: 'Unused_1'
+        reserved: true
         description: 'Unused bytes'
         start_bit: 24
         length: 32
@@ -913,6 +1029,7 @@ messages:
         comment: 'Always 0x00000000'
 
       - name: 'Suffix'
+        reserved: true
         description: 'Message suffix'
         start_bit: 56
         length: 8
@@ -935,6 +1052,7 @@ messages:
     transmitter: Tester
     signals:
       - name: 'Data_Length'
+        reserved: true
         description: 'Number of additional data bytes'
         start_bit: 0
         length: 8
@@ -945,6 +1063,7 @@ messages:
         unit: ''
 
       - name: 'Service_ID'
+        reserved: true
         description: 'OBD2 service mode (01=current data, 09=vehicle info, 22=custom)'
         start_bit: 8
         length: 8
@@ -955,6 +1074,7 @@ messages:
         unit: ''
 
       - name: 'PID'
+        reserved: true
         description: 'Parameter ID being requested'
         start_bit: 16
         length: 8
@@ -965,6 +1085,7 @@ messages:
         unit: ''
 
       - name: 'Data'
+        reserved: true
         description: 'Additional request data'
         start_bit: 24
         length: 40
@@ -982,6 +1103,7 @@ messages:
     transmitter: ECU
     signals:
       - name: 'Data_Length'
+        reserved: true
         description: 'Number of additional data bytes'
         start_bit: 0
         length: 8
@@ -992,6 +1114,7 @@ messages:
         unit: ''
 
       - name: 'Response_Service_ID'
+        reserved: true
         description: 'Response service ID (request service + 0x40)'
         start_bit: 8
         length: 8
@@ -1002,6 +1125,7 @@ messages:
         unit: ''
 
       - name: 'PID'
+        reserved: true
         description: 'Parameter ID being responded to'
         start_bit: 16
         length: 8
@@ -1012,6 +1136,7 @@ messages:
         unit: ''
 
       - name: 'Data'
+        reserved: true
         description: 'Response data bytes'
         start_bit: 24
         length: 40
@@ -1094,6 +1219,17 @@ metadata:
     - 'Coolant pressure not supported'
     - 'Wastegate pressure not supported'
   changelog:
+    - version: '1.1.0'
+      date: '2026-08-24'
+      changes:
+        - 'Add canonical channel ids and categories to signals, drawn from the registry
+          in specs/channels.yaml. 49 of 76 signals (64%) now carry one, so a CAN
+          measurement can be matched to the same measurement read from a log file.
+          Before this, no protocol signal carried an id at all.'
+        - 'Account for the rest explicitly instead of leaving them silent: 0 marked
+          vendor_specific (a real measurement with no canonical equivalent) and 27
+          marked reserved (padding or diagnostic transport framing, which carry no
+          measurement).'
     - version: '1.0.0'
       date: '2025-01-07'
       changes:
