@@ -58,6 +58,51 @@
       expandedMessages.value.add(msgId);
     }
   }
+
+  // Message and signal search. A protocol can carry hundreds of signals buried
+  // inside collapsed messages, so the query has to reach into the signals too —
+  // a message whose signals match is auto-expanded rather than left closed.
+  const { fuzzyScoreFields } = useFuzzySearch();
+  const messageQuery = ref('');
+
+  const filteredMessages = computed(() => {
+    const messages = protocol.value?.messages ?? [];
+    const query = messageQuery.value.trim();
+
+    if (!query) {
+      return messages.map((msg) => ({ msg, signals: msg.signals, signalMatch: false }));
+    }
+
+    const results: Array<{ msg: (typeof messages)[number]; signals: (typeof messages)[number]['signals']; signalMatch: boolean }> =
+      [];
+
+    for (const msg of messages) {
+      const msgMatch =
+        fuzzyScoreFields([msg.name, msg.description, formatMessageId(msg.id), String(msg.id), msg.transmitter], query) > 0;
+      const matchedSignals = msg.signals.filter(
+        (sig) => fuzzyScoreFields([sig.name, sig.id, sig.description, sig.unit, sig.category], query) > 0
+      );
+
+      // Matching signals win the display: they are shown alone and the message
+      // is auto-expanded, so the hit is visible without a click. A message that
+      // matched only by name or description keeps its full, collapsed table.
+      if (matchedSignals.length) {
+        results.push({ msg, signals: matchedSignals, signalMatch: true });
+      } else if (msgMatch) {
+        results.push({ msg, signals: msg.signals, signalMatch: false });
+      }
+    }
+
+    return results;
+  });
+
+  const matchedSignalCount = computed(() =>
+    filteredMessages.value.reduce((total, entry) => total + entry.signals.length, 0)
+  );
+
+  function isExpanded(entry: { msg: { id: number | string }; signalMatch: boolean }): boolean {
+    return entry.signalMatch || expandedMessages.value.has(String(entry.msg.id));
+  }
 </script>
 
 <template>
@@ -158,39 +203,79 @@
 
         <!-- Messages -->
         <div class="mb-8">
-          <h2 class="text-xl font-semibold mb-4">Messages ({{ protocol.messages.length }})</h2>
-          <div class="space-y-3">
-            <UCard v-for="msg in protocol.messages" :key="String(msg.id)" class="overflow-hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h2 class="text-xl font-semibold">
+              Messages
+              <span class="text-muted font-normal">
+                ({{
+                  messageQuery
+                    ? `${filteredMessages.length} of ${protocol.messages.length}, ${matchedSignalCount} signals`
+                    : protocol.messages.length
+                }})
+              </span>
+            </h2>
+            <UInput
+              v-model="messageQuery"
+              icon="i-heroicons-magnifying-glass"
+              placeholder="Search messages, signals, CAN IDs..."
+              variant="subtle"
+              class="w-full sm:w-80"
+              aria-label="Search messages and signals"
+            >
+              <template #trailing>
+                <UButton
+                  v-if="messageQuery"
+                  color="neutral"
+                  variant="link"
+                  icon="i-heroicons-x-mark"
+                  aria-label="Clear message search"
+                  @click="messageQuery = ''"
+                />
+              </template>
+            </UInput>
+          </div>
+
+          <div v-if="messageQuery && !filteredMessages.length" class="text-center py-12 text-muted">
+            <UIcon name="i-heroicons-magnifying-glass" class="size-8 mb-2" />
+            <p>No messages or signals match "{{ messageQuery }}".</p>
+          </div>
+
+          <div v-else class="space-y-3">
+            <UCard v-for="entry in filteredMessages" :key="String(entry.msg.id)" class="overflow-hidden">
               <!-- Message Header -->
               <button
                 class="w-full flex items-center justify-between p-4 text-left hover:bg-muted/30 transition-colors"
-                @click="toggleMessage(String(msg.id))"
+                @click="toggleMessage(String(entry.msg.id))"
               >
                 <div class="flex items-center gap-4">
                   <code
                     class="bg-success/10 text-success px-2 py-1 rounded font-mono text-sm cursor-pointer hover:bg-success/20"
-                    @click.stop="copyToClipboard(formatMessageId(msg.id), String(msg.id))"
+                    @click.stop="copyToClipboard(formatMessageId(entry.msg.id), String(entry.msg.id))"
                   >
-                    {{ formatMessageId(msg.id) }}
-                    <UIcon v-if="copied === String(msg.id)" name="i-heroicons-check" class="size-3 ml-1" />
+                    {{ formatMessageId(entry.msg.id) }}
+                    <UIcon v-if="copied === String(entry.msg.id)" name="i-heroicons-check" class="size-3 ml-1" />
                   </code>
                   <div>
-                    <div class="font-medium">{{ msg.name }}</div>
+                    <div class="font-medium">{{ entry.msg.name }}</div>
                     <div class="text-sm text-muted">
-                      {{ msg.length }} bytes
-                      <span v-if="msg.intervalMs"> • {{ msg.intervalMs }}ms interval </span>
-                      • {{ msg.signals.length }} signals
+                      {{ entry.msg.length }} bytes
+                      <span v-if="entry.msg.intervalMs"> • {{ entry.msg.intervalMs }}ms interval </span>
+                      •
+                      <span v-if="entry.signalMatch">
+                        {{ entry.signals.length }} of {{ entry.msg.signals.length }} signals match
+                      </span>
+                      <span v-else>{{ entry.msg.signals.length }} signals</span>
                     </div>
                   </div>
                 </div>
                 <UIcon
-                  :name="expandedMessages.has(String(msg.id)) ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+                  :name="isExpanded(entry) ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
                   class="size-5 text-muted"
                 />
               </button>
 
               <!-- Signals (expanded) -->
-              <div v-if="expandedMessages.has(String(msg.id))" class="border-t border-default">
+              <div v-if="isExpanded(entry)" class="border-t border-default">
                 <table class="w-full text-sm">
                   <thead class="bg-muted/30">
                     <tr>
@@ -203,7 +288,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="sig in msg.signals" :key="sig.name" class="border-t border-default">
+                    <tr v-for="sig in entry.signals" :key="sig.name" class="border-t border-default">
                       <td class="p-3">
                         <div class="font-medium">{{ sig.name }}</div>
                         <div v-if="sig.description" class="text-xs text-muted truncate max-w-xs">
