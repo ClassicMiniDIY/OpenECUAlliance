@@ -54,8 +54,9 @@ deliverable is knowledge: every phase writes findings back to the master plan's
 | 1 | Platform-neutral fixes on main via Vercel (canonical bug, remoteAddress guard, spike findings) | **COMPLETE 2026-08-23**, merged in PR #1. Per-page canonicals + oecua.org primary domain, current-origin auth redirects, CORS exact-match + public-read wildcard, remoteAddress guard, doc/route corrections. |
 | 2 | wrangler.jsonc + GH Actions deploy + secrets + `wrangler dev` recipe (E4) + pinned wrangler/compat_date (E5) | **COMPLETE 2026-08-23.** `.github/workflows/deploy-cloudflare.yml` (build:cf → wrangler deploy → smoke), all 5 repo secrets set, wrangler pinned 4.125.0, `scripts/verify-cf-deploy.sh` green 24/24 on the deployed worker. Local recipe: `bun run build:cf && bunx wrangler dev` (wrangler auto-loads `.env`, no `.dev.vars` needed). |
 | 3 | Zone prep | **COMPLETE 2026-08-24.** Zones created: oecua.org `6348deded5fd4a4826c54899a6272d09`, openecualliance.org `32972bed26c8a6f1d855fa9383982c2a` (both pending NS; CF nameservers `anita`/`thomas.ns.cloudflare.com`). All 7 records verified byte-exact incl. 5 mail records (dns-only, MX priority 10, DKIM 218 chars). Always Use HTTPS on, HSTS max-age=63072000 matching baseline, SSL strict — both zones. 301 redirect rules staged with preserve_query_string (www.oecua.org → apex; both openecualliance.org hosts → oecua.org). **All four web records set DNS-only so the NS flip is traffic-invisible — see the grey-cloud cutover below.** **HARD GATE (auth uses current origin): Supabase allowlist on project `ljigjawvlwvciqvegptp` must contain `https://oecua.org/**`, `https://www.oecua.org/**`, both openecualliance.org forms, and the workers.dev origin, and SITE_URL must become `https://oecua.org` — BEFORE traffic moves.** |
-| 4a | **NS flip at Amazon Registrar** — with all web records DNS-only, this moves DNS authority only; traffic keeps flowing to Vercel on Vercel's TLS, so there is no certificate gap and no user-visible change. | awaiting Cole |
-| 4b | **Traffic switch**, once the Universal SSL cert reports Active: attach the Worker custom domain for oecua.org, proxy the redirect hostnames so the 301 rules fire, then run `scripts/verify-cf-deploy.sh` + 1-week soak. Rollback is one record edit back to DNS-only Vercel. | after 4a |
+| 4a | NS flip at Amazon Registrar (DNS authority only, no traffic change) | **COMPLETE 2026-08-24 00:52-00:53 UTC.** Both zones active. Propagation ~1 h (registry delegation TTL 3600, not the assumed 48 h). Zero downtime, zero user-visible change. |
+| 4b | Traffic switch to the Worker | **COMPLETE 2026-08-24.** Cert verified valid (`CN=oecua.org`, Google Trust Services, exp. Nov 22) before switching. Worker **route** `oecua.org/*` used instead of a custom domain — non-destructive (keeps the Vercel A record as origin fallback) and reversible by toggling `proxied`. Redirect hostnames proxied; all 301s verified with query preservation. Battery **36/37** (the one failure was a stale local resolver cache, disproved by forcing the edge IP). |
+| 4c | 1-week soak | in progress — see Verification status below |
 | 5 | Remove domains from Vercel project (C8 gates), update CLAUDE.md, Transferability report | not started |
 
 ## Process rules (from the kickoff brief)
@@ -64,3 +65,15 @@ deliverable is knowledge: every phase writes findings back to the master plan's
   contradictions become pathfinder-log entries, never silent local fixes.
 - Baseline diffs, evidence before green, batch Cole-questions once per phase, never push
   main, stop before opening any PR.
+
+## Verification status (2026-08-24 cutover)
+
+**Verified with evidence:**
+- Battery 36/37 against production; the single failure was local DNS cache, disproved by `curl --resolve` against the edge and by 1.1.1.1/8.8.8.8 both returning Cloudflare IPs.
+- Mail fully intact — Google's own `Authentication-Results` on a message delivered *after* the NS change show `dkim=pass header.i=@openecualliance.org header.s=resend`, `spf=pass`, `dmarc=pass`. Strongest possible proof the Resend/SES records survived.
+- TLS: `CN=oecua.org`, Google Trust Services, valid through 2026-11-22, verified before any traffic moved.
+- Supabase redirect allowlist accepts `https://oecua.org/auth/callback` with the path intact (no silent SITE_URL fallback).
+- Full magic-link PKCE login + SSR cookie session verified on the same Worker build via workers.dev (Phase 0).
+
+**NOT verified end-to-end on the production hostname:**
+- A browser-initiated magic-link login on `https://oecua.org`. Three attempts produced no email, while an identical direct API call to the same endpoint delivered normally. `login.vue` only shows "Check your email" after `signInWithEmail` resolves, so Supabase returned success each time — the email simply did not arrive. Suspected Resend/Supabase per-address send throttling beyond the documented 20 s window; **not** believed to be migration-related, since the allowlist, the Worker, and the login flow are each independently verified. Needs one human login attempt to close.
