@@ -1,53 +1,57 @@
 # OpenECU Alliance
 
-The official website for the **OpenECU Spec** - an open specification for standardizing ECU log data formats across the automotive tuning community, with a **public REST API** for programmatic access.
+The official website for the **OpenECU Spec** - an open specification for standardizing ECU log data formats and CAN broadcast protocols across the automotive tuning community, with a **public REST API** for programmatic access.
+
+**Live site:** [oecua.org](https://oecua.org)
 
 ## What is the OpenECU Alliance?
 
 The OpenECU Alliance is an open community that publishes and maintains:
 
-- **The OpenECU Spec** - A YAML-based specification for describing ECU log file formats and channel mappings
+- **The OpenECU Spec** - A YAML-based specification for describing ECU log file formats, CAN broadcast protocols, and channel mappings
+- **Canonical Channel Registry** - 466 canonical channel IDs across 20 categories (`specs/channels.yaml`), the shared vocabulary every adapter and protocol maps onto
 - **Public API** - REST endpoints for fetching adapter and protocol specs programmatically
 - **Adapter Library** - Community-contributed adapters that map vendor-specific channels to canonical IDs
-- **Ecosystem** - Applications and tools that integrate with the OpenECU API
+- **Protocol Library** - CAN broadcast definitions (message IDs, signal bit layouts, scaling)
+- **3D Model Library** - Community-contributed printable ECU mounts, enclosures, brackets, and accessories
+- **Ecosystem** - Applications and tools that integrate with the OpenECU API, like [UltraLog](https://ultralog.co)
 
 ## This Repository
 
 This is the Nuxt 4 website that serves as the public face of the OpenECU Alliance. It provides:
 
-- **Public API** - REST endpoints to fetch specs programmatically (both parsed JSON and raw YAML)
-- **Adapter Browser** - Search and explore adapters for different ECU systems
-- **Specification Documentation** - Reference for the OpenECU Spec format and API endpoints
-- **Ecosystem Showcase** - Applications that integrate with the API like [UltraLog](https://ultralog.co)
-- **Contribution Guide** - How to create and submit new adapters
+- **Public API** - REST endpoints to fetch specs programmatically (parsed JSON and raw YAML)
+- **Adapter & Protocol Browsers** - Search and explore specs with fuzzy channel/signal search
+- **Specification & Docs** - The full spec reference at `/spec` and guides at `/docs`
+- **3D Model Sharing** - Upload models or link them from Printables, Thingiverse, MakerWorld, and Cults3D, with comments, likes, and ratings
+- **Ecosystem Showcase** - Applications that integrate with the API
+- **Contribution Guide** - How to create and submit new adapters and protocols
+
+The specs themselves live in this repository under `specs/` and are validated on every deploy.
 
 ## Public API
 
-All specs are available via public REST API endpoints:
-
-### Adapters
+### Parsed JSON
 
 ```bash
-# List all adapters
-GET /api/specs/adapters
+# List all adapters / protocols (summary info)
+GET /api/adapters
+GET /api/protocols
 
-# Get specific adapter (parsed JSON)
-GET /api/specs/adapters/:vendor/:id
-
-# Download raw YAML
-GET /api/specs/adapters/:vendor/:id/raw
+# Full detail (channels, signals, sourceNames; supports ?version=X.Y.Z)
+GET /api/adapters/:vendor/:id
+GET /api/protocols/:vendor/:id
 ```
 
-### Protocols
+### Raw YAML
 
 ```bash
-# List all protocols
+# Lists with download URLs
+GET /api/specs/adapters
 GET /api/specs/protocols
 
-# Get specific protocol (parsed JSON)
-GET /api/specs/protocols/:vendor/:id
-
-# Download raw YAML
+# Download the raw YAML file (supports ?version=X.Y.Z)
+GET /api/specs/adapters/:vendor/:id/raw
 GET /api/specs/protocols/:vendor/:id/raw
 ```
 
@@ -55,59 +59,66 @@ GET /api/specs/protocols/:vendor/:id/raw
 
 ```javascript
 // Fetch all adapters
-const response = await fetch('https://oecua.org/api/specs/adapters');
+const response = await fetch('https://oecua.org/api/adapters');
 const adapters = await response.json();
 
 // Fetch specific adapter
-const adapter = await fetch('https://oecua.org/api/specs/adapters/haltech/haltech-nsp');
+const adapter = await fetch('https://oecua.org/api/adapters/haltech/haltech-nsp');
 const haltechSpec = await adapter.json();
 ```
 
-See the [full API documentation](https://openecualliance.org/spec#api-endpoints) for details.
+See the [full API documentation](https://oecua.org/spec#api-endpoints) for details.
 
 ## Related Repositories
 
 | Repository                                                           | Description                                               | Status   |
 | -------------------------------------------------------------------- | --------------------------------------------------------- | -------- |
-| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Adapter YAML files, JSON Schema, and formal specification | Archived |
+| [OECUASpecs](https://github.com/ClassicMiniDIY/OECUASpecs)           | Former home of the adapter YAML files                     | Archived |
 | [OpenECUAlliance](https://github.com/ClassicMiniDIY/OpenECUAlliance) | This website, public API, and all specs                   | Active   |
 
-**Note:** As of January 2026, all specs have been migrated to this repository. The OECUASpecs repository is now archived. Contributions should be made directly to this repository.
+**Note:** As of January 2026, all specs live in this repository. The OECUASpecs repository is archived; contribute directly here.
 
 ## Supported ECU Systems
 
-Adapters are available for:
+### Log Adapters
 
-- Haltech (CSV)
+- Haltech (NSP CSV)
 - Link ECU (LLG binary)
 - AiM (XRK/DRK binary)
-- ECUMaster (CSV)
+- ECUMaster EMU (CSV)
 - Speeduino (MLG binary)
 - rusEFI (MLG binary)
-- RomRaider/Subaru (CSV)
-- MegaSquirt / Honda Tuning Studio (CSV from TunerStudio)
+- RomRaider / Subaru (CSV)
+- MegaSquirt (TunerStudio CSV)
+- Emerald K6/M3D (binary)
 
-**Planned:** MoTeC, AEM, Holley, FuelTech
+### CAN Broadcast Protocols
+
+- Haltech Elite
+- AEM Infinity
+- ECUMaster EMU
+- Emtron
+- MaxxECU
+- MegaSquirt
+- rusEFI
+- Speeduino
+- Syvecs S7
+
+**Planned log adapters:** MoTeC, AEM, Holley, FuelTech — see `specs/protocols/PROTOCOL_ROADMAP.md` for the protocol roadmap.
 
 ## Development
 
 ### Prerequisites
 
 - [Bun](https://bun.sh) runtime
-- Node.js 18+
 
 ### Setup
 
 ```bash
-# Clone the repository
 git clone https://github.com/ClassicMiniDIY/OpenECUAlliance.git
 cd OpenECUAlliance
-
-# Install dependencies
 bun install
 ```
-
-> **Note:** Specs are stored locally in the `specs/` directory and served via API routes. Contributions are made directly to this repository.
 
 ### Development Server
 
@@ -117,38 +128,57 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Build
+### Build & Deploy
+
+Production runs on **Cloudflare Workers**:
 
 ```bash
-# Production build
-bun run build
+# Cloudflare Workers bundle (what production runs)
+bun run build:cf
 
-# Preview production build
+# Run the worker locally on workerd
+bun run build:cf && bunx wrangler dev
+
+# Node build — local preview only, NOT deployable to Workers
+bun run build
 bun preview
 ```
+
+Deploys happen automatically from `main` via GitHub Actions.
+
+### Validating Specs
+
+```bash
+# Validate every adapter and protocol against the canonical registry
+bun run validate:specs
+
+# Regenerate specs/SPECIFICATION.md from specs/channels.yaml
+bun run generate:spec-doc
+```
+
+`validate:specs` gates the deploy workflow — it checks channel IDs, categories, unit conversions, CAN IDs, signal overlaps, and frame overflows.
 
 ## Tech Stack
 
 - **Framework:** [Nuxt 4](https://nuxt.com)
 - **Runtime:** [Bun](https://bun.sh)
 - **UI:** [Nuxt UI v4](https://ui.nuxt.com) + Tailwind CSS
-- **Icons:** Heroicons, Simple Icons
+- **Icons:** Heroicons, Lucide, Simple Icons
+- **Auth & Community Data:** [Supabase](https://supabase.com) (magic-link auth, models, comments, likes, ratings)
+- **Hosting:** Cloudflare Workers
 
 ## Contributing
 
-We welcome contributions! Here's how you can help:
-
 ### Contributing Adapters & Protocols
 
-When you contribute adapters or protocols, they become instantly available via the public API:
+When you contribute adapters or protocols, they become available via the public API shortly after merge:
 
-1. Fork this repository (OpenECUAlliance)
+1. Fork this repository
 2. Add your YAML file to `specs/adapters/[vendor]/` or `specs/protocols/[vendor]/`
-3. Validate your spec against the JSON Schema
+3. Run `bun run validate:specs` and fix anything it flags
 4. Submit a pull request
-5. Once merged, your spec is instantly available via the API!
 
-See the [Contribution Guide](https://openecualliance.org/contribute) for detailed instructions.
+See the [Contribution Guide](https://oecua.org/contribute) for detailed instructions.
 
 ### Contributing to the Website
 
@@ -159,4 +189,4 @@ See the [Contribution Guide](https://openecualliance.org/contribute) for detaile
 
 ## License
 
-[MIT License](LICENSE)
+[GPL-3.0](LICENSE)
