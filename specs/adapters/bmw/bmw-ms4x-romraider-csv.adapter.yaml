@@ -95,19 +95,6 @@ channels:
     source_names:
       - 'Mass Airflow (g/sec)'
 
-  - id: idle_target_rpm
-    name: 'Target Idle Speed'
-    description: 'Idle speed setpoint'
-    category: engine
-    data_type: float
-    unit: 'rpm'
-    min: 0
-    max: 2000
-    precision: 0
-    source_names:
-      - 'Target Idle Speed (RPM)'
-      - 'Idle Target (RPM)'
-
   # --- fuel -----------------------------------------------------------------
   - id: pulse_width
     name: 'Fuel Injector Pulse Width'
@@ -666,7 +653,9 @@ metadata:
       "Mass Airflow (kg/h)" and is not picked up; multiply by 0.2778 to convert.
     - >-
       Calculated MAP offers hPa and psi conversions. Only the hPa variant is
-      matched. Vehicle Speed offers km/h and mph; only km/h is matched.
+      matched. Atmospheric Pressure offers hPa, kPa, psi and inHg; only the
+      kPa variant is matched, because kPa is already the canonical unit.
+      Vehicle Speed offers km/h and mph; only km/h is matched.
     - >-
       The O2 sensor parameters also offer an "AFR" conversion derived from a
       narrowband sensor voltage. That curve is not a real wideband measurement,
@@ -676,10 +665,15 @@ metadata:
       injector time. There is no canonical additive-trim channel, so it is not
       mapped.
     - >-
+      The logger definition exposes no idle-target parameter, so there is no
+      idle_target_rpm channel here. The MS43 DME does publish a target idle
+      speed on CAN - see RPM_IDLG_TAR in the bmw-e8x-e9x-powertrain protocol
+      for the equivalent field on the later platform.
+    - >-
       This definition targets MS43 only. MS42 uses different variable addresses
       and is not covered.
   changelog:
     - version: '1.0.0'
       date: '2026-08-25'
       changes:
-        - 'Initial MS4x RomRaider CSV adapter with 47 channels from the community MS43 logger definition'
+        - 'Initial MS4x RomRaider CSV adapter with 46 channels from the community MS43 logger definition'

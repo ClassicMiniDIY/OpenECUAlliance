@@ -38,7 +38,7 @@ description: |
   E9x (3-series) platforms, roughly 2005-2013, covering N43/N46/N47/N52/N54
   and related engines.
 
-  Eighteen frames from four transmitting modules:
+  Eighteen frames from six transmitting modules:
     DME   - torque model, pedal and engine speed, coolant and oil temperature,
             idle target, cruise setpoint, oil level, battery voltage
     EGS   - gearbox torque request, ATF temperature, gear ratio, output shaft

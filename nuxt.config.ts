@@ -18,6 +18,7 @@ export default defineNuxtConfig({
         'simple-icons:bambulab',
         'simple-icons:printables',
         'simple-icons:thingiverse',
+        'simple-icons:bmw',
         'mdi:cube-outline',
       ],
       scan: true,
