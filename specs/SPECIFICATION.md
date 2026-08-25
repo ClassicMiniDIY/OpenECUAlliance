@@ -134,7 +134,7 @@ These normalise with no numeric change:
 ## Channels
 
 466 canonical channels across 20 categories. **Used by**
-counts how many of the nine adapters currently map the channel.
+counts how many of the 10 adapters currently map the channel.
 
 ### acceleration
 
@@ -167,7 +167,7 @@ counts how many of the nine adapters currently map the channel.
 | `iam` | IAM | `multiplier` | float | 1 | Ignition Advance Multiplier (Subaru learning value) |
 | `iat_correction` | IAT Correction | `percent` | float | 3 | Intake air temperature fuel correction |
 | `iat_fuel_trim` | IAT Fuel Trim | `percent` | float | 1 | Intake air temperature fuel trim |
-| `knock_retard` | Knock Retard | `degrees` | float | 6 | Timing retard from knock detection |
+| `knock_retard` | Knock Retard | `degrees` | float | 7 | Timing retard from knock detection |
 | `warmup_enrichment` | Warmup Enrichment | `percent` | float | 3 | Cold engine fuel enrichment |
 
 ### custom
@@ -201,7 +201,7 @@ counts how many of the nine adapters currently map the channel.
 | id | name | unit | type | used by | description |
 | --- | --- | --- | --- | --- | --- |
 | `desired_gear` | Desired Gear | `gear` | int | 1 | Gear the transmission controller is commanding. |
-| `gear` | Gear Position | `gear` | int | 9 | Current gear |
+| `gear` | Gear Position | `gear` | int | 10 | Current gear |
 | `gear_ratio` | Gear Ratio | `ratio` | float | 1 | Current calculated gear ratio. |
 | `gear_selector_position` | Gear Selector Position | `gear` | int | 0 | Position of the gear selector. |
 
@@ -226,27 +226,27 @@ counts how many of the nine adapters currently map the channel.
 | `analog_input_7` | Analog Input 7 | `volts` | float | 0 | Generic analog input 7. |
 | `analog_input_8` | Analog Input 8 | `volts` | float | 0 | Generic analog input 8. |
 | `analog_input_9` | Analog Input 9 | `volts` | float | 0 | Generic analog input 9. |
-| `ap_main_voltage` | Main Accelerator Sensor Voltage | `volts` | float | 1 | Main accelerator pedal sensor voltage. |
-| `ap_sub_voltage` | Sub Accelerator Sensor Voltage | `volts` | float | 1 | Secondary accelerator pedal sensor voltage. |
-| `battery_voltage` | Battery Voltage | `volts` | float | 9 | System voltage |
+| `ap_main_voltage` | Main Accelerator Sensor Voltage | `volts` | float | 2 | Main accelerator pedal sensor voltage. |
+| `ap_sub_voltage` | Sub Accelerator Sensor Voltage | `volts` | float | 2 | Secondary accelerator pedal sensor voltage. |
+| `battery_voltage` | Battery Voltage | `volts` | float | 10 | System voltage |
 | `eld_voltage` | ELD Voltage | `volts` | float | 1 | Electrical load detector voltage |
 | `fuel_level_voltage` | Fuel Level Voltage | `volts` | float | 1 | Raw fuel level sender voltage. |
 | `ignition_voltage` | Ignition Voltage | `volts` | float | 1 | Voltage at the ignition switch input. |
-| `maf_voltage` | MAF Voltage | `volts` | float | 1 | Mass airflow sensor voltage |
+| `maf_voltage` | MAF Voltage | `volts` | float | 2 | Mass airflow sensor voltage |
 | `map_voltage` | MAP Voltage | `volts` | float | 1 | Raw MAP sensor voltage |
 | `o2_sensor_current` | O2 Sensor Current | `amps` | float | 1 | Wideband oxygen sensor pump current. |
 | `o2_sensor_resistance` | O2 Sensor Resistance | `ohms` | float | 1 | Wideband oxygen sensor internal resistance. |
-| `o2_voltage_front_1` | Front O2 Voltage 1 | `volts` | float | 1 | Narrowband front oxygen sensor 1 voltage. |
-| `o2_voltage_front_2` | Front O2 Voltage 2 | `volts` | float | 1 | Narrowband front oxygen sensor 2 voltage. |
-| `o2_voltage_rear` | Rear O2 Voltage | `volts` | float | 1 | Narrowband rear oxygen sensor voltage. |
+| `o2_voltage_front_1` | Front O2 Voltage 1 | `volts` | float | 2 | Narrowband front oxygen sensor 1 voltage. |
+| `o2_voltage_front_2` | Front O2 Voltage 2 | `volts` | float | 2 | Narrowband front oxygen sensor 2 voltage. |
+| `o2_voltage_rear` | Rear O2 Voltage | `volts` | float | 2 | Narrowband rear oxygen sensor voltage. |
 | `ocv_current_exhaust` | Exhaust OCV Current | `amps` | float | 1 | Exhaust oil control valve current. |
 | `ocv_current_intake` | Intake OCV Current | `amps` | float | 1 | Intake oil control valve current. |
 | `tgv_voltage_left` | Tumble Valve Sensor Voltage Left | `volts` | float | 1 | Left tumble generator valve position sensor voltage. |
 | `tgv_voltage_right` | Tumble Valve Sensor Voltage Right | `volts` | float | 1 | Right tumble generator valve position sensor voltage. |
 | `throttle_motor_voltage` | Throttle Motor Voltage | `volts` | float | 1 | Drive-by-wire throttle motor voltage. |
 | `tps_main_voltage` | Main Throttle Sensor Voltage | `volts` | float | 1 | Main throttle position sensor voltage. |
-| `tps_sub_voltage` | Sub Throttle Sensor Voltage | `volts` | float | 1 | Secondary throttle position sensor voltage. |
-| `tps_voltage` | TPS Voltage | `volts` | float | 2 | Raw throttle position sensor voltage |
+| `tps_sub_voltage` | Sub Throttle Sensor Voltage | `volts` | float | 2 | Secondary throttle position sensor voltage. |
+| `tps_voltage` | TPS Voltage | `volts` | float | 3 | Raw throttle position sensor voltage |
 | `user_channel_1` | User Channel 1 | `volts` | float | 0 | User-assignable channel 1, source configured in the tuning software. |
 | `user_channel_10` | User Channel 10 | `volts` | float | 0 | User-assignable channel 10, source configured in the tuning software. |
 | `user_channel_11` | User Channel 11 | `volts` | float | 0 | User-assignable channel 11, source configured in the tuning software. |
@@ -291,7 +291,7 @@ counts how many of the nine adapters currently map the channel.
 | `clutch_position` | Clutch Position | `percent` | float | 0 | Clutch pedal or actuator position. |
 | `coil_duty_cycle` | Coil Duty Cycle | `percent` | float | 1 | Ignition coil duty cycle. |
 | `cut_percentage` | Cut Percentage | `percent` | float | 0 | Proportion of ignition or fuel events being cut. |
-| `cylinder_air_mass` | Cylinder Air Mass | `mg` | float | 0 | Air mass trapped per cylinder per cycle. |
+| `cylinder_air_mass` | Cylinder Air Mass | `mg` | float | 1 | Air mass trapped per cylinder per cycle. |
 | `dbw_duty_cycle` | Throttle Motor Duty | `percent` | float | 2 | Drive-by-wire throttle motor duty cycle. |
 | `driveshaft_rpm` | Driveshaft RPM | `rpm` | float | 0 | Driveshaft rotational speed. |
 | `engine_load_mass` | Engine Load (Mass) | `g/s` | float | 1 | Engine load expressed as air mass per intake event. |
@@ -307,10 +307,10 @@ counts how many of the nine adapters currently map the channel.
 | `fuel_temp_correction` | Fuel Temperature Correction | `percent` | float | 1 | Fuel correction for fuel temperature. |
 | `fuel_trim_bank_1` | Fuel Trim Bank 1 | `percent` | float | 0 | Closed-loop fuel trim for bank 1. |
 | `fuel_trim_bank_2` | Fuel Trim Bank 2 | `percent` | float | 0 | Closed-loop fuel trim for bank 2. |
-| `fuel_trim_long_bank_1` | Long Term Fuel Trim Bank 1 | `percent` | float | 1 | Long-term learned fuel trim, bank 1. |
-| `fuel_trim_long_bank_2` | Long Term Fuel Trim Bank 2 | `percent` | float | 1 | Long-term learned fuel trim, bank 2. |
-| `fuel_trim_short_bank_1` | Short Term Fuel Trim Bank 1 | `percent` | float | 1 | Short-term closed-loop fuel trim, bank 1. |
-| `fuel_trim_short_bank_2` | Short Term Fuel Trim Bank 2 | `percent` | float | 1 | Short-term closed-loop fuel trim, bank 2. |
+| `fuel_trim_long_bank_1` | Long Term Fuel Trim Bank 1 | `percent` | float | 2 | Long-term learned fuel trim, bank 1. |
+| `fuel_trim_long_bank_2` | Long Term Fuel Trim Bank 2 | `percent` | float | 2 | Long-term learned fuel trim, bank 2. |
+| `fuel_trim_short_bank_1` | Short Term Fuel Trim Bank 1 | `percent` | float | 2 | Short-term closed-loop fuel trim, bank 1. |
+| `fuel_trim_short_bank_2` | Short Term Fuel Trim Bank 2 | `percent` | float | 2 | Short-term closed-loop fuel trim, bank 2. |
 | `idle_base` | Idle Base Position | `percent` | float | 1 | Idle stepper or solenoid base position |
 | `idle_load` | Idle Load | `percent` | float | 1 | Idle air control position |
 | `idle_position` | Idle Position | `percent` | float | 1 | Idle air control position |
@@ -330,7 +330,7 @@ counts how many of the nine adapters currently map the channel.
 | `instant_rpm` | Instant RPM | `rpm` | float | 1 | Instantaneous engine speed, before smoothing. |
 | `launch_rpm_target` | Launch RPM Target | `rpm` | float | 1 | Launch control target RPM |
 | `load` | Engine Load | `percent` | float | 3 | Calculated engine load |
-| `maf` | Mass Airflow | `g/s` | float | 2 | Mass airflow sensor reading |
+| `maf` | Mass Airflow | `g/s` | float | 3 | Mass airflow sensor reading |
 | `nitrous_fuel_adder` | Nitrous Fuel Adder | `percent` | float | 0 | Extra fuel added while nitrous is flowing. |
 | `o2_heater_duty` | O2 Heater Duty | `percent` | float | 1 | Wideband oxygen sensor heater duty cycle. |
 | `ocv_duty_exhaust` | Exhaust OCV Duty | `percent` | float | 0 | Exhaust oil control valve duty cycle. |
@@ -346,7 +346,7 @@ counts how many of the nine adapters currently map the channel.
 | `pwm_output_7` | PWM Output 7 | `percent` | float | 0 | Duty cycle of PWM output 7. |
 | `pwm_output_8` | PWM Output 8 | `percent` | float | 0 | Duty cycle of PWM output 8. |
 | `rev_limit_rpm` | Rev Limit | `rpm` | float | 0 | Currently enforced RPM limit. |
-| `rpm` | Engine RPM | `rpm` | float | 9 | Engine speed |
+| `rpm` | Engine RPM | `rpm` | float | 10 | Engine speed |
 | `rpm_rate` | RPM Rate | `rpm/s` | float | 2 | Rate of change of engine speed. |
 | `tgv_position` | Tumble Valve Position | `percent` | float | 0 | Tumble generator valve position. |
 | `tgv_position_right` | Tumble Valve Position Right | `percent` | float | 0 | Tumble generator valve position, right bank. |
@@ -364,13 +364,13 @@ counts how many of the nine adapters currently map the channel.
 | `turbo_speed` | Turbo Speed | `rpm` | float | 1 | Turbocharger shaft speed. |
 | `ve_1` | VE Table 1 | `percent` | float | 1 | Volumetric efficiency from table 1. |
 | `ve_2` | VE Table 2 | `percent` | float | 1 | Volumetric efficiency from table 2. |
-| `vvt_exhaust` | VVT Exhaust Position<br>_aliases: `vvt_exhaust_actual`, `vvt_exhaust_bank1_actual`_ | `degrees` | float | 4 | Variable valve timing exhaust cam position |
+| `vvt_exhaust` | VVT Exhaust Position<br>_aliases: `vvt_exhaust_actual`, `vvt_exhaust_bank1_actual`_ | `degrees` | float | 5 | Variable valve timing exhaust cam position |
 | `vvt_exhaust_bank2_actual` | VVT Exhaust Bank 2 Actual | `degrees` | float | 2 | Measured exhaust cam position, bank 2. |
 | `vvt_exhaust_bank2_duty` | VVT Exhaust Bank 2 Duty | `percent` | float | 1 | Exhaust cam solenoid duty cycle, bank 2. |
 | `vvt_exhaust_bank2_target` | VVT Exhaust Bank 2 Target | `degrees` | float | 0 | Commanded exhaust cam position, bank 2. |
 | `vvt_exhaust_duty` | VVT Exhaust Duty | `percent` | float | 1 | Exhaust cam solenoid duty cycle. |
 | `vvt_exhaust_target` | VVT Exhaust Target<br>_aliases: `vvt_exhaust_bank1_target`_ | `degrees` | float | 1 | Target exhaust cam position |
-| `vvt_intake` | VVT Intake Position<br>_aliases: `vvt_intake_actual`, `vvt_intake_bank1_actual`_ | `degrees` | float | 5 | Variable valve timing intake cam position |
+| `vvt_intake` | VVT Intake Position<br>_aliases: `vvt_intake_actual`, `vvt_intake_bank1_actual`_ | `degrees` | float | 6 | Variable valve timing intake cam position |
 | `vvt_intake_bank2_actual` | VVT Intake Bank 2 Actual | `degrees` | float | 3 | Measured intake cam position, bank 2. |
 | `vvt_intake_bank2_duty` | VVT Intake Bank 2 Duty | `percent` | float | 2 | Intake cam solenoid duty cycle, bank 2. |
 | `vvt_intake_bank2_target` | VVT Intake Bank 2 Target | `degrees` | float | 1 | Commanded intake cam position, bank 2. |
@@ -418,7 +418,7 @@ counts how many of the nine adapters currently map the channel.
 | `lambda_8` | Lambda 8 | `lambda` | float | 0 | Wideband lambda sensor 8. |
 | `lambda_9` | Lambda 9 | `lambda` | float | 0 | Wideband lambda sensor 9. |
 | `lambda_target` | Lambda Target | `lambda` | float | 4 | Target lambda from ECU tuning |
-| `pulse_width` | Injector Pulse Width<br>_aliases: `injector_pw`, `pulse_width_1`_ | `milliseconds` | float | 8 | Injector pulse width |
+| `pulse_width` | Injector Pulse Width<br>_aliases: `injector_pw`, `pulse_width_1`_ | `milliseconds` | float | 9 | Injector pulse width |
 | `pulse_width_2` | Pulse Width 2 | `milliseconds` | float | 3 | Injector pulse width for stage or bank 2. |
 | `pulse_width_3` | Pulse Width 3 | `milliseconds` | float | 1 | Injector pulse width for stage or bank 3. |
 | `pulse_width_4` | Pulse Width 4 | `milliseconds` | float | 1 | Injector pulse width for stage or bank 4. |
@@ -437,15 +437,15 @@ counts how many of the nine adapters currently map the channel.
 | `dwell` | Dwell | `milliseconds` | float | 5 | Coil dwell time |
 | `dwell_angle` | Dwell Angle | `degrees` | float | 1 | Coil dwell expressed as crank angle. |
 | `ignition_advance` | Ignition Advance | `degrees` | float | 8 | Spark timing advance |
-| `ignition_advance_cyl_1` | Ignition Advance Cylinder 1 | `degrees` | float | 1 | Per-cylinder ignition advance for cylinder 1. |
+| `ignition_advance_cyl_1` | Ignition Advance Cylinder 1 | `degrees` | float | 2 | Per-cylinder ignition advance for cylinder 1. |
 | `ignition_advance_cyl_10` | Ignition Advance Cylinder 10 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 10. |
 | `ignition_advance_cyl_11` | Ignition Advance Cylinder 11 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 11. |
 | `ignition_advance_cyl_12` | Ignition Advance Cylinder 12 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 12. |
-| `ignition_advance_cyl_2` | Ignition Advance Cylinder 2 | `degrees` | float | 1 | Per-cylinder ignition advance for cylinder 2. |
-| `ignition_advance_cyl_3` | Ignition Advance Cylinder 3 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 3. |
-| `ignition_advance_cyl_4` | Ignition Advance Cylinder 4 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 4. |
-| `ignition_advance_cyl_5` | Ignition Advance Cylinder 5 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 5. |
-| `ignition_advance_cyl_6` | Ignition Advance Cylinder 6 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 6. |
+| `ignition_advance_cyl_2` | Ignition Advance Cylinder 2 | `degrees` | float | 2 | Per-cylinder ignition advance for cylinder 2. |
+| `ignition_advance_cyl_3` | Ignition Advance Cylinder 3 | `degrees` | float | 1 | Per-cylinder ignition advance for cylinder 3. |
+| `ignition_advance_cyl_4` | Ignition Advance Cylinder 4 | `degrees` | float | 1 | Per-cylinder ignition advance for cylinder 4. |
+| `ignition_advance_cyl_5` | Ignition Advance Cylinder 5 | `degrees` | float | 1 | Per-cylinder ignition advance for cylinder 5. |
+| `ignition_advance_cyl_6` | Ignition Advance Cylinder 6 | `degrees` | float | 1 | Per-cylinder ignition advance for cylinder 6. |
 | `ignition_advance_cyl_7` | Ignition Advance Cylinder 7 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 7. |
 | `ignition_advance_cyl_8` | Ignition Advance Cylinder 8 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 8. |
 | `ignition_advance_cyl_9` | Ignition Advance Cylinder 9 | `degrees` | float | 0 | Per-cylinder ignition advance for cylinder 9. |
@@ -459,8 +459,8 @@ counts how many of the nine adapters currently map the channel.
 | `injection_timing` | Injection Timing | `degrees` | float | 1 | Crank angle at which injection occurs. |
 | `knock_count` | Knock Count | `count` | int | 2 | Number of knock events detected |
 | `knock_level` | Knock Level | `volts` | float | 2 | Knock sensor signal level |
-| `knock_level_1` | Knock Level 1 | `volts` | float | 2 | Knock sensor 1 signal level |
-| `knock_level_2` | Knock Level 2 | `volts` | float | 2 | Knock sensor 2 signal level |
+| `knock_level_1` | Knock Level 1 | `volts` | float | 3 | Knock sensor 1 signal level |
+| `knock_level_2` | Knock Level 2 | `volts` | float | 3 | Knock sensor 2 signal level |
 | `knock_level_3` | Knock Level 3 | `volts` | float | 1 | Knock sensor level for cylinder or sensor 3. |
 | `knock_level_4` | Knock Level 4 | `volts` | float | 1 | Knock sensor level for cylinder or sensor 4. |
 | `knock_level_5` | Knock Level 5 | `volts` | float | 1 | Knock sensor level for cylinder or sensor 5. |
@@ -488,7 +488,7 @@ counts how many of the nine adapters currently map the channel.
 | id | name | unit | type | used by | description |
 | --- | --- | --- | --- | --- | --- |
 | `ac_pressure` | A/C Pressure | `kpa` | float | 1 | Air conditioning refrigerant pressure. |
-| `barometric_pressure` | Barometric Pressure<br>_aliases: `baro`, `barometric`_ | `kpa` | float | 8 | Atmospheric pressure |
+| `barometric_pressure` | Barometric Pressure<br>_aliases: `baro`, `barometric`_ | `kpa` | float | 9 | Atmospheric pressure |
 | `boost` | Boost Pressure | `kpa` | float | 5 | Boost pressure (gauge) |
 | `boost_duty` | Boost Duty | `percent` | float | 4 | Boost solenoid duty cycle |
 | `boost_error` | Boost Error | `kpa` | float | 0 | Difference between boost target and actual. |
@@ -510,7 +510,7 @@ counts how many of the nine adapters currently map the channel.
 | `fuel_tank_pressure` | Fuel Tank Pressure | `kpa` | float | 1 | Evaporative system fuel tank pressure. |
 | `gearbox_line_pressure` | Gearbox Line Pressure | `kpa` | float | 0 | Transmission hydraulic line pressure. |
 | `manifold_relative_pressure` | Manifold Relative Pressure | `kpa` | float | 1 | Manifold pressure relative to atmosphere. |
-| `map` | Manifold Pressure | `kpa` | float | 9 | Manifold absolute pressure |
+| `map` | Manifold Pressure | `kpa` | float | 10 | Manifold absolute pressure |
 | `map_rate` | MAP Rate | `kpa/s` | float | 1 | Rate of change of manifold pressure. |
 | `mgp` | Manifold Gauge Pressure | `kpa` | float | 1 | Manifold gauge pressure (relative) |
 | `nitrous_bottle_pressure` | Nitrous Bottle Pressure | `kpa` | float | 0 | Nitrous bottle pressure. |
@@ -537,7 +537,7 @@ counts how many of the nine adapters currently map the channel.
 | `cruise_speed_error` | Cruise Speed Error | `kph` | float | 0 | Cruise control speed error. |
 | `cruise_target_speed` | Cruise Target Speed | `kph` | float | 1 | Cruise control target speed. |
 | `gps_speed` | GPS Speed | `kph` | float | 0 | Ground speed from GPS. |
-| `vehicle_speed` | Vehicle Speed | `kph` | float | 9 | Vehicle ground speed |
+| `vehicle_speed` | Vehicle Speed | `kph` | float | 10 | Vehicle ground speed |
 | `wheel_speed_driven` | Driven Wheel Speed | `kph` | float | 0 | Average speed of the driven wheels. |
 | `wheel_speed_fl` | Wheel Speed FL | `kph` | float | 2 | Front left wheel speed |
 | `wheel_speed_fr` | Wheel Speed FR | `kph` | float | 2 | Front right wheel speed |
@@ -549,14 +549,14 @@ counts how many of the nine adapters currently map the channel.
 
 | id | name | unit | type | used by | description |
 | --- | --- | --- | --- | --- | --- |
-| `ac_relay` | A/C Relay | `—` | bool | 1 | Air conditioning clutch relay state. |
-| `ac_request` | A/C Request | `—` | bool | 1 | Air conditioning has been requested. |
+| `ac_relay` | A/C Relay | `—` | bool | 2 | Air conditioning clutch relay state. |
+| `ac_request` | A/C Request | `—` | bool | 2 | Air conditioning has been requested. |
 | `antilag_active` | Anti-Lag Active | `—` | bool | 0 | Anti-lag system is active. |
 | `boost_cut_active` | Boost Cut Active | `—` | bool | 1 | Overboost cut is active. |
-| `brake_switch` | Brake Switch | `—` | bool | 1 | Brake pedal switch state. |
-| `check_engine_light` | Check Engine Light | `—` | bool | 0 | MIL / check engine lamp is commanded on. |
-| `closed_loop_active` | Closed Loop Active | `—` | bool | 0 | Closed-loop lambda control is active. |
-| `clutch_switch` | Clutch Switch | `—` | bool | 2 | Clutch pedal switch state. |
+| `brake_switch` | Brake Switch | `—` | bool | 2 | Brake pedal switch state. |
+| `check_engine_light` | Check Engine Light | `—` | bool | 1 | MIL / check engine lamp is commanded on. |
+| `closed_loop_active` | Closed Loop Active | `—` | bool | 1 | Closed-loop lambda control is active. |
+| `clutch_switch` | Clutch Switch | `—` | bool | 3 | Clutch pedal switch state. |
 | `digital_input_1` | Digital Input 1 | `—` | bool | 0 | Generic digital input 1. |
 | `digital_input_10` | Digital Input 10 | `—` | bool | 0 | Generic digital input 10. |
 | `digital_input_11` | Digital Input 11 | `—` | bool | 0 | Generic digital input 11. |
@@ -578,7 +578,7 @@ counts how many of the nine adapters currently map the channel.
 | `fan_relay_1` | Fan Relay 1 | `—` | bool | 2 | Cooling fan relay 1 state. |
 | `fan_relay_2` | Fan Relay 2 | `—` | bool | 1 | Cooling fan relay 2 state. |
 | `flat_shift_active` | Flat Shift Active | `—` | bool | 0 | Flat shift / shift cut is active. |
-| `fuel_pump_relay` | Fuel Pump Relay | `—` | bool | 1 | Fuel pump relay state. |
+| `fuel_pump_relay` | Fuel Pump Relay | `—` | bool | 2 | Fuel pump relay state. |
 | `fuel_staging_active` | Fuel Staging Active | `—` | bool | 1 | Staged (secondary) injectors are firing. |
 | `head_light_state` | Head Light | `—` | bool | 0 | Head light output state. |
 | `high_beam_light_state` | High Beam | `—` | bool | 0 | High beam output state. |
@@ -598,16 +598,16 @@ counts how many of the nine adapters currently map the channel.
 | `nitrous_stage_1_active` | Nitrous Stage 1 Active | `—` | bool | 1 | Nitrous stage 1 is flowing. |
 | `nitrous_stage_2_active` | Nitrous Stage 2 Active | `—` | bool | 0 | Nitrous stage 2 is flowing. |
 | `o2_heater` | O2 Heater | `—` | bool | 0 | Oxygen sensor heater state. |
-| `overheat_warning` | Overheat Warning | `—` | bool | 0 | Engine overheat warning is active. |
-| `overrun_active` | Overrun Cut Active | `—` | bool | 1 | Deceleration fuel cut-off is active. |
+| `overheat_warning` | Overheat Warning | `—` | bool | 1 | Engine overheat warning is active. |
+| `overrun_active` | Overrun Cut Active | `—` | bool | 2 | Deceleration fuel cut-off is active. |
 | `park_light_state` | Park Light | `—` | bool | 0 | Park light output state. |
 | `rev_limiter_active` | Rev Limiter Active | `—` | bool | 1 | RPM limiter is cutting. |
 | `right_indicator_state` | Right Indicator | `—` | bool | 0 | Right indicator output state. |
 | `shift_light` | Shift Light | `—` | bool | 0 | Shift light is commanded on. |
 | `speed_limiter_active` | Speed Limiter Active | `—` | bool | 0 | Vehicle speed limiter is active. |
-| `starter_signal` | Starter Signal | `—` | bool | 1 | Starter engaged. |
+| `starter_signal` | Starter Signal | `—` | bool | 2 | Starter engaged. |
 | `throttle_blip_active` | Throttle Blip Active | `—` | bool | 0 | Downshift throttle blip is active. |
-| `traction_control_active` | Traction Control Active | `—` | bool | 0 | Traction control is intervening. |
+| `traction_control_active` | Traction Control Active | `—` | bool | 1 | Traction control is intervening. |
 
 ### suspension
 
@@ -659,7 +659,7 @@ counts how many of the nine adapters currently map the channel.
 | `aux_temp_4` | Aux Temperature 4 | `celsius` | float | 0 | Auxiliary temperature sensor 4. |
 | `charge_temp` | Charge Temperature | `celsius` | float | 2 | Intake charge temperature estimate |
 | `compressor_outlet_temp` | Compressor Outlet Temperature | `celsius` | float | 1 | Air temperature at the compressor outlet. |
-| `coolant_temp` | Coolant Temperature | `celsius` | float | 9 | Engine coolant temperature |
+| `coolant_temp` | Coolant Temperature | `celsius` | float | 10 | Engine coolant temperature |
 | `differential_temp` | Differential Temperature | `celsius` | float | 0 | Differential oil temperature. |
 | `egt_1` | EGT Cylinder 1<br>_aliases: `egt`, `exhaust_temp`_ | `celsius` | float | 6 | Exhaust gas temperature for cylinder 1 |
 | `egt_10` | EGT Cylinder 10 | `celsius` | float | 0 | Exhaust gas temperature, cylinder or position 10. |
@@ -679,8 +679,8 @@ counts how many of the nine adapters currently map the channel.
 | `engine_protection_coolant` | Engine Protection Coolant Limit | `celsius` | float | 1 | Coolant temperature threshold used by engine protection. |
 | `fuel_temp` | Fuel Temperature | `celsius` | float | 6 | Fuel temperature |
 | `gearbox_temp` | Gearbox Temperature | `celsius` | float | 2 | Transmission oil temperature |
-| `iat` | Intake Air Temperature | `celsius` | float | 9 | Intake air temperature |
-| `oil_temp` | Oil Temperature | `celsius` | float | 6 | Engine oil temperature |
+| `iat` | Intake Air Temperature | `celsius` | float | 10 | Intake air temperature |
+| `oil_temp` | Oil Temperature | `celsius` | float | 7 | Engine oil temperature |
 | `tyre_temp_fl` | Tyre Temperature Front Left | `celsius` | float | 0 | Front Left tyre temperature. |
 | `tyre_temp_fr` | Tyre Temperature Front Right | `celsius` | float | 0 | Front Right tyre temperature. |
 | `tyre_temp_rl` | Tyre Temperature Rear Left | `celsius` | float | 0 | Rear Left tyre temperature. |
