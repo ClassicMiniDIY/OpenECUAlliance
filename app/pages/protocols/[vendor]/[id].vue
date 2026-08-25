@@ -294,6 +294,27 @@
                         <div v-if="sig.description" class="text-xs text-muted truncate max-w-xs">
                           {{ sig.description }}
                         </div>
+                        <!-- A disputed signal is one the source documents
+                             inconsistently or flags as unverified. Surfacing it
+                             here is the whole point of recording it. -->
+                        <UTooltip v-if="sig.disputed" :text="sig.disputed">
+                          <UBadge color="error" variant="subtle" size="sm" class="mt-1">disputed</UBadge>
+                        </UTooltip>
+                        <div v-if="sig.values" class="mt-1 flex flex-wrap gap-1">
+                          <UBadge
+                            v-for="(label, raw) in sig.values"
+                            :key="raw"
+                            color="neutral"
+                            variant="subtle"
+                            size="sm"
+                            class="font-mono"
+                          >
+                            {{ raw }} = {{ label }}
+                          </UBadge>
+                        </div>
+                        <div v-if="sig.comment" class="text-xs text-dimmed mt-1 max-w-xs">
+                          {{ sig.comment }}
+                        </div>
                       </td>
                       <!-- The canonical id is what makes a CAN signal comparable
                            to the same measurement from a log adapter. Signals
@@ -325,7 +346,22 @@
                         </span>
                         <span v-else class="text-muted">-</span>
                       </td>
-                      <td class="p-3">{{ sig.unit || '-' }}</td>
+                      <td class="p-3">
+                        <span>{{ sig.unit || '-' }}</span>
+                        <UTooltip
+                          v-if="sig.toCanonical"
+                          :text="`This bus carries ${sig.name} in ${sig.unit}. Multiply by ${sig.toCanonical.scale}${
+                            sig.toCanonical.offset ? ` then add ${sig.toCanonical.offset}` : ''
+                          } for the canonical unit.`"
+                        >
+                          <UBadge color="info" variant="subtle" size="sm" class="ml-1 font-mono">
+                            &times;{{ sig.toCanonical.scale }}
+                            <span v-if="sig.toCanonical.offset">{{
+                              sig.toCanonical.offset > 0 ? ` +${sig.toCanonical.offset}` : ` ${sig.toCanonical.offset}`
+                            }}</span>
+                          </UBadge>
+                        </UTooltip>
+                      </td>
                     </tr>
                   </tbody>
                 </table>

@@ -15,6 +15,7 @@ const vendorIcons: Record<string, string> = {
   speeduino: 'i-heroicons-rocket-launch',
   rusefi: 'i-heroicons-wrench-screwdriver',
   romraider: 'i-heroicons-document-chart-bar',
+  bmw: 'i-simple-icons-bmw',
 };
 
 const defaultIcon = 'i-heroicons-document';

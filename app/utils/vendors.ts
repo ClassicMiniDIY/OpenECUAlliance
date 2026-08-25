@@ -30,6 +30,7 @@ export function vendorSlug(vendor: string): string {
 const EXTRA_VENDOR_LABELS: Record<string, string> = {
   romraider: 'RomRaider',
   emerald: 'Emerald',
+  bmw: 'BMW',
 };
 
 const VENDOR_LABELS: Record<string, string> = {

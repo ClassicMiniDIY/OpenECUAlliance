@@ -33,7 +33,7 @@ export interface ProtocolSignal {
   startBit: number;
   length: number;
   byteOrder: 'little_endian' | 'big_endian';
-  dataType: 'unsigned' | 'signed' | 'float' | 'double';
+  dataType: 'unsigned' | 'signed' | 'float' | 'double' | 'bool' | 'enum';
   scale?: number;
   offset?: number;
   unit?: string;
@@ -42,6 +42,12 @@ export interface ProtocolSignal {
   enumRef?: string;
   multiplexerValue?: number;
   comment?: string;
+  /** Named values for enum and bitfield signals, keyed by raw value. */
+  values?: Record<string, string>;
+  /** Set when the source documentation is self-contradictory or unverified here. */
+  disputed?: string;
+  /** canonical = raw * scale + offset. Present when the signal is not in the canonical unit. */
+  toCanonical?: { scale: number; offset: number };
 }
 
 export interface ProtocolMessage {
