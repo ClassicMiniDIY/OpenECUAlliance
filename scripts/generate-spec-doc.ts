@@ -48,7 +48,8 @@ const aliasOf = new Map<string, string>();
 for (const c of reg.channels) for (const a of c.aliases ?? []) aliasOf.set(a, c.id);
 
 const use = new Map<string, number>();
-for (const f of walk(join(SPECS, 'adapters'))) {
+const adapterFiles = walk(join(SPECS, 'adapters'));
+for (const f of adapterFiles) {
   const y = parse(readFileSync(f, 'utf8')) as { channels?: Array<{ id: string }> };
   for (const ch of y.channels ?? []) {
     const id = aliasOf.get(ch.id) ?? ch.id;
@@ -169,7 +170,7 @@ L.push(`
 ## Channels
 
 ${reg.channels.length} canonical channels across ${byCat.size} categories. **Used by**
-counts how many of the nine adapters currently map the channel.
+counts how many of the ${adapterFiles.length} adapters currently map the channel.
 `);
 for (const [cat, list] of [...byCat].sort()) {
   L.push(`### ${cat}\n`);
