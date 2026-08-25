@@ -50,11 +50,11 @@ specs/
     └── banners/
 ```
 
-All files copied from `OECUASpecs` repository (located at `/Users/colegentry/Development/OECUASpecs`).
+All files copied from the sibling `OECUASpecs` repository.
 
 ### 2. New Server Utilities
 
-**Created:** `/Users/colegentry/Development/OpenECUAlliance/server/utils/filesystem.ts`
+**Created:** `server/utils/filesystem.ts`
 
 Replacement for `server/utils/github.ts` with the following functions:
 
@@ -128,7 +128,7 @@ Updated all existing API routes to use filesystem utilities:
 
 ### 6. Removed Files
 
-**Deleted:** `/Users/colegentry/Development/OpenECUAlliance/server/utils/github.ts`
+**Deleted:** `server/utils/github.ts`
 
 This file contained:
 
