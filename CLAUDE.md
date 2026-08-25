@@ -18,7 +18,11 @@ This is the **OpenECU Alliance** website - a Nuxt 4 application that serves as t
 1. **Spec Documentation** - The authoritative source for the OpenECU Spec
 2. **Adapter Browser** - Discover and browse community-contributed adapters
 3. **Ecosystem Hub** - Showcase spec-compatible applications and tools
-4. **Contribution Portal** - Guides for creating adapters and donating projects
+4. **Contribution Portal** - Guides for creating adapters, protocols, and 3D models
+5. **3D Model Library** - Community uploads and external links (Printables,
+   Thingiverse, MakerWorld, Cults3D) with comments, likes, ratings, and an
+   admin moderation queue
+6. **User Accounts** - Supabase magic-link auth, public profiles, settings
 
 ## Tech Stack
 
@@ -28,6 +32,7 @@ This is the **OpenECU Alliance** website - a Nuxt 4 application that serves as t
 - **Icons**: Heroicons, Lucide, Simple Icons (via @nuxt/icon)
 - **Fonts**: @nuxt/fonts
 - **Data**: Server API reads YAML from local `specs/` directory (migrated from OECUASpecs repo)
+- **Auth & Community**: Supabase (OECUA's OWN project, magic-link only) — models, comments, likes, ratings, moderation
 - **Hosting**: Cloudflare Workers (migrated off Vercel 2026-08-24) — see Deployment below
 - **Primary domain**: `https://oecua.org` — see Domain Contract below
 
@@ -36,59 +41,59 @@ This is the **OpenECU Alliance** website - a Nuxt 4 application that serves as t
 ```
 OpenECUAlliance/
 ├── app/
-│   ├── app.vue                       # Root component (UApp wrapper)
-│   ├── assets/
-│   │   └── css/
-│   │       └── main.css              # Tailwind + Nuxt UI imports, custom theme
+│   ├── app.vue                       # Root component (UApp wrapper, per-page canonical/og:url)
+│   ├── assets/css/main.css           # Tailwind + Nuxt UI imports, custom theme
 │   ├── components/
-│   │   ├── AppHeader.vue             # Navigation header with dark mode toggle
-│   │   ├── AppFooter.vue             # Footer with links
-│   │   └── AdapterCard.vue           # Adapter listing card component
-│   ├── composables/
-│   │   ├── useAdapters.ts            # Adapter data fetching and filtering
-│   │   └── useVendorIcons.ts         # Vendor-to-icon mapping utility
+│   │   ├── AppHeader.vue / AppFooter.vue / UserMenu.vue
+│   │   ├── AdapterCard.vue / ProtocolCard.vue / ModelCard.vue
+│   │   ├── AdaptersMarquee.vue / CodeBlock.vue / ContentTabs.vue
+│   │   ├── ExternalMetadataPreview.vue / LinkedModelBadge.vue
+│   │   ├── LinkedModelUrlInput.vue / ModelsLinkedUpload.vue
+│   │   ├── models/                   # FileUploader, ImageUploader
+│   │   └── social/                   # CommentSection, CommentItem, LikeButton, RatingSection, RatingStars
+│   ├── composables/                  # useAdapters, useProtocols, useModels, useAuth,
+│   │                                 # useComments, useLikes, useRatings, useModeration,
+│   │                                 # useFuzzySearch, useContent, useVendorIcons, ...
+│   ├── middleware/                   # auth.ts, admin.ts (route guards)
 │   ├── pages/
-│   │   ├── index.vue                 # Landing page with hero, features, vendors
-│   │   ├── adapters/
-│   │   │   ├── index.vue             # Adapter marketplace with search/filter
-│   │   │   └── [vendor]/
-│   │   │       └── [id].vue          # Adapter detail page with channels
-│   │   ├── ecosystem.vue             # Spec-compatible apps showcase
-│   │   ├── spec.vue                  # Specification docs (placeholder)
-│   │   ├── docs.vue                  # Documentation hub (placeholder)
-│   │   └── contribute.vue            # Contribution guide
-│   └── types/
-│       └── adapter.ts                # TypeScript interfaces for adapters
+│   │   ├── index.vue                 # Landing page
+│   │   ├── adapters/                 # index + [vendor]/[id] detail
+│   │   ├── protocols/                # index + [vendor]/[id] detail
+│   │   ├── models/                   # index, upload, [category]/[slug] detail
+│   │   ├── docs/                     # real guides (see Key Pages)
+│   │   ├── spec.vue                  # full spec + API reference
+│   │   ├── ecosystem.vue / contribute.vue
+│   │   ├── login.vue / auth/callback.vue
+│   │   ├── profile/                  # index, edit, settings, setup, likes, models
+│   │   ├── users/[username].vue      # public profiles
+│   │   └── admin/                    # index, queue/, reports, users (moderation)
+│   ├── types/                        # adapter, protocol, model, user, content, database.types
+│   └── utils/vendors.ts
 ├── server/
 │   ├── api/
-│   │   ├── adapters.get.ts           # GET /api/adapters - list all adapters
-│   │   ├── adapters/
-│   │   │   └── [vendor]/
-│   │   │       └── [id].get.ts       # GET /api/adapters/:vendor/:id - adapter detail
-│   │   ├── protocols.get.ts          # GET /api/protocols - list all protocols
-│   │   ├── protocols/
-│   │   │   └── [vendor]/
-│   │   │       └── [id].get.ts       # GET /api/protocols/:vendor/:id - protocol detail
-│   │   ├── specs/
-│   │   │   ├── adapters.get.ts       # GET /api/specs/adapters - list with download URLs
-│   │   │   ├── adapters/[vendor]/[id]/raw.get.ts  # Raw YAML download
-│   │   │   ├── protocols.get.ts      # GET /api/specs/protocols - list with download URLs
-│   │   │   └── protocols/[vendor]/[id]/raw.get.ts # Raw YAML download
-│   │   └── assets/
-│   │       └── [type]/
-│   │           └── [filename].get.ts # Asset serving (logos, icons, banners)
-│   └── utils/
-│       └── filesystem.ts             # Local filesystem utilities for reading specs
+│   │   ├── adapters(.get) + adapters/[vendor]/[id].get
+│   │   ├── protocols(.get) + protocols/[vendor]/[id].get
+│   │   ├── models(.get) + models/[category]/[slug].get
+│   │   ├── models/external/          # fetch.post, submit.post (link imports)
+│   │   ├── users/[username].get
+│   │   ├── specs/                    # adapter/protocol lists + raw YAML downloads
+│   │   └── assets/[type]/[filename].get
+│   ├── middleware/                   # 01.rateLimit, 02.security, 03.cors
+│   ├── schemas/                      # zod schemas: adapter.ts, protocol.ts
+│   └── utils/                        # filesystem, rateLimit, ipDetection, external-platforms/
 ├── specs/
-│   ├── adapters/                     # Adapter YAML files organized by vendor
-│   ├── protocols/                    # Protocol YAML files organized by vendor
-│   └── assets/                       # Branding assets (logos, icons, banners)
+│   ├── channels.yaml                 # canonical channel registry (source of truth)
+│   ├── SPECIFICATION.md              # generated — never hand-edit
+│   ├── adapters/                     # adapter YAML by vendor
+│   ├── protocols/                    # protocol YAML by vendor + PROTOCOL_ROADMAP.md
+│   └── assets/                       # branding assets
+├── scripts/                          # validate-specs.ts, generate-spec-doc.ts, verify-cf-deploy.sh
+├── supabase/                         # config.toml, migrations, auth email templates
+├── docs/                             # plans/, baselines/, social/
 ├── public/
-│   ├── favicon.ico
-│   └── robots.txt
-├── nuxt.config.ts                    # Nuxt configuration
-├── package.json
-└── tsconfig.json
+├── nuxt.config.ts
+├── wrangler.jsonc                    # Cloudflare Workers deploy config
+└── package.json
 ```
 
 ## Related Repositories
@@ -137,18 +142,34 @@ The OpenECU Alliance spans multiple repositories:
 - Libraries & SDKs section (planned)
 - Project donation information
 
-### `/spec` - Specification Page
+### `/spec` - Specification & API Reference
 
-- Links to raw spec files on GitHub
-- Quick overview cards (structure, format, channels, validation)
-- Placeholder for interactive viewer
+- Full technical spec: file structure, adapter and protocol formats
+- API endpoint reference (`#api-endpoints`)
+- Protocols include DBC export support
 
-### `/docs` - Documentation Page
+### `/docs` - Documentation Hub
 
-- Guides section (Getting Started, Creating Adapters, etc.)
-- Reference section (Channels, Units, Categories)
-- Links to GitHub and spec
-- All guides marked "Coming Soon"
+Real guides (no longer placeholders): Getting Started, Creating Adapters,
+Creating Protocols, Submitting 3D Models, plus Governance, Project Charter,
+Branding, and Compliance pages.
+
+### `/models` - 3D Model Library
+
+- Browse/upload printable ECU mounts, enclosures, brackets, adapters, accessories
+- Direct file uploads (STL/STEP/3MF/OBJ/...) or linked imports from
+  Printables, Thingiverse, MakerWorld, Cults3D
+- Comments, likes, star ratings (components in `app/components/social/`)
+- Detail pages at `/models/[category]/[slug]`
+
+### Auth & Profiles
+
+- `/login` — Supabase magic-link (passwordless) only; `/auth/callback` completes PKCE
+- `/profile/*` — own profile, edit, settings, setup, likes, models
+- `/users/[username]` — public profiles
+- `/admin/*` — moderation queue, reports, user management (admin middleware)
+- **`@nuxtjs/supabase` is deny-by-default**: any new public page MUST be added to
+  `redirectOptions.exclude` in `nuxt.config.ts` or logged-out visitors 302 to `/login`
 
 ### `/contribute` - Contribution Guide
 
@@ -192,7 +213,20 @@ Returns full protocol detail including messages and signals
 
 - Supports `?version=X.Y.Z` query parameter
 
-All main endpoints cache responses for **15 minutes**.
+Adapter/protocol endpoints cache responses for **15 minutes**.
+
+#### `GET /api/models` and `GET /api/models/[category]/[slug]`
+
+Community 3D model list and detail (Supabase-backed, uncached).
+
+#### `POST /api/models/external/fetch` and `POST /api/models/external/submit`
+
+Linked-model imports: fetch metadata from Printables/Thingiverse/MakerWorld/
+Cults3D (`server/utils/external-platforms/`), then submit for moderation.
+
+#### `GET /api/users/[username]`
+
+Public profile data.
 
 ### Raw Spec Endpoints (YAML Files)
 
@@ -296,8 +330,11 @@ Production is **Cloudflare Workers**, migrated off Vercel 2026-08-24. See
 
 ### Composables
 
-- `useAdapters()` - Fetches adapter list, provides filtering functions and computed properties for vendors/categories/formats
-- `useVendorIcons()` - Maps vendor names to Heroicons for consistent icon display
+- `useAdapters()` / `useProtocols()` / `useModels()` - list fetching, filtering, computed vendors/categories/formats
+- `useFuzzySearch()` - fuzzy search over channels, messages, and signals on detail pages
+- `useAuth()` - Supabase magic-link sign-in; redirects use the CURRENT origin (see Domain Contract)
+- `useComments()` / `useLikes()` / `useRatings()` / `useModeration()` - community features
+- `useVendorIcons()` - Maps vendor names to icons for consistent display
 
 ### Server API
 
@@ -331,29 +368,26 @@ Adapters map vendor-specific names to canonical IDs:
 | `g_lateral`        | Lateral G-Force     | acceleration |
 | `gps_latitude`     | GPS Latitude        | position     |
 
-The full vocabulary is **140 canonical channels** in
+The full vocabulary is **466 canonical channels** across 20 categories in
 [`specs/channels.yaml`](specs/channels.yaml) (machine-readable source of truth),
 rendered to `specs/SPECIFICATION.md`. See the Channel Registry contract below.
 
 ## Supported Vendors
 
-Ready adapters exist for:
+Log adapters (9): Haltech (NSP CSV), ECUMaster (CSV), RomRaider/Subaru (CSV),
+Speeduino (MLG binary), rusEFI (MLG binary), AiM (XRK/DRK binary), Link (LLG
+binary), MegaSquirt (TunerStudio CSV), Emerald K6/M3D (binary).
 
-- Haltech (CSV)
-- ECUMaster (CSV)
-- RomRaider/Subaru (CSV)
-- Speeduino (MLG binary)
-- rusEFI (MLG binary)
-- AiM (XRK/DRK binary)
-- Link (LLG binary)
+CAN broadcast protocols (9): Haltech Elite, AEM Infinity, ECUMaster EMU,
+Emtron, MaxxECU, MegaSquirt, rusEFI, Speeduino, Syvecs S7. Roadmap:
+`specs/protocols/PROTOCOL_ROADMAP.md`.
 
-Planned: MoTeC, AEM, Holley, FuelTech
+Planned log adapters: MoTeC, AEM, Holley, FuelTech
 
 ## Future Considerations
 
-- **Spec Page**: Interactive specification viewer with examples
-- **Docs**: Complete documentation for spec implementers
-- **Validation Tool**: Paste YAML, validate against schema
+- **Web Validation Tool**: Paste YAML, validate against schema in the browser
+  (CLI validation exists: `bun run validate:specs`)
 - **GitHub App**: Auto-validate adapter PRs
 - **API Keys**: For third-party adapter discovery
 - **Analytics**: Download counts, popular adapters
