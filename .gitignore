@@ -31,5 +31,4 @@ supabase/.temp
 .wrangler
 
 # Claude Code local settings (machine-specific permission allowlists)
-.claude/settings.json
 .claude/settings.local.json
