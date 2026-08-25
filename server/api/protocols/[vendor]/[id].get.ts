@@ -47,13 +47,17 @@ interface ProtocolYaml {
       start_bit: number;
       length: number;
       byte_order: 'little_endian' | 'big_endian';
-      data_type: 'unsigned' | 'signed' | 'float' | 'double';
+      data_type: 'unsigned' | 'signed' | 'float' | 'double' | 'bool' | 'enum';
       scale?: number;
       offset?: number;
       unit?: string;
       min?: number;
       max?: number;
       enum_ref?: string;
+      comment?: string;
+      values?: Record<string, string>;
+      disputed?: string;
+      to_canonical?: { scale: number; offset: number };
     }>;
   }>;
   enums?: Array<{
@@ -151,6 +155,14 @@ export default defineCachedEventHandler(
             min: sig.min,
             max: sig.max,
             enumRef: sig.enum_ref,
+            comment: sig.comment,
+            values: sig.values,
+            // A signal the source documents inconsistently, and the conversion
+            // to the canonical unit. Both were being dropped here, which made
+            // them invisible to every API client — the data may as well not
+            // have been in the YAML.
+            disputed: sig.disputed,
+            toCanonical: sig.to_canonical ? { scale: sig.to_canonical.scale, offset: sig.to_canonical.offset } : undefined,
           })),
         })),
         enums: yaml.enums?.map((e) => ({

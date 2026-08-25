@@ -91,6 +91,7 @@ See the [full API documentation](https://oecua.org/spec#api-endpoints) for detai
 - RomRaider / Subaru (CSV)
 - MegaSquirt (TunerStudio CSV)
 - Emerald K6/M3D (binary)
+- BMW Siemens MS4x (RomRaider CSV)
 
 ### CAN Broadcast Protocols
 
@@ -103,6 +104,9 @@ See the [full API documentation](https://oecua.org/spec#api-endpoints) for detai
 - rusEFI
 - Speeduino
 - Syvecs S7
+- BMW Siemens MS42 DME (E46)
+- BMW Siemens MS43 DME (E46)
+- BMW E8x / E9x powertrain
 
 **Planned log adapters:** MoTeC, AEM, Holley, FuelTech — see `specs/protocols/PROTOCOL_ROADMAP.md` for the protocol roadmap.
 

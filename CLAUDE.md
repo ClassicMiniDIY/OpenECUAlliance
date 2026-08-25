@@ -374,13 +374,20 @@ rendered to `specs/SPECIFICATION.md`. See the Channel Registry contract below.
 
 ## Supported Vendors
 
-Log adapters (9): Haltech (NSP CSV), ECUMaster (CSV), RomRaider/Subaru (CSV),
+Log adapters (10): Haltech (NSP CSV), ECUMaster (CSV), RomRaider/Subaru (CSV),
 Speeduino (MLG binary), rusEFI (MLG binary), AiM (XRK/DRK binary), Link (LLG
-binary), MegaSquirt (TunerStudio CSV), Emerald K6/M3D (binary).
+binary), MegaSquirt (TunerStudio CSV), Emerald K6/M3D (binary), BMW Siemens
+MS4x (RomRaider CSV).
 
-CAN broadcast protocols (9): Haltech Elite, AEM Infinity, ECUMaster EMU,
-Emtron, MaxxECU, MegaSquirt, rusEFI, Speeduino, Syvecs S7. Roadmap:
+CAN broadcast protocols (12): Haltech Elite, AEM Infinity, ECUMaster EMU,
+Emtron, MaxxECU, MegaSquirt, rusEFI, Speeduino, Syvecs S7, BMW Siemens MS42,
+BMW Siemens MS43, BMW E8x/E9x powertrain. Roadmap:
 `specs/protocols/PROTOCOL_ROADMAP.md`.
+
+BMW is the first OEM vendor in the corpus. Its specs come from community
+reverse engineering (the MS4X wiki and the E8x/E9x DBC merge project), not from
+a manufacturer document, so several signals carry `disputed` notes recording
+what the source itself flags as unverified. Do not quietly resolve those.
 
 Planned log adapters: MoTeC, AEM, Holley, FuelTech
 
