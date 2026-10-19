@@ -307,7 +307,7 @@ Production is **Cloudflare Workers** (since 2026-08-24). See
 - **Redirects** are Cloudflare Single Redirects at the zone edge (301, query preserved),
   not app code. They only fire on **proxied** hostnames — grey-clouding a host silently
   disables its redirect.
-- **Verification**: `scripts/verify-cf-deploy.sh` (37 checks) diffs live behavior against
+- **Verification**: `scripts/verify-cf-deploy.sh` diffs live behavior against
   the pre-migration baseline in `docs/baselines/`. Run it after any infra change.
   Pass an origin argument to check a non-production target.
 - **Runtime constraints on workerd** (both of these were real outages during migration):
