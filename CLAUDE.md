@@ -33,7 +33,7 @@ This is the **OpenECU Alliance** website - a Nuxt 4 application that serves as t
 - **Fonts**: @nuxt/fonts
 - **Data**: Server API reads YAML from local `specs/` directory (migrated from OECUASpecs repo)
 - **Auth & Community**: Supabase (OECUA's OWN project, magic-link only) — models, comments, likes, ratings, moderation
-- **Hosting**: Cloudflare Workers (migrated off Vercel 2026-08-24) — see Deployment below
+- **Hosting**: Cloudflare Workers (since 2026-08-24) — see Deployment below
 - **Primary domain**: `https://oecua.org` — see Domain Contract below
 
 ## Repository Structure
@@ -289,7 +289,7 @@ bun run build:cf && bunx wrangler dev
 
 ## Deployment (Cloudflare Workers)
 
-Production is **Cloudflare Workers**, migrated off Vercel 2026-08-24. See
+Production is **Cloudflare Workers** (since 2026-08-24). See
 `docs/plans/2026-08-21-cloudflare-workers-migration.md`.
 
 - **Pipeline**: push to `main` → `.github/workflows/deploy-cloudflare.yml` builds with
@@ -308,7 +308,7 @@ Production is **Cloudflare Workers**, migrated off Vercel 2026-08-24. See
   not app code. They only fire on **proxied** hostnames — grey-clouding a host silently
   disables its redirect.
 - **Verification**: `scripts/verify-cf-deploy.sh` (37 checks) diffs live behavior against
-  the pre-migration Vercel baseline in `docs/baselines/`. Run it after any infra change.
+  the pre-migration baseline in `docs/baselines/`. Run it after any infra change.
   Pass an origin argument to check a non-production target.
 - **Runtime constraints on workerd** (both of these were real outages during migration):
   no module-scope `setInterval`/`setTimeout` — a global-scope timer aborts worker startup

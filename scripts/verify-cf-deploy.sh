@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Cutover verification battery — diffs live behavior against the Vercel
+# Cutover verification battery — diffs live behavior against the pre-migration
 # baseline captured in docs/baselines/2026-08-21-vercel-baseline/.
 #
 # Usage:

@@ -10,7 +10,7 @@
   "assets": {
     "directory": ".output/public",
     "binding": "ASSETS",
-    // Vercel serves prerendered routes at their no-slash URL (200). The Workers
+    // Prerendered routes must serve at their no-slash URL (200). The Workers
     // assets default (auto-trailing-slash) would 307 /spec -> /spec/ instead.
     // drop-trailing-slash serves /spec as 200 and redirects /spec/ back to it,
     // matching the canonical no-slash URLs in the sitemap.
