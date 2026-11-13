@@ -89,7 +89,7 @@ function stripHtmlTags(text: string | null | undefined): string {
   let previous: string;
   do {
     previous = result;
-    result = result.replace(/<[^>]*>/g, '').replace(/<(?=[a-zA-Z/!?])/g, '');
+    result = result.replace(/<[^>]*>|<(?=[a-zA-Z/!?])/g, '');
   } while (result !== previous);
 
   return result;
