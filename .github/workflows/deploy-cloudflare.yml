@@ -9,6 +9,10 @@ concurrency:
   group: deploy-cloudflare
   cancel-in-progress: false
 
+# Checkout is the only step that uses GITHUB_TOKEN; the deploy authenticates with the Cloudflare token.
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
