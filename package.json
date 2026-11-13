@@ -15,23 +15,23 @@
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@iconify-json/lucide": "^1.2.86",
-    "@iconify-json/simple-icons": "^1.2.66",
-    "@nuxt/fonts": "^0.12.1",
-    "@nuxt/icon": "^2.2.0",
-    "@nuxt/ui": "^4.3.0",
-    "@nuxtjs/sitemap": "^7.5.2",
-    "@nuxtjs/supabase": "^2.0.3",
-    "nuxt": "^4.2.2",
-    "shiki": "^3.21.0",
-    "vue": "^3.5.26",
-    "vue-router": "^4.6.4",
-    "yaml": "^2.8.2",
-    "zod": "^4.3.5"
+    "@iconify-json/lucide": "^1.2.152",
+    "@iconify-json/simple-icons": "^1.2.101",
+    "@nuxt/fonts": "^1.2.0",
+    "@nuxt/icon": "^2.6.2",
+    "@nuxt/ui": "^4.12.0",
+    "@nuxtjs/sitemap": "^9.1.0",
+    "@nuxtjs/supabase": "^2.1.0",
+    "nuxt": "^4.6.4",
+    "shiki": "^4.6.0",
+    "vue": "^3.5.45",
+    "vue-router": "^5.4.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
-    "@types/node": "^25.0.9",
-    "wrangler": "4.125.0"
+    "@types/node": "^26.6.6",
+    "wrangler": "4.159.0"
   }
 }
