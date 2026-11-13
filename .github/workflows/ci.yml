@@ -27,7 +27,23 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # The same two spec gates the deploy runs, so a PR that breaks the registry or leaves
+      # SPECIFICATION.md stale fails here, not on main after merge.
+      - name: Validate specs against the canonical registry
+        run: bun run validate:specs
+
+      - name: Check the generated spec reference is current
+        run: |
+          bun run generate:spec-doc
+          if ! git diff --quiet -- specs/SPECIFICATION.md; then
+            echo "::error::specs/SPECIFICATION.md is stale. Run 'bun run generate:spec-doc' and commit the result."
+            git diff -- specs/SPECIFICATION.md
+            exit 1
+          fi
+
       # No Supabase secrets here (fork PRs get none): @nuxtjs/supabase only warns without them.
+      # This proves the Worker bundle builds, NOT that pages render: without SUPABASE_URL every
+      # SSR render throws, and nitro.prerender.failOnError is false, so prerender errors stay green.
       - name: Build (cloudflare_module preset)
         run: bun run build:cf
         env:
