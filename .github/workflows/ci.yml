@@ -1,0 +1,35 @@
+name: CI
+
+# Pull request build. deploy-cloudflare.yml only runs on main and dispatch, so without this a PR
+# merges with no build at all. Same install and Worker build as the deploy, nothing deployed.
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # No Supabase secrets here (fork PRs get none): @nuxtjs/supabase only warns without them.
+      - name: Build (cloudflare_module preset)
+        run: bun run build:cf
+        env:
+          # Nitro/rollup bundling exceeds Node's default ~2 GB heap; see deploy-cloudflare.yml.
+          NODE_OPTIONS: --max-old-space-size=6144
