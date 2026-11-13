@@ -77,12 +77,22 @@ function decodeHtmlEntities(text: string | null | undefined): string {
 /**
  * Strip HTML tags from a string, leaving only text content.
  * Useful for cleaning up rich text before display.
+ *
+ * Drops every tag, then any `<` that still opens one (an unterminated `<script` at the end has
+ * no `>` to match), and repeats until nothing changes so no removal can leave a tag behind.
+ * A `<` that opens nothing (`M3 < 10mm`) stays.
  */
 function stripHtmlTags(text: string | null | undefined): string {
   if (!text) return '';
 
-  // Remove HTML tags
-  return text.replace(/<[^>]*>/g, '');
+  let result = text;
+  let previous: string;
+  do {
+    previous = result;
+    result = result.replace(/<[^>]*>/g, '').replace(/<(?=[a-zA-Z/!?])/g, '');
+  } while (result !== previous);
+
+  return result;
 }
 
 /**
