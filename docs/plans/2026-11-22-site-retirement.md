@@ -267,7 +267,13 @@ hammering a dead host is sloppy.
    writes it.
 3. Remove any UI that surfaces "checking for adapter updates" / refresh state.
 4. Drop the HTTP dependency from `Cargo.toml` if nothing else uses it.
-5. `cargo fmt --all -- --check && cargo clippy -- -D warnings && cargo test`.
+5. **Do not reorder `EMBEDDED_ADAPTERS`.** Its order decides which adapter wins a
+   contested `source_names` entry (step 1, finding 2), and 43 names resolve to different
+   canonical ids depending on it. Removing the API and cache tiers is an improvement here
+   — they could replace the spec list at runtime in whatever order the API returned, so
+   after this step the embedded order is the only order and normalization becomes
+   deterministic. Say so in `CLAUDE.md` when it lands.
+6. `cargo fmt --all -- --check && cargo clippy -- -D warnings && cargo test`.
 
 Cheap alternative if you want to defer the refactor: keep the chain and point
 `OECUA_API_BASE` at nothing, letting it fail fast. Not recommended — dead code with a dead
