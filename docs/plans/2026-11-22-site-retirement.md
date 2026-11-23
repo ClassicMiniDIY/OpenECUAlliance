@@ -635,9 +635,42 @@ Decision taken: 301 to `ultralog.co` until the domains expire, auto-renew off.
 Route 53 -> Registered domains, not in Cloudflare — Cloudflare is DNS only; both zones
 use `anita`/`thomas.ns.cloudflare.com`.
 
-Auto-renew state could not be read: the credentials available here are the S3-only user
-`arn:aws:iam::938808401967:user/cmdiy-s3`, which is denied `route53domains:GetDomainDetail`
-as well as every `ses:*` call. Both need the console or a wider key.
+Auto-renew state could not be read, and neither could SES. Three local AWS profiles exist
+(`default`, `cmdiy-dynamo`, `cmdiy-route53`); the `cmdiy-route53` user
+`arn:aws:iam::938808401967:user/cmdiy-route53` has Route 53 **hosted-zone** read access but is
+denied `route53domains:*` (both `ListDomains` and `GetDomainDetail`) and every `ses:*` call,
+exactly as the S3-only user is. **No credential on this machine can read the registrar or the
+SES rule set.** Both remain console work. If a future task needs them from the CLI, the policy
+on `cmdiy-route53` would need `route53domains:GetDomainDetail` and
+`ses:DescribeActiveReceiptRuleSet`.
+
+#### Finding: two inert Route 53 hosted zones are still billing
+
+The `cmdiy-route53` profile turned up something this plan never knew about. **Both domains
+also have Route 53 hosted zones**, created automatically by the Route 53 Registrar at
+registration and never deleted:
+
+| Zone | Id | Records |
+|---|---|---|
+| `openecualliance.org` | `Z0414493IDIAZ4XRMQD6` | 9 |
+| `oecua.org` | `Z08574592I9ZAEUXQALKG` | 4 |
+
+**They are not authoritative and never have been.** The registry delegates both domains to
+`anita`/`thomas.ns.cloudflare.com` only; the AWS NS sets in these zones are not in the
+delegation. Verified by querying both sides directly — Cloudflare's own nameservers answer
+`openecualliance.org MX` and `_dmarc` from the Cloudflare zone, so the live mail records do
+not depend on Route 53 at all.
+
+Their contents prove how stale they are: both still point at **Vercel**
+(`A 216.198.79.1`, `www CNAME d60751f631ce6bfc.vercel-dns-017.com`) from before the
+2026-08-24 Cloudflare Workers migration. They were never updated. The
+`openecualliance.org` zone does carry a duplicate copy of all five mail records, which is why
+it looks load-bearing and is not.
+
+Both zones are **safe to delete now** and save roughly $1/month (standard Route 53 pricing is
+$0.50 per hosted zone per month) — about $12 across the 13 months to expiry. Captured first to
+`_archive/oecua-supabase-2026-11-22/route53-pre-teardown/` (zone + record JSON for each), so
+the SES and Resend record values survive the deletion.
 
 **Mail records verified intact after the web teardown** (public resolver, 1.1.1.1):
 
@@ -679,9 +712,13 @@ profile, a forum post, a printed card). That is a console question, not a code q
    - If it forwards an address still worth having: either keep renewing
      `openecualliance.org` alone (and still let `oecua.org` lapse), or move the address.
    - Deleting the rule is optional either way. It costs nothing and breaks nothing.
-3. Leave both Cloudflare zones and their redirect rules in place. They cost nothing and keep
-   the 301 alive until expiry.
-4. **After 2027-01-05**, delete both zones from Cloudflare.
+3. Leave both **Cloudflare** zones and their redirect rules in place. They cost nothing and
+   keep the 301 alive until expiry.
+4. Delete the two **Route 53** hosted zones above (`Z0414493IDIAZ4XRMQD6`,
+   `Z08574592I9ZAEUXQALKG`). Nothing queries them, they still describe a Vercel deployment
+   that no longer exists, and they are the only part of step 7 that costs money. Backed up
+   already.
+5. **After 2027-01-05**, delete both zones from Cloudflare.
 
 **Do not touch the five mail records before expiry**, and do not let a zone cleanup take the
 MX with it. The `_dmarc`, `resend._domainkey`, `send.` MX and `send.` SPF records sit on
