@@ -2,9 +2,15 @@
 
 **Date:** 2026-11-22
 **Decision:** retire oecua.org, the OpenECU Alliance brand, and every integration it offered.
-**Status:** steps 1-3 done (2026-11-22/23). Nothing is torn down yet — the site, both DNS
-zones and the Supabase project are all still live. The next step that changes anything
-outward-facing is step 4 (back up Supabase), then step 5 (shut the web down).
+**Status:** steps 1-6 done (2026-11-22/23). **The web is off and the backend is gone**:
+oecua.org and openecualliance.org 301 to ultralog.co, the Worker is deleted, and the Supabase
+project is deleted after its backup was restore-rehearsed. Mail on openecualliance.org is
+untouched. What remains is housekeeping: step 7 (two registrar/SES clicks in the AWS console,
+Cole's to make — both domains expire 2027-01-05, so there is no deadline pressure), step 8
+(archive the repo), steps 9-10 (local workspace and docs).
+
+**Step 4 corrected section 1 of this document.** A real third-party 3D model upload exists in
+storage with no database row. See the amendment under section 1 and the step 4 record.
 
 ---
 
@@ -17,7 +23,7 @@ The site launched 2026-01-05. Measured 2026-11-22:
 | Auth signups | 13 |
 | Signups that signed in more than once | 3 (one of them is Cole) |
 | Completed profiles | 3 |
-| Community 3D model uploads | 0 (`model_files` = 0 rows) |
+| Community 3D model uploads | `model_files` = 0 rows, **but 3 objects in the `model-files` bucket** — see the amendment below |
 | 3D models in the library | 8, all MakerWorld links Cole seeded himself on 2026-01-07 |
 | Likes / comments / ratings / downloads / reports | 0 / 0 / 0 / 0 / 0 |
 | GitHub stars / forks / watchers | 6 / 1 / 0 |
@@ -26,12 +32,42 @@ The site launched 2026-01-05. Measured 2026-11-22:
 | External contributors | 0 |
 | Search Console property | none — the site was never added |
 
-**No user-generated content exists.** Every row in the database was written by Cole or is an
-empty counter. Nothing a third party created is lost by deleting the project, and nothing was
-paid for, so there is no refund or data-portability obligation.
+**No user-generated content exists in the database.** Every row was written by Cole or is an
+empty counter. Nothing was paid for, so there is no refund or data-portability obligation.
 
 The community layer — accounts, profiles, the 3D model library, comments, likes, ratings,
 moderation queue, reports — was built and used by nobody. That is the part being deleted.
+
+#### Amendment 2026-11-23 — storage contradicts the tables
+
+The numbers above were read off the ten public tables. Step 4's backup read object storage
+too, and found content the database has no record of.
+
+A single non-Cole account (`12e9ec52-…`; the address is in the backup README, not in this
+public repo) — the project's first signup, 2026-01-06, a session lasting 12 seconds, never
+returned, and with no `profiles` row — uploaded a BambuStudio
+`.3mf` plus two 5712×4284 photos under three separate model UUIDs (`698f7b01-…`,
+`6e865807-…`, `fa6a8a91-…`). SHA-256 confirms it is **one model uploaded three times,
+byte-identical**. None of the three UUIDs appears in `models`. The files reached storage and
+the `models` row was never written: three retries of an upload flow that failed, by a real
+user who then left. They set an avatar too, which also has no profile row behind it.
+
+So "nothing a third party created is lost by deleting the project" was wrong as written. It
+is true now only because the backup exists:
+`_archive/oecua-supabase-2026-11-22/model-files/` and `model-images/`.
+
+This does not change the decision to retire. It is one model from one user whose upload the
+product dropped on the floor nearly two years ago. It does change two things:
+
+1. **Step 6 must not run before the step 4 backup is confirmed in place** — that was already
+   the gate, and this is the content it turns out to protect.
+2. **Whether that user hears anything is an open decision.** Nobody was charged and the
+   upload never became a published model, so there is no obligation. Recorded here so the
+   choice is deliberate rather than forgotten. Their address is in the backup README; it is
+   deliberately not written into this public repository.
+
+The 4 other orphaned image folders (`2ea8195b-…`, `df727974-…`, `385a3b41-…`,
+`bdb67582-…`) are Cole's own abandoned seeding attempts and carry nothing unique.
 
 ### What is actually worth keeping
 
@@ -346,7 +382,54 @@ URL is worse than no code.
 
 ---
 
-### Step 4 — Back up the Supabase project
+### Step 4 — Back up the Supabase project — **DONE 2026-11-23**
+
+Backup at `~/Development/_archive/oecua-supabase-2026-11-22/`, 21 MB, with its own
+`README.md` recording provenance and counts. Nothing was deleted or altered in the project;
+every call was a read. **Step 4's gate is satisfied, so step 6 is unblocked.**
+
+No database password was needed. `supabase db dump --linked` provisions a login role through
+the Management API, so the dashboard trip the instructions below assumed never happened. Two
+obstacles worth recording:
+
+- **`pg_dump` is not installed on this machine** and there is no Homebrew postgres. The
+  Supabase CLI runs it in a container instead; Docker was already up.
+- **`supabase/config.toml` blocks the CLI.** It still has an `[inbucket]` section, which CLI
+  3.1.0 rejects outright (`DbConfigLoadError … use [local_smtp] instead`). Rather than edit a
+  repo that is being archived, the dump ran from a throwaway project directory containing
+  nothing but `project_id`. Anyone re-running this needs the same workaround.
+
+What landed:
+
+| File | Contents |
+|---|---|
+| `schema.sql` | 41 KB — all 10 tables, 10× RLS enabled, **65 policies**, 8 functions, 9 triggers, 26 indexes |
+| `schema-auth-storage.sql` | 173 KB — `auth` and `storage` DDL |
+| `data.sql` | 60 KB — `public`, `auth` **and** `storage` rows |
+| `roles.sql` | the three `statement_timeout` overrides |
+| `auth-users.json` | 13 users with emails and sign-in timestamps |
+| `data/*.json` | each public table from PostgREST, as a cross-check on `data.sql` |
+| `storage-manifest.json` + 3 bucket dirs | all 23 objects, 21.8 MB, at their storage paths |
+
+The schema came out far better than this plan expected — the 0-byte repo migration implied the
+DDL might be unrecoverable, but the dump carries the full policy set.
+
+Row counts agree across all three sources (`data.sql`, the PostgREST JSON, and the admin API):
+`auth.users` 13, `profiles` 3, `models` 8, `model_images` 8, `moderation_queue` 8,
+`storage.objects` 23, and 0 for `model_files`, `model_likes`, `model_comments`,
+`model_ratings`, `model_downloads`, `model_reports`. All 23 downloaded files were verified
+with `file` — 8 JPEG, 12 WebP, 3 OOXML (the `.3mf`) — so none is a disguised error payload.
+
+**The finding that matters:** the `model-files` bucket is *not* empty. It holds one real
+third-party model uploaded three times, byte-identical, with no `models` row. The instruction
+below saying the bucket "is expected to be empty" was wrong, and so was section 1's claim that
+no third-party content exists. Full detail in the section 1 amendment and the backup README.
+
+`storage-manifest.json` is the reconciliation: 8 of the 15 `model-images` folders match a
+`models` row; the other 7, all 3 `model-files` objects and both avatars do not.
+
+The original step 4 instructions follow, for the record. Note that the `pg_dump` and
+connection-string steps are superseded by the CLI method above.
 
 Nothing is deleted in this step. The repo migration is 0 bytes, so this dump is the only
 record of the schema that will exist.
@@ -374,7 +457,9 @@ supabase storage cp -r --project-ref ljigjawvlwvciqvegptp ss:///avatars      ./a
 
 Also save `supabase/templates/*.html` (they are already in the repo, which is being archived,
 not deleted — so no extra copy needed) and note that `model-files` has 0 rows, so that bucket
-is expected to be empty.
+is expected to be empty. **Wrong — see the step 4 record above: the bucket holds 3 objects.**
+The table being empty is exactly why the bucket was nearly skipped, and it is the one place
+third-party content turned out to live.
 
 Verify `schema.sql` is non-trivial (it should contain all 10 tables and their RLS policies) and
 `auth-users.json` has 13 entries. **Gate: both files exist and are non-empty before step 6.**
@@ -384,7 +469,59 @@ This adds a third kind; note it in that file's `_archive/` description in step 1
 
 ---
 
-### Step 5 — Shut the web down
+### Step 5 — Shut the web down — **DONE 2026-11-23**
+
+`oecua.org` and `openecualliance.org` are off. All four hostnames and every path 301 to
+`https://ultralog.co/`; the Worker route and the `open-ecu-alliance` script are deleted. Mail
+on `openecualliance.org` is untouched. Verified at each edge IP with `--resolve`, through
+1.1.1.1 and 8.8.8.8, and on `/`, `/adapters`, `/adapters/haltech/nsp-csv`, `/api/adapters`,
+`/api/protocols`, `/models` and `/spec` — all 301. `ultralog.co` itself serves 200.
+
+Done with `scratchpad/step5-shut-the-web-down.sh`, two-phase (`redirect`, verify, then
+`delete-worker`, which refuses to run unless `oecua.org` already returns 301).
+
+**Pre-change state saved to** `_archive/oecua-supabase-2026-11-22/cloudflare-pre-teardown/`:
+both zones' dynamic-redirect rulesets, worker routes and full DNS, plus the Worker source
+(`worker-open-ecu-alliance.js`, 17 MB — note it is the API's **multipart** response bundling
+`index.js` and its modules, not a plain script).
+
+#### The token
+
+The plan said to mint one with Zone:Edit and Workers:Edit. What the API actually needs, and
+what worked, is six permission groups: Zone → **Single Redirect** Edit, **Zone** Read,
+**Workers Routes** Edit, **DNS** Read, **Page Rules** Read, and Account → **Workers Scripts**
+Edit, scoped to both zones.
+
+A trap worth recording: a token whose TTL has not started yet reports `status: active` from
+`/user/tokens/verify` while every real call fails `9109 Invalid access token`. The dashboard's
+TTL picker sets a **start** date as well as an end date, so "expires tomorrow" silently
+produced a token that did not begin until tomorrow. Verify tokens with a real request, not
+`/tokens/verify`.
+
+#### Two corrections to section 3's inventory
+
+1. **Both zones used Single Redirects and had zero Page Rules**, so replacing the
+   dynamic-redirect entrypoint was sufficient. The old rules both targeted
+   `concat("https://oecua.org", http.request.uri.path)` with `preserve_query_string: true`;
+   the new ones use a static `https://ultralog.co/` with it off, since no path exists on the
+   target.
+2. **`openecualliance.org`'s apex A record is not a placeholder.** Section 3 describes a
+   proxied RFC 5737 dummy, which is true of `oecua.org` (`192.0.2.1`) but not of
+   `openecualliance.org`, whose apex is `216.198.79.1` — a real Vercel address left from
+   before the Workers migration. Both `www` names are also still `CNAME`s to
+   `d60751f631ce6bfc.vercel-dns-017.com`.
+
+   This is harmless **only because all four records are proxied**: the redirect fires at the
+   edge and the origin is never reached. It raises the stakes on step 5's rule 5 and step 7's
+   decision to leave the zones up — grey-clouding any of those records would both disable its
+   redirect and start sending real traffic at stale Vercel infrastructure. Leave them
+   orange-clouded until the zones are deleted at expiry.
+
+**Rollback** is `step5-shut-the-web-down.sh rollback`, which restores both saved rulesets. The
+Worker itself is gone, so returning the site to service now means redeploying from the
+archived repo with a fresh token.
+
+### Step 5 (as planned) — Shut the web down
 
 Redirect Rules run at the zone edge, **before** Workers. So adding the redirect turns the site
 off immediately and reversibly, which is the right order: redirect first, verify, then delete
@@ -429,7 +566,48 @@ archived repo with a fresh Cloudflare token.
 
 ---
 
-### Step 6 — Delete the Supabase project
+### Step 6 — Delete the Supabase project — **DONE 2026-11-23**
+
+Project `ljigjawvlwvciqvegptp` is deleted. `supabase projects delete ljigjawvlwvciqvegptp
+--yes` returned `{"name":"Open ECU Alliance","message":"Deleted project"}`; the REST, auth and
+storage endpoints all return **410 Gone** and the ref is absent from `supabase projects list`.
+The shared CMDIY project `psoqirvbujwohemmwplv` was untouched and remains ACTIVE_HEALTHY.
+
+**The backup was restore-rehearsed first, not just verified by size.** `schema.sql`,
+`schema-auth-storage.sql` and `data.sql` were replayed into a throwaway `postgres:17`
+container and the results compared with the live project: **10 tables, 65 policies, 9
+triggers, 10 RLS-enabled — exact**, and every row count as expected (`auth.users` 13,
+`profiles` 3, `models` 8, `model_images` 8, `moderation_queue` 8, `storage.buckets` 3,
+`storage.objects` 23). `data.sql` applied with **zero** errors. `schema.sql` produced exactly
+one, `extension "supabase_vault" is not available`, a platform extension nothing depends on.
+Reproducing it needs a harness of Supabase roles, the `auth`/`storage`/`extensions` schemas,
+`supabase_realtime`, and stubs for `auth.uid()` and friends — 54 of the 65 policies call
+`auth.uid()`. Full detail in the backup README.
+
+Two traps found while verifying, recorded so nobody mistakes either for damage:
+
+- **The dumps have no `-- PostgreSQL database dump complete` marker.** The Supabase CLI
+  strips comment lines. Absence of the marker is not truncation; check `$$` balance and that
+  the file ends on a complete statement instead.
+- **`data.sql` sets `session_replication_role = replica`**, so FKs and triggers are suppressed
+  during load by design.
+
+Also revoked:
+
+- GitHub repo secrets `SUPABASE_URL`, `SUPABASE_KEY`, `SUPABASE_SECRET_KEY` deleted.
+  `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` remain for step 8.
+- Local `OpenECUAlliance/.env` and `.env.test` deleted. Both were gitignored, so this is
+  unrecoverable — deliberately. Before deleting, the 22 non-secret `RATE_LIMIT_*` /
+  `SECURITY_*` values, which existed nowhere else, were saved to
+  `_archive/oecua-supabase-2026-11-22/retired-site-runtime-config.env`. No credential was
+  copied out.
+
+**Consequence worth knowing:** `.env` was where `step5-shut-the-web-down.sh rollback` read its
+Cloudflare token, so that one-command rollback no longer runs without a fresh token. This is
+acceptable — the Worker was already deleted in step 5, so restoring the site already meant a
+redeploy, and the redirects are verified working at the edge.
+
+### Step 6 (as planned) — Delete the Supabase project
 
 Only after step 4's dump is verified.
 
@@ -447,7 +625,124 @@ Then revoke what pointed at it:
 
 ---
 
-### Step 7 — DNS and registrar
+### Step 7 — DNS and registrar — **FACTS GATHERED 2026-11-23, registrar action still Cole's**
+
+Decision taken: 301 to `ultralog.co` until the domains expire, auto-renew off.
+
+**Both domains are at Amazon Registrar and both expire `2027-01-05`** (`oecua.org`
+03:01:44Z, `openecualliance.org` 03:01:43Z — registered in the same minute). That is
+**13 months away**, so nothing here is urgent. Manage them in the AWS console under
+Route 53 -> Registered domains, not in Cloudflare — Cloudflare is DNS only; both zones
+use `anita`/`thomas.ns.cloudflare.com`.
+
+Auto-renew state could not be read, and neither could SES. Three local AWS profiles exist
+(`default`, `cmdiy-dynamo`, `cmdiy-route53`); the `cmdiy-route53` user
+`arn:aws:iam::938808401967:user/cmdiy-route53` has Route 53 **hosted-zone** read access but is
+denied `route53domains:*` (both `ListDomains` and `GetDomainDetail`) and every `ses:*` call,
+exactly as the S3-only user is. **No credential on this machine can read the registrar or the
+SES rule set.** Both remain console work. If a future task needs them from the CLI, the policy
+on `cmdiy-route53` would need `route53domains:GetDomainDetail` and
+`ses:DescribeActiveReceiptRuleSet`.
+
+#### Finding: two inert Route 53 hosted zones are still billing
+
+The `cmdiy-route53` profile turned up something this plan never knew about. **Both domains
+also have Route 53 hosted zones**, created automatically by the Route 53 Registrar at
+registration and never deleted:
+
+| Zone | Id | Records |
+|---|---|---|
+| `openecualliance.org` | `Z0414493IDIAZ4XRMQD6` | 9 |
+| `oecua.org` | `Z08574592I9ZAEUXQALKG` | 4 |
+
+**They are not authoritative and never have been.** The registry delegates both domains to
+`anita`/`thomas.ns.cloudflare.com` only; the AWS NS sets in these zones are not in the
+delegation. Verified by querying both sides directly — Cloudflare's own nameservers answer
+`openecualliance.org MX` and `_dmarc` from the Cloudflare zone, so the live mail records do
+not depend on Route 53 at all.
+
+Their contents prove how stale they are: both still point at **Vercel**
+(`A 216.198.79.1`, `www CNAME d60751f631ce6bfc.vercel-dns-017.com`) from before the
+2026-08-24 Cloudflare Workers migration. They were never updated. The
+`openecualliance.org` zone does carry a duplicate copy of all five mail records, which is why
+it looks load-bearing and is not.
+
+Both zones are **safe to delete** and doing so saves roughly $1/month (standard Route 53
+pricing is $0.50 per hosted zone per month) — about $12 across the 13 months to expiry.
+Captured first to `_archive/oecua-supabase-2026-11-22/route53-pre-teardown/` (zone + record
+JSON for each), so the SES and Resend record values survive the deletion.
+
+**Emptied 2026-11-23, but NOT deleted — the last step needs the console.** Cole approved the
+deletion and `cmdiy-route53` can write records but is denied `route53:DeleteHostedZone` on
+both zone ARNs. So the records were removed (7 from `openecualliance.org`, 2 from `oecua.org`;
+changes `C10245783NY68NPJBY7FV` and `C05367092JBDMSAJEUTGD`) and each zone now holds only its
+apex `NS` and `SOA`, which Route 53 removes with the zone itself.
+
+**Both zones still exist and still bill**, so this saved nothing yet. Finish it in
+Route 53 -> Hosted zones: delete `Z0414493IDIAZ4XRMQD6` and `Z08574592I9ZAEUXQALKG`. They are
+empty, so the console will not object.
+
+Verified after emptying: all five live mail records still answer from the public resolver and
+from Cloudflare's own nameservers, and both apexes still return `301 https://ultralog.co/`.
+Deleting records from the inert duplicate could not affect them, and did not. If the zones are
+kept after all, the records replay from the backup with
+`aws route53 change-resource-record-sets` using an `UPSERT` batch built from
+`<name>-records.json`.
+
+**Mail records verified intact after the web teardown** (public resolver, 1.1.1.1):
+
+| Record | Value |
+|---|---|
+| `openecualliance.org` MX | `10 inbound-smtp.us-east-1.amazonaws.com` |
+| `_dmarc` TXT | `v=DMARC1; p=none;` |
+| `resend._domainkey` TXT | `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOgn75...` |
+| `send.` MX | `10 feedback-smtp.us-east-1.amazonses.com` |
+| `send.` TXT | `v=spf1 include:amazonses.com ~all` |
+
+Step 5 touched none of them, as intended. Both apexes still answer `301 https://ultralog.co/`.
+
+**The open question is now much smaller than when it was written.** Every
+`@openecualliance.org` address referenced anywhere in `~/Development` is accounted for:
+
+| Address | Where it lives | Status after retirement |
+|---|---|---|
+| `no-reply@` | magic-link sender, via Resend, for the OECUA Supabase project | **dead** — that project was deleted in step 6; nothing sends from it |
+| `info@`, `projects@` | `app/pages/docs/project-charter.vue` | dead — page is offline |
+| `branding@`, `legal@` | `app/pages/docs/branding.vue` | dead — page is offline |
+
+No address appears in `UltraLog`, `ultralog-site`, or the spec corpus, so nothing that
+outlives this teardown prints one. **Outbound** mail on this domain is therefore already
+finished. What remains unknown is only **inbound**: what the SES receipt rule set does with
+mail to these four addresses, and whether anyone outside these repos has one (a GitHub
+profile, a forum post, a printed card). That is a console question, not a code question.
+
+#### What Cole still has to do
+
+1. **Route 53 -> Registered domains**, for `oecua.org` and `openecualliance.org`: turn
+   **auto-renew off**. Expiry is already recorded above, so nothing to note.
+2. **SES console, us-east-1 -> Email receiving -> Rule sets**: look at the active rule set
+   and see what it does with `openecualliance.org` mail — which recipients it matches and
+   what the actions are (S3? SNS? Lambda? a forward?). There is no OECUA mail bucket among
+   the 8 S3 buckets in this account, so if it writes to S3 it writes somewhere shared.
+   - If the rule only serves the four dead addresses above: nothing to do, it dies with the
+     domain on 2027-01-05.
+   - If it forwards an address still worth having: either keep renewing
+     `openecualliance.org` alone (and still let `oecua.org` lapse), or move the address.
+   - Deleting the rule is optional either way. It costs nothing and breaks nothing.
+3. Leave both **Cloudflare** zones and their redirect rules in place. They cost nothing and
+   keep the 301 alive until expiry.
+4. **Route 53 -> Hosted zones**: delete `Z0414493IDIAZ4XRMQD6` (`openecualliance.org`) and
+   `Z08574592I9ZAEUXQALKG` (`oecua.org`). Both were emptied on 2026-11-23 and hold only `NS`
+   and `SOA`; the CLI user cannot do the final delete. This is the only part of step 7 that
+   costs money.
+5. **After 2027-01-05**, delete both zones from Cloudflare.
+
+**Do not touch the five mail records before expiry**, and do not let a zone cleanup take the
+MX with it. The `_dmarc`, `resend._domainkey`, `send.` MX and `send.` SPF records sit on
+subdomains, so an apex-only sweep will not show them — that exact mistake is recorded in
+`classicminidiy/apps/web/docs/plans/2026-08-06-cloudflare-workers-migration.md`.
+
+#### Step 7 (as planned)
 
 Decision taken: 301 to `ultralog.co` until the domains expire, auto-renew off.
 
@@ -466,7 +761,68 @@ Decision taken: 301 to `ultralog.co` until the domains expire, auto-renew off.
 
 ---
 
-### Step 8 — Archive the GitHub repository
+### Step 8 — Archive the GitHub repository — **IN PROGRESS 2026-11-23**
+
+Items 1, 2 and 5 are committed on this branch. Items 3, 4, 6 and the two findings below are
+API actions that must wait until this branch merges, because **archiving makes the repository
+read-only** and nothing can be committed afterwards.
+
+**Ordering trap: ruleset 27169820 requires the `build` check, and this branch deletes
+`ci.yml`.** The required check will therefore never report, so the PR cannot satisfy it. Delete
+ruleset 27169820 *before* merging, or merge with `gh pr merge --admin`. Do not re-add the
+workflow to get a green check.
+
+**Finding: three of the five rulesets are organization-level, not this repo's.** The plan's
+two ids are correct, but verify `source_type` before deleting anything:
+
+| Id | Scope | Name | Action |
+|---|---|---|---|
+| 21418103 | Repository | main protection | delete |
+| 27169820 | Repository | main: CI must pass | **deleted 2026-11-23** |
+| 27166947 | **Organization** | baseline: no delete or force-push | **leave** |
+| 27166949 | **Organization** | baseline: PR required | **leave** |
+| 27166950 | **Organization** | release tags: no move or delete | **leave** |
+
+Deleting an org ruleset would weaken every other `ClassicMiniDIY` repository.
+
+**Finding: two open Dependabot PRs** (#18 bun group, #19 github-actions group, both from
+2026-11-13). Archiving leaves them open and permanently unmergeable. Close them before
+archiving. Removing `.github/dependabot.yml` stops new ones but does not close these.
+
+**Verified before writing the README notice:** `spec/openecu` is on UltraLog's `main` with 51
+files and `spec/OECUASpecs` is gone from it, so step 1 really did land and the notice points
+somewhere real. (The local `~/Development/UltraLog` checkout sits on a stale `dev` branch, 35
+commits behind `origin/main`, which makes it look as though the move never happened. Step 9
+territory, not a problem with the move.)
+
+**PR #22 opened 2026-11-23**, Auto-fix on. Ruleset 27169820 was deleted straight away, so the
+unreportable `build` check no longer blocks it.
+
+**The PR still reads `BLOCKED`, and that is the normal state for this repository.** Two things
+hold it, neither of them CI:
+- repo ruleset 21418103 `main protection` has a `pull_request` rule with a single **User
+  bypass actor in `always` mode** — Cole. Nobody else can merge to `main` here, by design.
+- org ruleset 27166949 `baseline: PR required` sets
+  `require_extra_approval_for_unattributed_changes: true`.
+
+So the merge is `gh pr merge 22 --repo ClassicMiniDIY/OpenECUAlliance --admin`, exactly as
+section 3 recorded. Do not weaken either ruleset to get a green merge button.
+
+Two **CodeQL** checks (`Analyze (actions)`, `Analyze (javascript-typescript)`) run on the PR.
+They come from GitHub default code scanning, not from the deleted `ci.yml`, and are not
+required. They stop when the repository is archived.
+
+#### What is left, in order
+
+1. Merge PR #22 with `--admin`.
+2. Close PRs #18 and #19.
+3. `gh secret delete CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. **After this the
+   redirect rollback in step 5 has no credential at all** — the Worker is already deleted, so
+   restoring the site was a redeploy anyway.
+4. Delete ruleset 21418103.
+5. `gh repo archive ClassicMiniDIY/OpenECUAlliance --yes`.
+
+#### Step 8 (as planned)
 
 Do not delete it. The 81 commits are the provenance record for the spec corpus that now lives
 in UltraLog, and the Cloudflare migration plan in `docs/plans/` is the pathfinder log that
