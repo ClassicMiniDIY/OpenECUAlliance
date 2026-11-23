@@ -236,10 +236,17 @@ Branch: `fix/drop-oecua-dependency` in `ultralog-site`, off `origin/main`.
 The channel data on `/ecus/<slug>` currently comes from `oecua.org/api/adapters` at build
 time. Replace the source, do not delete the section — these pages are public and indexed.
 
+0. **Gate: `ClassicMiniDIY/UltraLog#120` must be merged first.** This step needs the final
+   committed layout of `spec/openecu/` on UltraLog's `main`; vendoring from an unmerged
+   branch invites a second round of churn.
 1. In `server/utils/ecus.ts`: delete `OECUA_API` and `OECUA_SITE` and the fetch. Read the
    adapter YAML instead. Either vendor the handful of files the ECU pages need into
    `ultralog-site/data/adapters/`, or (better) have UltraLog's release publish the corpus as a
    release asset and fetch that — a tagged artefact, not a live site.
+   **Watch the casing.** The current code consumes the API's camelCase JSON
+   (`sourceNames`); the YAML is snake_case (`source_names`). The transform has to change
+   with the source, and the symptom of getting it wrong is an empty channel list rather
+   than an error — the same silent failure this whole step exists to remove.
 2. In `app/pages/ecus/[slug].vue:49`: the `<a :href="data.adapter.url">OpenECU Alliance … adapter</a>`
    link points at a site that will 301 to `ultralog.co`. Remove the link, or retarget it at
    the UltraLog repo's spec directory. Decide the user-facing wording: "OpenECU Alliance"
