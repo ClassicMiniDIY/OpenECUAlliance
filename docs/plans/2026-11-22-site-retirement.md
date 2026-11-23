@@ -5,8 +5,9 @@
 **Status:** steps 1-6 done (2026-11-22/23). **The web is off and the backend is gone**:
 oecua.org and openecualliance.org 301 to ultralog.co, the Worker is deleted, and the Supabase
 project is deleted after its backup was restore-rehearsed. Mail on openecualliance.org is
-untouched. What remains is housekeeping: step 7 (registrar auto-renew off, and the open SES
-question), step 8 (archive the repo), steps 9-10 (local workspace and docs).
+untouched. What remains is housekeeping: step 7 (two registrar/SES clicks in the AWS console,
+Cole's to make — both domains expire 2027-01-05, so there is no deadline pressure), step 8
+(archive the repo), steps 9-10 (local workspace and docs).
 
 **Step 4 corrected section 1 of this document.** A real third-party 3D model upload exists in
 storage with no database row. See the amendment under section 1 and the step 4 record.
@@ -624,7 +625,70 @@ Then revoke what pointed at it:
 
 ---
 
-### Step 7 — DNS and registrar
+### Step 7 — DNS and registrar — **FACTS GATHERED 2026-11-23, registrar action still Cole's**
+
+Decision taken: 301 to `ultralog.co` until the domains expire, auto-renew off.
+
+**Both domains are at Amazon Registrar and both expire `2027-01-05`** (`oecua.org`
+03:01:44Z, `openecualliance.org` 03:01:43Z — registered in the same minute). That is
+**13 months away**, so nothing here is urgent. Manage them in the AWS console under
+Route 53 -> Registered domains, not in Cloudflare — Cloudflare is DNS only; both zones
+use `anita`/`thomas.ns.cloudflare.com`.
+
+Auto-renew state could not be read: the credentials available here are the S3-only user
+`arn:aws:iam::938808401967:user/cmdiy-s3`, which is denied `route53domains:GetDomainDetail`
+as well as every `ses:*` call. Both need the console or a wider key.
+
+**Mail records verified intact after the web teardown** (public resolver, 1.1.1.1):
+
+| Record | Value |
+|---|---|
+| `openecualliance.org` MX | `10 inbound-smtp.us-east-1.amazonaws.com` |
+| `_dmarc` TXT | `v=DMARC1; p=none;` |
+| `resend._domainkey` TXT | `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOgn75...` |
+| `send.` MX | `10 feedback-smtp.us-east-1.amazonses.com` |
+| `send.` TXT | `v=spf1 include:amazonses.com ~all` |
+
+Step 5 touched none of them, as intended. Both apexes still answer `301 https://ultralog.co/`.
+
+**The open question is now much smaller than when it was written.** Every
+`@openecualliance.org` address referenced anywhere in `~/Development` is accounted for:
+
+| Address | Where it lives | Status after retirement |
+|---|---|---|
+| `no-reply@` | magic-link sender, via Resend, for the OECUA Supabase project | **dead** — that project was deleted in step 6; nothing sends from it |
+| `info@`, `projects@` | `app/pages/docs/project-charter.vue` | dead — page is offline |
+| `branding@`, `legal@` | `app/pages/docs/branding.vue` | dead — page is offline |
+
+No address appears in `UltraLog`, `ultralog-site`, or the spec corpus, so nothing that
+outlives this teardown prints one. **Outbound** mail on this domain is therefore already
+finished. What remains unknown is only **inbound**: what the SES receipt rule set does with
+mail to these four addresses, and whether anyone outside these repos has one (a GitHub
+profile, a forum post, a printed card). That is a console question, not a code question.
+
+#### What Cole still has to do
+
+1. **Route 53 -> Registered domains**, for `oecua.org` and `openecualliance.org`: turn
+   **auto-renew off**. Expiry is already recorded above, so nothing to note.
+2. **SES console, us-east-1 -> Email receiving -> Rule sets**: look at the active rule set
+   and see what it does with `openecualliance.org` mail — which recipients it matches and
+   what the actions are (S3? SNS? Lambda? a forward?). There is no OECUA mail bucket among
+   the 8 S3 buckets in this account, so if it writes to S3 it writes somewhere shared.
+   - If the rule only serves the four dead addresses above: nothing to do, it dies with the
+     domain on 2027-01-05.
+   - If it forwards an address still worth having: either keep renewing
+     `openecualliance.org` alone (and still let `oecua.org` lapse), or move the address.
+   - Deleting the rule is optional either way. It costs nothing and breaks nothing.
+3. Leave both Cloudflare zones and their redirect rules in place. They cost nothing and keep
+   the 301 alive until expiry.
+4. **After 2027-01-05**, delete both zones from Cloudflare.
+
+**Do not touch the five mail records before expiry**, and do not let a zone cleanup take the
+MX with it. The `_dmarc`, `resend._domainkey`, `send.` MX and `send.` SPF records sit on
+subdomains, so an apex-only sweep will not show them — that exact mistake is recorded in
+`classicminidiy/apps/web/docs/plans/2026-08-06-cloudflare-workers-migration.md`.
+
+#### Step 7 (as planned)
 
 Decision taken: 301 to `ultralog.co` until the domains expire, auto-renew off.
 
