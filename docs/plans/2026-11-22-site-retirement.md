@@ -2,10 +2,11 @@
 
 **Date:** 2026-11-22
 **Decision:** retire oecua.org, the OpenECU Alliance brand, and every integration it offered.
-**Status:** steps 1-5 done (2026-11-22/23). **The web is off**: oecua.org and
-openecualliance.org 301 to ultralog.co and the Worker is deleted. Mail on
-openecualliance.org is untouched, and the Supabase project is still live but fully backed up.
-The next step is 6 (delete the Supabase project), which is irreversible and unblocked.
+**Status:** steps 1-6 done (2026-11-22/23). **The web is off and the backend is gone**:
+oecua.org and openecualliance.org 301 to ultralog.co, the Worker is deleted, and the Supabase
+project is deleted after its backup was restore-rehearsed. Mail on openecualliance.org is
+untouched. What remains is housekeeping: step 7 (registrar auto-renew off, and the open SES
+question), step 8 (archive the repo), steps 9-10 (local workspace and docs).
 
 **Step 4 corrected section 1 of this document.** A real third-party 3D model upload exists in
 storage with no database row. See the amendment under section 1 and the step 4 record.
@@ -564,7 +565,48 @@ archived repo with a fresh Cloudflare token.
 
 ---
 
-### Step 6 — Delete the Supabase project
+### Step 6 — Delete the Supabase project — **DONE 2026-11-23**
+
+Project `ljigjawvlwvciqvegptp` is deleted. `supabase projects delete ljigjawvlwvciqvegptp
+--yes` returned `{"name":"Open ECU Alliance","message":"Deleted project"}`; the REST, auth and
+storage endpoints all return **410 Gone** and the ref is absent from `supabase projects list`.
+The shared CMDIY project `psoqirvbujwohemmwplv` was untouched and remains ACTIVE_HEALTHY.
+
+**The backup was restore-rehearsed first, not just verified by size.** `schema.sql`,
+`schema-auth-storage.sql` and `data.sql` were replayed into a throwaway `postgres:17`
+container and the results compared with the live project: **10 tables, 65 policies, 9
+triggers, 10 RLS-enabled — exact**, and every row count as expected (`auth.users` 13,
+`profiles` 3, `models` 8, `model_images` 8, `moderation_queue` 8, `storage.buckets` 3,
+`storage.objects` 23). `data.sql` applied with **zero** errors. `schema.sql` produced exactly
+one, `extension "supabase_vault" is not available`, a platform extension nothing depends on.
+Reproducing it needs a harness of Supabase roles, the `auth`/`storage`/`extensions` schemas,
+`supabase_realtime`, and stubs for `auth.uid()` and friends — 54 of the 65 policies call
+`auth.uid()`. Full detail in the backup README.
+
+Two traps found while verifying, recorded so nobody mistakes either for damage:
+
+- **The dumps have no `-- PostgreSQL database dump complete` marker.** The Supabase CLI
+  strips comment lines. Absence of the marker is not truncation; check `$$` balance and that
+  the file ends on a complete statement instead.
+- **`data.sql` sets `session_replication_role = replica`**, so FKs and triggers are suppressed
+  during load by design.
+
+Also revoked:
+
+- GitHub repo secrets `SUPABASE_URL`, `SUPABASE_KEY`, `SUPABASE_SECRET_KEY` deleted.
+  `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` remain for step 8.
+- Local `OpenECUAlliance/.env` and `.env.test` deleted. Both were gitignored, so this is
+  unrecoverable — deliberately. Before deleting, the 22 non-secret `RATE_LIMIT_*` /
+  `SECURITY_*` values, which existed nowhere else, were saved to
+  `_archive/oecua-supabase-2026-11-22/retired-site-runtime-config.env`. No credential was
+  copied out.
+
+**Consequence worth knowing:** `.env` was where `step5-shut-the-web-down.sh rollback` read its
+Cloudflare token, so that one-command rollback no longer runs without a fresh token. This is
+acceptable — the Worker was already deleted in step 5, so restoring the site already meant a
+redeploy, and the redirects are verified working at the edge.
+
+### Step 6 (as planned) — Delete the Supabase project
 
 Only after step 4's dump is verified.
 
