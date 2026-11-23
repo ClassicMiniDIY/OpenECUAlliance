@@ -1,8 +1,22 @@
-# OpenECU Alliance
+# OpenECU Alliance — retired
+
+> **This project is retired as of 2026-11-23, and this repository is archived and read-only.**
+>
+> The site at `oecua.org` is off and **the public REST API is gone** — every `/api/*` endpoint
+> this README documents now returns the retirement redirect. `oecua.org` and
+> `openecualliance.org` both `301` to [ultralog.co](https://ultralog.co).
+>
+> **The spec corpus lives on, in [ClassicMiniDIY/UltraLog](https://github.com/ClassicMiniDIY/UltraLog)
+> under `spec/openecu`** — all 10 adapters, 12 protocols and `channels.yaml`, vendored and
+> tracked, validated by that repository's own test suite. That is the maintained copy; the
+> `specs/` directory here is a frozen snapshot of the same files.
+>
+> Everything below this notice describes the site as it ran and is kept for provenance. The
+> API endpoints, build commands, deploy pipeline and contribution routes in it are no longer
+> operative. The teardown is recorded in
+> [`docs/plans/2026-11-22-site-retirement.md`](docs/plans/2026-11-22-site-retirement.md).
 
 The official website for the **OpenECU Spec** - an open specification for standardizing ECU log data formats and CAN broadcast protocols across the automotive tuning community, with a **public REST API** for programmatic access.
-
-**Live site:** [oecua.org](https://oecua.org)
 
 ## What is the OpenECU Alliance?
 
