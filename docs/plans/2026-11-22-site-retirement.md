@@ -761,7 +761,51 @@ Decision taken: 301 to `ultralog.co` until the domains expire, auto-renew off.
 
 ---
 
-### Step 8 — Archive the GitHub repository
+### Step 8 — Archive the GitHub repository — **IN PROGRESS 2026-11-23**
+
+Items 1, 2 and 5 are committed on this branch. Items 3, 4, 6 and the two findings below are
+API actions that must wait until this branch merges, because **archiving makes the repository
+read-only** and nothing can be committed afterwards.
+
+**Ordering trap: ruleset 27169820 requires the `build` check, and this branch deletes
+`ci.yml`.** The required check will therefore never report, so the PR cannot satisfy it. Delete
+ruleset 27169820 *before* merging, or merge with `gh pr merge --admin`. Do not re-add the
+workflow to get a green check.
+
+**Finding: three of the five rulesets are organization-level, not this repo's.** The plan's
+two ids are correct, but verify `source_type` before deleting anything:
+
+| Id | Scope | Name | Action |
+|---|---|---|---|
+| 21418103 | Repository | main protection | delete |
+| 27169820 | Repository | main: CI must pass | delete, before merge |
+| 27166947 | **Organization** | baseline: no delete or force-push | **leave** |
+| 27166949 | **Organization** | baseline: PR required | **leave** |
+| 27166950 | **Organization** | release tags: no move or delete | **leave** |
+
+Deleting an org ruleset would weaken every other `ClassicMiniDIY` repository.
+
+**Finding: two open Dependabot PRs** (#18 bun group, #19 github-actions group, both from
+2026-11-13). Archiving leaves them open and permanently unmergeable. Close them before
+archiving. Removing `.github/dependabot.yml` stops new ones but does not close these.
+
+**Verified before writing the README notice:** `spec/openecu` is on UltraLog's `main` with 51
+files and `spec/OECUASpecs` is gone from it, so step 1 really did land and the notice points
+somewhere real. (The local `~/Development/UltraLog` checkout sits on a stale `dev` branch, 35
+commits behind `origin/main`, which makes it look as though the move never happened. Step 9
+territory, not a problem with the move.)
+
+#### What is left, in order
+
+1. Merge this branch. Delete ruleset 27169820 first, or use `--admin`.
+2. Close PRs #18 and #19.
+3. `gh secret delete CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. **After this the
+   redirect rollback in step 5 has no credential at all** — the Worker is already deleted, so
+   restoring the site was a redeploy anyway.
+4. Delete ruleset 21418103.
+5. `gh repo archive ClassicMiniDIY/OpenECUAlliance --yes`.
+
+#### Step 8 (as planned)
 
 Do not delete it. The 81 commits are the provenance record for the spec corpus that now lives
 in UltraLog, and the Cloudflare migration plan in `docs/plans/` is the pathfinder log that
