@@ -667,10 +667,27 @@ Their contents prove how stale they are: both still point at **Vercel**
 `openecualliance.org` zone does carry a duplicate copy of all five mail records, which is why
 it looks load-bearing and is not.
 
-Both zones are **safe to delete now** and save roughly $1/month (standard Route 53 pricing is
-$0.50 per hosted zone per month) — about $12 across the 13 months to expiry. Captured first to
-`_archive/oecua-supabase-2026-11-22/route53-pre-teardown/` (zone + record JSON for each), so
-the SES and Resend record values survive the deletion.
+Both zones are **safe to delete** and doing so saves roughly $1/month (standard Route 53
+pricing is $0.50 per hosted zone per month) — about $12 across the 13 months to expiry.
+Captured first to `_archive/oecua-supabase-2026-11-22/route53-pre-teardown/` (zone + record
+JSON for each), so the SES and Resend record values survive the deletion.
+
+**Emptied 2026-11-23, but NOT deleted — the last step needs the console.** Cole approved the
+deletion and `cmdiy-route53` can write records but is denied `route53:DeleteHostedZone` on
+both zone ARNs. So the records were removed (7 from `openecualliance.org`, 2 from `oecua.org`;
+changes `C10245783NY68NPJBY7FV` and `C05367092JBDMSAJEUTGD`) and each zone now holds only its
+apex `NS` and `SOA`, which Route 53 removes with the zone itself.
+
+**Both zones still exist and still bill**, so this saved nothing yet. Finish it in
+Route 53 -> Hosted zones: delete `Z0414493IDIAZ4XRMQD6` and `Z08574592I9ZAEUXQALKG`. They are
+empty, so the console will not object.
+
+Verified after emptying: all five live mail records still answer from the public resolver and
+from Cloudflare's own nameservers, and both apexes still return `301 https://ultralog.co/`.
+Deleting records from the inert duplicate could not affect them, and did not. If the zones are
+kept after all, the records replay from the backup with
+`aws route53 change-resource-record-sets` using an `UPSERT` batch built from
+`<name>-records.json`.
 
 **Mail records verified intact after the web teardown** (public resolver, 1.1.1.1):
 
@@ -714,10 +731,10 @@ profile, a forum post, a printed card). That is a console question, not a code q
    - Deleting the rule is optional either way. It costs nothing and breaks nothing.
 3. Leave both **Cloudflare** zones and their redirect rules in place. They cost nothing and
    keep the 301 alive until expiry.
-4. Delete the two **Route 53** hosted zones above (`Z0414493IDIAZ4XRMQD6`,
-   `Z08574592I9ZAEUXQALKG`). Nothing queries them, they still describe a Vercel deployment
-   that no longer exists, and they are the only part of step 7 that costs money. Backed up
-   already.
+4. **Route 53 -> Hosted zones**: delete `Z0414493IDIAZ4XRMQD6` (`openecualliance.org`) and
+   `Z08574592I9ZAEUXQALKG` (`oecua.org`). Both were emptied on 2026-11-23 and hold only `NS`
+   and `SOA`; the CLI user cannot do the final delete. This is the only part of step 7 that
+   costs money.
 5. **After 2027-01-05**, delete both zones from Cloudflare.
 
 **Do not touch the five mail records before expiry**, and do not let a zone cleanup take the
