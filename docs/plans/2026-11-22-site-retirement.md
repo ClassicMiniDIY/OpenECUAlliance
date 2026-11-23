@@ -778,7 +778,7 @@ two ids are correct, but verify `source_type` before deleting anything:
 | Id | Scope | Name | Action |
 |---|---|---|---|
 | 21418103 | Repository | main protection | delete |
-| 27169820 | Repository | main: CI must pass | delete, before merge |
+| 27169820 | Repository | main: CI must pass | **deleted 2026-11-23** |
 | 27166947 | **Organization** | baseline: no delete or force-push | **leave** |
 | 27166949 | **Organization** | baseline: PR required | **leave** |
 | 27166950 | **Organization** | release tags: no move or delete | **leave** |
@@ -795,9 +795,26 @@ somewhere real. (The local `~/Development/UltraLog` checkout sits on a stale `de
 commits behind `origin/main`, which makes it look as though the move never happened. Step 9
 territory, not a problem with the move.)
 
+**PR #22 opened 2026-11-23**, Auto-fix on. Ruleset 27169820 was deleted straight away, so the
+unreportable `build` check no longer blocks it.
+
+**The PR still reads `BLOCKED`, and that is the normal state for this repository.** Two things
+hold it, neither of them CI:
+- repo ruleset 21418103 `main protection` has a `pull_request` rule with a single **User
+  bypass actor in `always` mode** — Cole. Nobody else can merge to `main` here, by design.
+- org ruleset 27166949 `baseline: PR required` sets
+  `require_extra_approval_for_unattributed_changes: true`.
+
+So the merge is `gh pr merge 22 --repo ClassicMiniDIY/OpenECUAlliance --admin`, exactly as
+section 3 recorded. Do not weaken either ruleset to get a green merge button.
+
+Two **CodeQL** checks (`Analyze (actions)`, `Analyze (javascript-typescript)`) run on the PR.
+They come from GitHub default code scanning, not from the deleted `ci.yml`, and are not
+required. They stop when the repository is archived.
+
 #### What is left, in order
 
-1. Merge this branch. Delete ruleset 27169820 first, or use `--admin`.
+1. Merge PR #22 with `--admin`.
 2. Close PRs #18 and #19.
 3. `gh secret delete CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. **After this the
    redirect rollback in step 5 has no credential at all** — the Worker is already deleted, so
