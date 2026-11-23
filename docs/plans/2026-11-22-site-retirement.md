@@ -2,9 +2,13 @@
 
 **Date:** 2026-11-22
 **Decision:** retire oecua.org, the OpenECU Alliance brand, and every integration it offered.
-**Status:** steps 1-3 done (2026-11-22/23). Nothing is torn down yet — the site, both DNS
-zones and the Supabase project are all still live. The next step that changes anything
-outward-facing is step 4 (back up Supabase), then step 5 (shut the web down).
+**Status:** steps 1-4 done (2026-11-22/23). Nothing is torn down yet — the site, both DNS
+zones and the Supabase project are all still live, and step 4 only read from them. The next
+step that changes anything outward-facing is step 5 (shut the web down), and the next
+irreversible one is step 6 (delete the Supabase project), now unblocked.
+
+**Step 4 corrected section 1 of this document.** A real third-party 3D model upload exists in
+storage with no database row. See the amendment under section 1 and the step 4 record.
 
 ---
 
@@ -17,7 +21,7 @@ The site launched 2026-01-05. Measured 2026-11-22:
 | Auth signups | 13 |
 | Signups that signed in more than once | 3 (one of them is Cole) |
 | Completed profiles | 3 |
-| Community 3D model uploads | 0 (`model_files` = 0 rows) |
+| Community 3D model uploads | `model_files` = 0 rows, **but 3 objects in the `model-files` bucket** — see the amendment below |
 | 3D models in the library | 8, all MakerWorld links Cole seeded himself on 2026-01-07 |
 | Likes / comments / ratings / downloads / reports | 0 / 0 / 0 / 0 / 0 |
 | GitHub stars / forks / watchers | 6 / 1 / 0 |
@@ -26,12 +30,42 @@ The site launched 2026-01-05. Measured 2026-11-22:
 | External contributors | 0 |
 | Search Console property | none — the site was never added |
 
-**No user-generated content exists.** Every row in the database was written by Cole or is an
-empty counter. Nothing a third party created is lost by deleting the project, and nothing was
-paid for, so there is no refund or data-portability obligation.
+**No user-generated content exists in the database.** Every row was written by Cole or is an
+empty counter. Nothing was paid for, so there is no refund or data-portability obligation.
 
 The community layer — accounts, profiles, the 3D model library, comments, likes, ratings,
 moderation queue, reports — was built and used by nobody. That is the part being deleted.
+
+#### Amendment 2026-11-23 — storage contradicts the tables
+
+The numbers above were read off the ten public tables. Step 4's backup read object storage
+too, and found content the database has no record of.
+
+A single non-Cole account (`12e9ec52-…`; the address is in the backup README, not in this
+public repo) — the project's first signup, 2026-01-06, a session lasting 12 seconds, never
+returned, and with no `profiles` row — uploaded a BambuStudio
+`.3mf` plus two 5712×4284 photos under three separate model UUIDs (`698f7b01-…`,
+`6e865807-…`, `fa6a8a91-…`). SHA-256 confirms it is **one model uploaded three times,
+byte-identical**. None of the three UUIDs appears in `models`. The files reached storage and
+the `models` row was never written: three retries of an upload flow that failed, by a real
+user who then left. They set an avatar too, which also has no profile row behind it.
+
+So "nothing a third party created is lost by deleting the project" was wrong as written. It
+is true now only because the backup exists:
+`_archive/oecua-supabase-2026-11-22/model-files/` and `model-images/`.
+
+This does not change the decision to retire. It is one model from one user whose upload the
+product dropped on the floor nearly two years ago. It does change two things:
+
+1. **Step 6 must not run before the step 4 backup is confirmed in place** — that was already
+   the gate, and this is the content it turns out to protect.
+2. **Whether that user hears anything is an open decision.** Nobody was charged and the
+   upload never became a published model, so there is no obligation. Recorded here so the
+   choice is deliberate rather than forgotten. Their address is in the backup README; it is
+   deliberately not written into this public repository.
+
+The 4 other orphaned image folders (`2ea8195b-…`, `df727974-…`, `385a3b41-…`,
+`bdb67582-…`) are Cole's own abandoned seeding attempts and carry nothing unique.
 
 ### What is actually worth keeping
 
@@ -346,7 +380,54 @@ URL is worse than no code.
 
 ---
 
-### Step 4 — Back up the Supabase project
+### Step 4 — Back up the Supabase project — **DONE 2026-11-23**
+
+Backup at `~/Development/_archive/oecua-supabase-2026-11-22/`, 21 MB, with its own
+`README.md` recording provenance and counts. Nothing was deleted or altered in the project;
+every call was a read. **Step 4's gate is satisfied, so step 6 is unblocked.**
+
+No database password was needed. `supabase db dump --linked` provisions a login role through
+the Management API, so the dashboard trip the instructions below assumed never happened. Two
+obstacles worth recording:
+
+- **`pg_dump` is not installed on this machine** and there is no Homebrew postgres. The
+  Supabase CLI runs it in a container instead; Docker was already up.
+- **`supabase/config.toml` blocks the CLI.** It still has an `[inbucket]` section, which CLI
+  3.1.0 rejects outright (`DbConfigLoadError … use [local_smtp] instead`). Rather than edit a
+  repo that is being archived, the dump ran from a throwaway project directory containing
+  nothing but `project_id`. Anyone re-running this needs the same workaround.
+
+What landed:
+
+| File | Contents |
+|---|---|
+| `schema.sql` | 41 KB — all 10 tables, 10× RLS enabled, **65 policies**, 8 functions, 9 triggers, 26 indexes |
+| `schema-auth-storage.sql` | 173 KB — `auth` and `storage` DDL |
+| `data.sql` | 60 KB — `public`, `auth` **and** `storage` rows |
+| `roles.sql` | the three `statement_timeout` overrides |
+| `auth-users.json` | 13 users with emails and sign-in timestamps |
+| `data/*.json` | each public table from PostgREST, as a cross-check on `data.sql` |
+| `storage-manifest.json` + 3 bucket dirs | all 23 objects, 21.8 MB, at their storage paths |
+
+The schema came out far better than this plan expected — the 0-byte repo migration implied the
+DDL might be unrecoverable, but the dump carries the full policy set.
+
+Row counts agree across all three sources (`data.sql`, the PostgREST JSON, and the admin API):
+`auth.users` 13, `profiles` 3, `models` 8, `model_images` 8, `moderation_queue` 8,
+`storage.objects` 23, and 0 for `model_files`, `model_likes`, `model_comments`,
+`model_ratings`, `model_downloads`, `model_reports`. All 23 downloaded files were verified
+with `file` — 8 JPEG, 12 WebP, 3 OOXML (the `.3mf`) — so none is a disguised error payload.
+
+**The finding that matters:** the `model-files` bucket is *not* empty. It holds one real
+third-party model uploaded three times, byte-identical, with no `models` row. The instruction
+below saying the bucket "is expected to be empty" was wrong, and so was section 1's claim that
+no third-party content exists. Full detail in the section 1 amendment and the backup README.
+
+`storage-manifest.json` is the reconciliation: 8 of the 15 `model-images` folders match a
+`models` row; the other 7, all 3 `model-files` objects and both avatars do not.
+
+The original step 4 instructions follow, for the record. Note that the `pg_dump` and
+connection-string steps are superseded by the CLI method above.
 
 Nothing is deleted in this step. The repo migration is 0 bytes, so this dump is the only
 record of the schema that will exist.
@@ -374,7 +455,9 @@ supabase storage cp -r --project-ref ljigjawvlwvciqvegptp ss:///avatars      ./a
 
 Also save `supabase/templates/*.html` (they are already in the repo, which is being archived,
 not deleted — so no extra copy needed) and note that `model-files` has 0 rows, so that bucket
-is expected to be empty.
+is expected to be empty. **Wrong — see the step 4 record above: the bucket holds 3 objects.**
+The table being empty is exactly why the bucket was nearly skipped, and it is the one place
+third-party content turned out to live.
 
 Verify `schema.sql` is non-trivial (it should contain all 10 tables and their RLS policies) and
 `auth-users.json` has 13 entries. **Gate: both files exist and are non-empty before step 6.**
