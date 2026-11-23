@@ -130,7 +130,48 @@ origin dies; the database is dumped before the project is deleted.
 
 ---
 
-### Step 1 — Move the specs into UltraLog (do this first; nothing else may start until it is merged)
+### Step 1 — Move the specs into UltraLog — **DONE 2026-11-22**
+
+Branch `feature/own-the-spec-corpus` in `UltraLog`, off `origin/main`. What landed:
+
+- `spec/openecu/` is vendored and tracked: 10 adapters, 12 protocols, `channels.yaml`
+  (466 channels), `SPECIFICATION.md`, 26 branding assets. 2.0 MB.
+- `build.rs` downloads nothing. `spec/OECUASpecs/` is out of `.gitignore`.
+- `registry.rs` embeds all 22 specs from `spec/openecu`, including the BMW adapter and
+  the three BMW protocols UltraLog was missing — it was a release behind at 9 and 9.
+- `tests/spec_corpus.rs` ports the validator: 4 tests, **0 errors, 27 warnings**. Both
+  the baud-rate check and the registry-category check were mutation-tested to confirm
+  they actually fail on a broken spec.
+- The Channel Registry Contract and the BMW provenance note are in `UltraLog/CLAUDE.md`
+  under "OpenECU spec corpus".
+- `cargo fmt`, `cargo clippy -- -D warnings`, 1335 tests: clean.
+
+Three things turned up that were not in the original plan:
+
+1. **`to_canonical` was being silently dropped.** 36 channels declare it; UltraLog's
+   `ChannelSpec` had no such field, so serde discarded it. `conversion` and
+   `source_unit` have never been read either — **UltraLog applies no unit conversion at
+   all** and displays raw log units. The field now deserializes and a test guards it,
+   but nothing applies it. This is exactly the failure the Channel Registry Contract
+   warns about. Needs its own change, verified against real logs.
+2. **Source-name collisions resolve by array order.** `build_normalization_map` and
+   `build_metadata_map` key one flat map on the lowercased `source_names` entry, so a
+   name two adapters both claim resolves to whichever is LAST in `EMBEDDED_ADAPTERS`.
+   54 source names get conflicting display names and **43 resolve to different canonical
+   ids**: `"boost"` is `boost` or `mgp`; `"knock"` is `knock_level`, `knock_level_db` or
+   `knock_retard`; `"fuel flow"` is `fuel_flow` (l/h) or `fuel_flow_mass` (g/s) — the two
+   pairs the contract says must never be unified. Pre-existing; adding BMW exposed it by
+   breaking `test_normalize_rpm`, the only test covering any of the 54. BMW is ordered
+   first so the integration changed no existing mapping. The real fix is a per-adapter
+   namespace. Documented in `UltraLog/CLAUDE.md`.
+3. **`generate-spec-doc.ts` was not ported.** 214 lines of Bun that renders
+   `SPECIFICATION.md` from `channels.yaml`, much of it hand-written prose — transcribing
+   it into Rust risked silent divergence for a corpus that now changes rarely. Instead
+   `SPECIFICATION.md`'s header says it can no longer be regenerated, and a test fails if
+   its channel count, category count, or any canonical ID falls out of step with the
+   registry. Mutation-tested.
+
+The original step 1 instructions follow, for the record.
 
 Branch: `feature/own-the-spec-corpus` in `UltraLog`, off `origin/main`.
 
@@ -379,6 +420,14 @@ in UltraLog, and the Cloudflare migration plan in `docs/plans/` is the pathfinde
 ### Step 9 — Local workspace
 
 1. Remove this worktree once its PR merges: `git worktree remove .claude/worktrees/site-retirement-plan-b4e056`.
+   Also remove `UltraLog/.claude/worktrees/own-spec-corpus` once step 1's PR merges — a
+   Rust worktree's `target/` runs to several GB.
+   **Before deleting the `OpenECUAlliance` checkout, rescue `specs/assets/banners/`.** Eight
+   banner PNGs sit untracked in the `fix/duplicate-vendor-chips` working tree and exist in no
+   commit on any branch. Eight adapter specs reference them (`banner: haltech-banner.png`
+   and so on), so those references dangle today and will dangle permanently once the
+   checkout goes. Either copy them into `UltraLog/spec/openecu/assets/banners/` or drop the
+   `banner:` keys from the specs.
 2. `git bundle create ~/Development/_archive/cmdiy-openecualliance-retired-2026-11-22.bundle --all`
    from the main checkout, then delete `~/Development/OpenECUAlliance/`. This matches the
    pre-monorepo pattern already in `_archive/`.
