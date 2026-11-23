@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-22
 **Decision:** retire oecua.org, the OpenECU Alliance brand, and every integration it offered.
-**Status:** steps 1-6 done (2026-11-22/23). **The web is off and the backend is gone**:
+**Status:** steps 1-8 done (2026-11-22/23). **The web is off and the backend is gone**:
 oecua.org and openecualliance.org 301 to ultralog.co, the Worker is deleted, and the Supabase
 project is deleted after its backup was restore-rehearsed. Mail on openecualliance.org is
 untouched. What remains is housekeeping: step 7 (two registrar/SES clicks in the AWS console,
@@ -761,7 +761,7 @@ Decision taken: 301 to `ultralog.co` until the domains expire, auto-renew off.
 
 ---
 
-### Step 8 — Archive the GitHub repository — **IN PROGRESS 2026-11-23**
+### Step 8 — Archive the GitHub repository — **DONE 2026-11-23**
 
 Items 1, 2 and 5 are committed on this branch. Items 3, 4, 6 and the two findings below are
 API actions that must wait until this branch merges, because **archiving makes the repository
@@ -812,7 +812,33 @@ Two **CodeQL** checks (`Analyze (actions)`, `Analyze (javascript-typescript)`) r
 They come from GitHub default code scanning, not from the deleted `ci.yml`, and are not
 required. They stop when the repository is archived.
 
-#### What is left, in order
+#### Done, in this order
+
+1. **PR #22 merged** with `--admin` as merge commit `c09ec74`. Verified on `main`: the README
+   notice is the first line, `.github/` is empty, this document is present.
+2. **Dependabot PRs closed.** #19 (bun group) closed and its branch deleted. #18
+   (github-actions group) **was already closed** — removing `.github/dependabot.yml` and the
+   workflows in #22 made Dependabot close it itself. No open PRs remain.
+3. **Secrets deleted**: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. The repository now
+   has no secrets and no variables. **The redirect in step 5 now has no credential that can
+   roll it back** — acceptable, because the Worker was already deleted, so restoring the site
+   always meant a redeploy.
+4. **Rulesets 21418103 and 27169820 deleted.** Only the three organization-level rulesets
+   remain, untouched.
+5. **Repository archived.**
+
+**This document freezes here.** An archived repository is read-only, so the records for
+steps 9 and 10 cannot land in it. They live in this file's copy inside the
+`_archive` bundle from step 9, and the outcome is visible in the places step 10 touches:
+`~/Development/CLAUDE.md`, `~/.claude/CLAUDE.md`, `UltraLog/CLAUDE.md`,
+`ultralog-site/CLAUDE.md` and `UltraLog/ULTRALOG_INTEGRATION.md`. Anyone reading this in the
+archive should expect steps 9 and 10 to show as unrecorded, not as undone.
+
+What was deliberately *not* done: `ClassicMiniDIY/OECUASpecs` stays archived and untouched,
+and the organization rulesets were left alone (deleting one would weaken every other
+`ClassicMiniDIY` repository).
+
+#### What was left, in order
 
 1. Merge PR #22 with `--admin`.
 2. Close PRs #18 and #19.
