@@ -2,10 +2,10 @@
 
 **Date:** 2026-11-22
 **Decision:** retire oecua.org, the OpenECU Alliance brand, and every integration it offered.
-**Status:** steps 1-4 done (2026-11-22/23). Nothing is torn down yet — the site, both DNS
-zones and the Supabase project are all still live, and step 4 only read from them. The next
-step that changes anything outward-facing is step 5 (shut the web down), and the next
-irreversible one is step 6 (delete the Supabase project), now unblocked.
+**Status:** steps 1-5 done (2026-11-22/23). **The web is off**: oecua.org and
+openecualliance.org 301 to ultralog.co and the Worker is deleted. Mail on
+openecualliance.org is untouched, and the Supabase project is still live but fully backed up.
+The next step is 6 (delete the Supabase project), which is irreversible and unblocked.
 
 **Step 4 corrected section 1 of this document.** A real third-party 3D model upload exists in
 storage with no database row. See the amendment under section 1 and the step 4 record.
@@ -467,7 +467,59 @@ This adds a third kind; note it in that file's `_archive/` description in step 1
 
 ---
 
-### Step 5 — Shut the web down
+### Step 5 — Shut the web down — **DONE 2026-11-23**
+
+`oecua.org` and `openecualliance.org` are off. All four hostnames and every path 301 to
+`https://ultralog.co/`; the Worker route and the `open-ecu-alliance` script are deleted. Mail
+on `openecualliance.org` is untouched. Verified at each edge IP with `--resolve`, through
+1.1.1.1 and 8.8.8.8, and on `/`, `/adapters`, `/adapters/haltech/nsp-csv`, `/api/adapters`,
+`/api/protocols`, `/models` and `/spec` — all 301. `ultralog.co` itself serves 200.
+
+Done with `scratchpad/step5-shut-the-web-down.sh`, two-phase (`redirect`, verify, then
+`delete-worker`, which refuses to run unless `oecua.org` already returns 301).
+
+**Pre-change state saved to** `_archive/oecua-supabase-2026-11-22/cloudflare-pre-teardown/`:
+both zones' dynamic-redirect rulesets, worker routes and full DNS, plus the Worker source
+(`worker-open-ecu-alliance.js`, 17 MB — note it is the API's **multipart** response bundling
+`index.js` and its modules, not a plain script).
+
+#### The token
+
+The plan said to mint one with Zone:Edit and Workers:Edit. What the API actually needs, and
+what worked, is six permission groups: Zone → **Single Redirect** Edit, **Zone** Read,
+**Workers Routes** Edit, **DNS** Read, **Page Rules** Read, and Account → **Workers Scripts**
+Edit, scoped to both zones.
+
+A trap worth recording: a token whose TTL has not started yet reports `status: active` from
+`/user/tokens/verify` while every real call fails `9109 Invalid access token`. The dashboard's
+TTL picker sets a **start** date as well as an end date, so "expires tomorrow" silently
+produced a token that did not begin until tomorrow. Verify tokens with a real request, not
+`/tokens/verify`.
+
+#### Two corrections to section 3's inventory
+
+1. **Both zones used Single Redirects and had zero Page Rules**, so replacing the
+   dynamic-redirect entrypoint was sufficient. The old rules both targeted
+   `concat("https://oecua.org", http.request.uri.path)` with `preserve_query_string: true`;
+   the new ones use a static `https://ultralog.co/` with it off, since no path exists on the
+   target.
+2. **`openecualliance.org`'s apex A record is not a placeholder.** Section 3 describes a
+   proxied RFC 5737 dummy, which is true of `oecua.org` (`192.0.2.1`) but not of
+   `openecualliance.org`, whose apex is `216.198.79.1` — a real Vercel address left from
+   before the Workers migration. Both `www` names are also still `CNAME`s to
+   `d60751f631ce6bfc.vercel-dns-017.com`.
+
+   This is harmless **only because all four records are proxied**: the redirect fires at the
+   edge and the origin is never reached. It raises the stakes on step 5's rule 5 and step 7's
+   decision to leave the zones up — grey-clouding any of those records would both disable its
+   redirect and start sending real traffic at stale Vercel infrastructure. Leave them
+   orange-clouded until the zones are deleted at expiry.
+
+**Rollback** is `step5-shut-the-web-down.sh rollback`, which restores both saved rulesets. The
+Worker itself is gone, so returning the site to service now means redeploying from the
+archived repo with a fresh token.
+
+### Step 5 (as planned) — Shut the web down
 
 Redirect Rules run at the zone edge, **before** Workers. So adding the redirect turns the site
 off immediately and reversibly, which is the right order: redirect first, verify, then delete
